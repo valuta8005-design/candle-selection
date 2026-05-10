@@ -177,6 +177,96 @@
       gap: 36px;
     }
 
+    /* ---------- Большая плашка «Опишите вашу ситуацию» на главной ---------- */
+    .intent-card {
+      margin-top: 28px;
+      padding: 36px 38px;
+      border-radius: 32px;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(212,175,55,0.18), transparent 40%),
+        linear-gradient(145deg, rgba(255,255,255,0.92), rgba(255,247,234,0.78));
+      border: 1px solid var(--line);
+      box-shadow:
+        0 24px 70px rgba(92, 70, 38, 0.12),
+        inset 0 0 0 1px rgba(255,255,255,0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .intent-card::before {
+      content: "";
+      position: absolute;
+      top: -60px;
+      right: -60px;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(212,175,55,0.22), transparent 70%);
+      pointer-events: none;
+    }
+
+    .intent-card h2 {
+      margin: 0 0 10px;
+      font-size: clamp(28px, 3.6vw, 40px);
+    }
+
+    .intent-card .intent-sub {
+      color: var(--muted);
+      max-width: 640px;
+      line-height: 1.65;
+      font-size: 16px;
+      margin: 0 0 22px;
+    }
+
+    .intent-card textarea {
+      min-height: 130px;
+      border-radius: 20px;
+      font-size: 16px;
+      line-height: 1.55;
+      background: rgba(255,255,255,0.95);
+      border: 1px solid var(--line);
+      padding: 18px 20px;
+    }
+
+    .intent-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+      margin-top: 18px;
+    }
+
+    .intent-secondary {
+      color: #8a6a2f;
+      font-weight: 600;
+      font-size: 14px;
+      text-decoration: none;
+      border-bottom: 1px dashed rgba(212,175,55,0.55);
+      cursor: pointer;
+      background: none;
+      border-left: none;
+      border-right: none;
+      border-top: none;
+      padding: 4px 0;
+      font-family: "Montserrat", sans-serif;
+    }
+
+    .intent-secondary:hover { color: var(--gold); }
+
+    .intent-error {
+      margin-top: 12px;
+      color: #a14a3a;
+      font-size: 14px;
+      font-weight: 600;
+      display: none;
+    }
+    .intent-error.show { display: block; }
+
+    @media (max-width: 560px) {
+      .intent-card { padding: 24px 20px; border-radius: 24px; }
+      .intent-card textarea { min-height: 110px; }
+    }
+
     .eyebrow {
       display: inline-flex;
       padding: 9px 14px;
@@ -410,6 +500,36 @@
       font-size: 14px;
     }
 
+    /* Список «что усиливает» с золотистыми маркерами */
+    .benefits-list {
+      list-style: none;
+      padding: 0;
+      margin: 8px 0 0;
+      display: grid;
+      gap: 10px;
+    }
+
+    .benefits-list li {
+      position: relative;
+      padding: 10px 14px 10px 38px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.55);
+      border: 1px solid var(--line);
+      color: #4b3928;
+      line-height: 1.55;
+      font-size: 15px;
+    }
+
+    .benefits-list li::before {
+      content: "✦";
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gold);
+      font-size: 16px;
+    }
+
     .text-block {
       margin: 22px 0;
     }
@@ -567,16 +687,40 @@
           <div class="eyebrow">✨ Modern Mystic Premium</div>
           <h1>Подбор свечи по вашей ситуации</h1>
           <p class="lead">
-            Ответьте на несколько вопросов, и сервис подберёт свечу, которая лучше всего подходит под вашу задачу:
-            деньги, любовь, защита, очищение дома, здоровье или удача.
+            Опишите свою ситуацию своими словами или пройдите короткий подбор по категориям —
+            сервис проанализирует текст и подберёт свечу под вашу задачу.
           </p>
-          <button class="btn btn-primary" onclick="showScreen('situations')">
-            Начать подбор
-          </button>
         </div>
 
         <div class="hero-card">
           <div class="candle"></div>
+        </div>
+      </div>
+
+      <!-- Большая плашка ввода ситуации.
+           Текст из textarea -> findCandleByText() -> renderCandleResult() -->
+      <div class="intent-card" role="region" aria-labelledby="intentTitle">
+        <h2 id="intentTitle">Опишите вашу ситуацию</h2>
+        <p class="intent-sub">
+          Расскажите своими словами, что вас сейчас волнует. Приложение проанализирует ключевые слова и подберёт подходящую свечу из каталога.
+        </p>
+
+        <textarea
+          id="intentText"
+          placeholder="Например: нет энергии, проблемы в отношениях, нужна защита, финансовые трудности"
+          aria-label="Опишите вашу ситуацию"></textarea>
+
+        <p id="intentError" class="intent-error">
+          Не удалось распознать ситуацию по тексту. Попробуйте описать подробнее или выберите категорию.
+        </p>
+
+        <div class="intent-actions">
+          <button class="btn btn-primary" type="button" onclick="submitTextSituation()">
+            Подобрать свечу
+          </button>
+          <button class="intent-secondary" type="button" onclick="showScreen('situations')">
+            или выбрать ситуацию из списка →
+          </button>
         </div>
       </div>
     </section>
@@ -616,25 +760,28 @@
           <h2 id="resultName">Название свечи</h2>
           <div id="resultCategory" class="result-category"></div>
 
-          <div class="pill-list" id="benefitsList"></div>
-
           <div class="text-block">
             <strong>Краткое описание</strong>
-            <p id="resultDescription"></p>
-          </div>
-
-          <div class="text-block hidden" id="resultWhyBlock">
-            <strong>Почему подходит именно вам</strong>
-            <p id="resultReason"></p>
+            <p id="resultShortDescription"></p>
           </div>
 
           <div class="text-block">
-            <strong>Рекомендация по использованию</strong>
-            <p id="resultRecommendations"></p>
+            <strong>Подробное описание</strong>
+            <p id="resultFullDescription"></p>
+          </div>
+
+          <div class="text-block">
+            <strong>Что помогает усилить</strong>
+            <ul id="benefitsList" class="benefits-list"></ul>
+          </div>
+
+          <div class="text-block">
+            <strong>Рекомендация по применению</strong>
+            <p id="resultUsage"></p>
           </div>
 
           <div class="actions">
-            <a id="buyButton" class="btn btn-primary" href="#" target="_blank">Купить</a>
+            <a id="buyButton" class="btn btn-primary" href="#" target="_blank" rel="noopener">Купить</a>
             <button class="btn btn-ghost" onclick="restartApp()">Пройти заново</button>
           </div>
 
@@ -685,37 +832,38 @@
 
           <form class="form" id="candleForm" onsubmit="saveCandle(event)">
             <label class="form-label" for="adminName">Название свечи</label>
-            <input id="adminName" name="name" type="text" placeholder="Например: Царская печать" required autocomplete="off">
+            <input id="adminName" name="name" type="text" placeholder="Например: Ангел-Хранитель" required autocomplete="off">
+
+            <label class="form-label" for="adminId">ID</label>
+            <p class="form-hint">Латиницей через дефис. Если оставить пустым — будет сгенерирован из названия.</p>
+            <input id="adminId" type="text" placeholder="angel-hranitel">
 
             <label class="form-label" for="adminCategory">Категория</label>
-            <input id="adminCategory" type="text" placeholder="Например: Амулетные свечи" required>
+            <input id="adminCategory" type="text" placeholder="Защита" required>
 
-            <label class="form-label" for="adminDescription">Краткое описание</label>
-            <textarea id="adminDescription" placeholder="2–4 предложения о назначении свечи" required></textarea>
+            <label class="form-label" for="adminShortDescription">Краткое описание</label>
+            <textarea id="adminShortDescription" placeholder="1–2 предложения о свече" required></textarea>
 
-            <label class="form-label" for="adminProperties">Основные свойства</label>
-            <p class="form-hint">Несколько пунктов через запятую: они покажутся плашками на экране результата.</p>
-            <textarea id="adminProperties" placeholder="Денежный поток, Уверенность, Возможности" required></textarea>
+            <label class="form-label" for="adminFullDescription">Подробное описание</label>
+            <textarea id="adminFullDescription" placeholder="3–6 предложений о назначении свечи и сценариях применения" required></textarea>
 
-            <label class="form-label" for="adminSituations">Для каких ситуаций подходит</label>
-            <p class="form-hint">Как на карточках выбора (через запятую). При сохранении для новых названий можно автоматически создать карточку ✨.</p>
-            <textarea id="adminSituations" placeholder="Деньги, Удача" required></textarea>
+            <label class="form-label" for="adminSituation">Для каких ситуаций подходит</label>
+            <p class="form-hint">Через запятую — по этим словам ищем свечу для текста пользователя. Например: «Защита, тревожность, очищение пространства».</p>
+            <textarea id="adminSituation" placeholder="Защита, тревожность, энергетическое очищение" required></textarea>
 
-            <label class="form-label" for="adminRecommendation">Рекомендация по использованию</label>
-            <textarea id="adminRecommendation" placeholder="С чем сочетать, как применять" required></textarea>
+            <label class="form-label" for="adminBenefits">Что помогает усилить</label>
+            <p class="form-hint">Каждый пункт с новой строки или через запятую — выведутся списком.</p>
+            <textarea id="adminBenefits" placeholder="помогает создать ощущение защиты&#10;поддерживает спокойствие&#10;усиливает внутреннюю опору" required></textarea>
 
-            <label class="form-label" for="adminLink">Ссылка на товар</label>
-            <input id="adminLink" type="text" placeholder="https://..." required>
+            <label class="form-label" for="adminUsage">Рекомендация по применению</label>
+            <textarea id="adminUsage" placeholder="Зажгите свечу в спокойной обстановке…" required></textarea>
+
+            <label class="form-label" for="adminBuyLink">Ссылка на покупку</label>
+            <input id="adminBuyLink" type="text" placeholder="https://…" required>
 
             <label class="form-label" for="adminImage">Ссылка на изображение</label>
             <p class="form-hint">Прямой URL картинки (jpg, png, webp).</p>
-            <input id="adminImage" type="text" placeholder="https://..." required>
-
-            <details class="form-extra">
-              <summary style="cursor:pointer; font-weight:600; color:#6b5333; margin:8px 0;">Дополнительно: почему подходит</summary>
-              <label class="form-label" for="adminWhyFit">Текст блока после опроса (необязательно)</label>
-              <textarea id="adminWhyFit" placeholder="Если пусто — блок на экране результата скрыт"></textarea>
-            </details>
+            <input id="adminImage" type="text" placeholder="https://…" required>
 
             <input type="hidden" id="adminEditIndex" value="">
 
@@ -747,87 +895,135 @@
 
   <script>
     /* =============================================================================
-       МАССИВ СВЕЧЕЙ — добавляйте новые объекты в этот массив.
-       Поля:
-         name            — название свечи
-         category        — категория (для подписи на экране результата)
-         description     — краткое описание
-         properties      — массив строк: основные свойства (показываются плашками)
-         situations      — для каких ситуаций подходит (строки должны совпадать с
-                           названиями карточек ситуаций на главном экране)
-         recommendation  — рекомендация по использованию
-         link            — ссылка на товар
-         image           — URL картинки (можно загрузить на сайт и вставить ссылку)
-         whyFit          — необязательно: текст «почему подходит» после опроса
+       БАЗА СВЕЧЕЙ.
+
+       ⬇⬇⬇  ЧТОБЫ ДОБАВИТЬ НОВУЮ СВЕЧУ — СКОПИРУЙТЕ ОБЪЕКТ И ВПИШИТЕ ДАННЫЕ  ⬇⬇⬇
+       Все поля одинаковы для всех свечей. Поля:
+
+         id                — уникальный идентификатор (латиницей через дефис, без пробелов).
+         name              — название свечи.
+         category           — категория (короткая, например: "Защита").
+         shortDescription   — краткое описание (1–2 предложения).
+         fullDescription    — подробное описание (3–6 предложений).
+         situation          — для каких ситуаций подходит (строка через запятую):
+                              именно по этим словам работает поиск по тексту.
+         benefits           — массив строк: что усиливает / помогает.
+         usage              — рекомендация по применению.
+         buyLink            — ссылка на товар (полный URL).
+         image              — ссылка на изображение свечи (полный URL).
+
+       После добавления свеча сразу появится в подборе, поиске по тексту и в каталоге
+       админ-панели. Чтобы удалить — просто уберите её объект из массива.
+       Если в браузере уже сохранён локальный каталог, нажмите «Сбросить к демо-данным».
     ============================================================================= */
-    const candles = [
+    const candlesData = [
       {
+        id: "tsarskaya-pechat",
         name: "Царская печать",
-        category: "Деньги и статус",
-        description: "Свеча-амулет для усиления денежного потока, уверенности, статуса и благоприятных возможностей.",
-        properties: ["Денежный поток", "Уверенность", "Возможности"],
-        situations: ["Деньги"],
-        recommendation: "Дополнительно подойдут свечи на удачу, наборы для финансового роста, талисманы для привлечения возможностей.",
-        link: "https://ruswedma.ru",
-        image: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600&q=80&auto=format&fit=crop",
-        whyFit: "Вы выбрали денежную ситуацию. Эта свеча подходит, когда нужно усилить решительность, открыть путь к новым возможностям и укрепить ощущение личной ценности."
+        category: "Деньги",
+        shortDescription: "Свеча-амулет для усиления денежного потока, уверенности и статуса.",
+        fullDescription: "Подходит, когда нужно открыть путь к новым возможностям, укрепить ощущение личной ценности и решительность в делах. Помогает сосредоточиться на финансовых целях и собрать энергию для конкретных шагов: переговоров, заявок, важных решений.",
+        situation: "Деньги, финансы, доход, успех в делах, уверенность",
+        benefits: [
+          "усиливает денежный поток",
+          "укрепляет уверенность и статус",
+          "открывает новые возможности",
+          "поддерживает решимость в делах"
+        ],
+        usage: "Зажгите свечу за рабочим столом или там, где принимаете решения. Сформулируйте цель максимально конкретно и побудьте рядом с пламенем 5–10 минут.",
+        buyLink: "https://ruswedma.ru",
+        image: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600&q=80&auto=format&fit=crop"
       },
       {
+        id: "zvezda-ishtar",
         name: "Звезда Иштар",
-        category: "Любовь и притяжение",
-        description: "Свеча-амулет для раскрытия женственности, привлекательности, романтики и мягкого притяжения внимания.",
-        properties: ["Притяжение", "Романтика", "Харизма"],
-        situations: ["Любовь"],
-        recommendation: "Можно дополнить свечами на гармонизацию отношений, любовными наборами и талисманами привлекательности.",
-        link: "https://ruswedma.ru",
-        image: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=600&q=80&auto=format&fit=crop",
-        whyFit: "Вы выбрали сферу любви. Свеча помогает настроиться на состояние привлекательности, внутреннего света и открытости к отношениям."
+        category: "Любовь",
+        shortDescription: "Свеча-амулет для раскрытия женственности и мягкого притяжения внимания.",
+        fullDescription: "Помогает настроиться на состояние привлекательности, внутреннего света и открытости. Подходит для укрепления существующих отношений, возвращения чувств в пару, а также для тех, кто хочет естественно располагать к себе людей.",
+        situation: "Любовь, отношения, романтика, женственность, привлекательность",
+        benefits: [
+          "раскрывает женственность",
+          "усиливает обаяние и харизму",
+          "поддерживает романтический настрой",
+          "помогает укрепить отношения"
+        ],
+        usage: "Зажгите свечу в спокойной обстановке, можно у зеркала. Подумайте о желаемом качестве отношений и побудьте рядом с пламенем несколько минут.",
+        buyLink: "https://ruswedma.ru",
+        image: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=600&q=80&auto=format&fit=crop"
       },
       {
-        name: "Ангел-хранитель",
-        category: "Защита и опора",
-        description: "Свеча-оберег для мягкой защиты, поддержки, внутреннего спокойствия и ощущения безопасности.",
-        properties: ["Защита", "Поддержка", "Интуиция"],
-        situations: ["Защита"],
-        recommendation: "Дополнительно подойдут защитные амулеты, свечи от негатива и наборы для очищения пространства.",
-        link: "https://ruswedma.ru",
-        image: "https://images.unsplash.com/photo-1602523961358-f9f03ddc7d43?w=600&q=80&auto=format&fit=crop",
-        whyFit: "Вы выбрали тему защиты. Эта свеча подходит, когда хочется почувствовать опору, снизить тревожность и усилить ощущение защищённости."
+        id: "angel-hranitel",
+        name: "Ангел-Хранитель",
+        category: "Защита",
+        shortDescription: "Свеча-оберег для защиты, спокойствия и внутренней опоры.",
+        fullDescription: "Подходит для ситуаций, когда нужно усилить ощущение безопасности, очистить пространство и восстановить внутреннее равновесие. Помогает снизить тревожность, мягко выстроить личные границы и вернуть ощущение, что вы под защитой.",
+        situation: "Защита, тревожность, энергетическое очищение, восстановление спокойствия",
+        benefits: [
+          "помогает создать ощущение защиты",
+          "поддерживает спокойствие",
+          "усиливает внутреннюю опору",
+          "подходит для очищения пространства"
+        ],
+        usage: "Зажгите свечу в спокойной обстановке, сформулируйте намерение и побудьте рядом с пламенем несколько минут.",
+        buyLink: "https://ruswedma.ru",
+        image: "https://images.unsplash.com/photo-1602523961358-f9f03ddc7d43?w=600&q=80&auto=format&fit=crop"
       },
       {
+        id: "ochishenie-doma",
         name: "Очищение и защита дома",
-        category: "Пространство и дом",
-        description: "Свеча-амулет для очищения пространства, снятия тяжёлой атмосферы и создания спокойного энергетического климата.",
-        properties: ["Очищение", "Лёгкость", "Гармония дома"],
-        situations: ["Очищение дома"],
-        recommendation: "Рекомендуются наборы для очищения дома, защитные свечи, ароматические и ритуальные аксессуары.",
-        link: "https://ruswedma.ru",
-        image: "https://images.unsplash.com/photo-1499744937869-d965588cb6d5?w=600&q=80&auto=format&fit=crop",
-        whyFit: "Вы выбрали очищение дома. Свеча подходит, когда в пространстве накопилась усталость, напряжение или ощущение тяжёлой энергии."
+        category: "Очищение",
+        shortDescription: "Свеча-амулет для очищения пространства и создания спокойного климата.",
+        fullDescription: "Снимает тяжёлую атмосферу, накопившуюся в доме после ссор, болезней, гостей или просто длинного периода усталости. Возвращает ощущение лёгкости, наполняет комнаты спокойной энергией и помогает вернуть дому чувство «своего» места.",
+        situation: "Очищение дома, тяжёлая атмосфера, после ссор, энергетика пространства",
+        benefits: [
+          "очищает энергетику дома",
+          "создаёт ощущение лёгкости",
+          "поддерживает гармонию пространства",
+          "помогает после конфликтов и стресса"
+        ],
+        usage: "Поставьте свечу в центральной комнате. Пройдите по квартире с намерением очистить пространство и оставьте свечу догореть в безопасной зоне.",
+        buyLink: "https://ruswedma.ru",
+        image: "https://images.unsplash.com/photo-1499744937869-d965588cb6d5?w=600&q=80&auto=format&fit=crop"
       },
       {
+        id: "bud-zdorov",
         name: "Будь здоров",
-        category: "Здоровье и тонус",
-        description: "Свеча-амулет для восстановления жизненного тонуса, укрепления внутреннего ресурса и мягкой поддержки в период усталости или восстановления.",
-        properties: ["Жизненный тонус", "Восстановление", "Гармония"],
-        situations: ["Здоровье"],
-        recommendation: "Дополнительно подойдут свечи «Подпитка», защитные свечи, наборы для восстановления энергии и спокойствия.",
-        link: "https://ruswedma.ru",
-        image: "https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?w=600&q=80&auto=format&fit=crop",
-        whyFit: "Вы выбрали здоровье. Эта свеча подходит, когда хочется поддержать себя, восстановить силы, снизить внутреннее напряжение и вернуть ощущение гармонии."
+        category: "Здоровье",
+        shortDescription: "Свеча-амулет для восстановления жизненного тонуса и внутреннего ресурса.",
+        fullDescription: "Поддерживает в период усталости, выгорания и медленного восстановления. Помогает мягко вернуть силы, снизить внутреннее напряжение и настроиться на привычный ритм жизни без рывков и перегрузок.",
+        situation: "Здоровье, усталость, восстановление, энергия, выгорание",
+        benefits: [
+          "поддерживает жизненный тонус",
+          "помогает восстановить силы",
+          "снижает внутреннее напряжение",
+          "возвращает ощущение гармонии"
+        ],
+        usage: "Зажигайте свечу в тихое вечернее время. Дышите ровно, не загадывайте ничего сложного — просто побудьте в покое.",
+        buyLink: "https://ruswedma.ru",
+        image: "https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?w=600&q=80&auto=format&fit=crop"
       },
       {
+        id: "schastlivaya-ruka",
         name: "Счастливая рука",
-        category: "Удача и шанс",
-        description: "Свеча-амулет для привлечения удачи, счастливых совпадений и правильных решений.",
-        properties: ["Удача", "Шанс", "Поддержка"],
-        situations: ["Удача"],
-        recommendation: "Можно дополнить свечами на деньги, достижение цели и талисманами удачи.",
-        link: "https://ruswedma.ru",
-        image: "https://images.unsplash.com/photo-1612198188060-c7c2a3b66eae?w=600&q=80&auto=format&fit=crop",
-        whyFit: "Вы выбрали удачу. Эта свеча подходит, когда нужен хороший поворот событий, поддержка обстоятельств и ясность выбора."
+        category: "Удача",
+        shortDescription: "Свеча-амулет для привлечения удачи и счастливых совпадений.",
+        fullDescription: "Помогает, когда нужен хороший поворот событий и поддержка обстоятельств: на старте дела, перед важной встречей, поездкой, экзаменом или собеседованием. Усиливает чувство «правильного выбора» и настраивает на позитивную линию случайностей.",
+        situation: "Удача, шанс, важные события, начинания, поездки, собеседования",
+        benefits: [
+          "притягивает удачу",
+          "усиливает ощущение шанса",
+          "поддерживает в важные моменты",
+          "помогает сделать правильный выбор"
+        ],
+        usage: "Зажгите свечу накануне важного события. Кратко проговорите вслух желаемый исход и побудьте у пламени.",
+        buyLink: "https://ruswedma.ru",
+        image: "https://images.unsplash.com/photo-1612198188060-c7c2a3b66eae?w=600&q=80&auto=format&fit=crop"
       }
+      /* ⬆⬆⬆  ВСТАВЛЯЙТЕ НОВЫЕ СВЕЧИ ВЫШЕ ЭТОЙ СТРОКИ — ВНУТРЬ КВАДРАТНЫХ СКОБОК  ⬆⬆⬆ */
     ];
+
+    /* Совместимость со старым кодом: некоторые места в приложении ссылаются на `candles`. */
+    const candles = candlesData;
 
     /**
      * Карточки на экране выбора ситуации: название + иконка + короткая подсказка.
@@ -877,7 +1073,57 @@
     let currentQuestion = 0;
     let userAnswers = [];
 
-    /** Загрузка из localStorage + миграция со старого формата (массив без свечей) */
+    /** Транслитерация и slug для авто-генерации id, если он не задан */
+    function slugify(text) {
+      const map = {
+        "а":"a","б":"b","в":"v","г":"g","д":"d","е":"e","ё":"e","ж":"zh","з":"z","и":"i","й":"y",
+        "к":"k","л":"l","м":"m","н":"n","о":"o","п":"p","р":"r","с":"s","т":"t","у":"u","ф":"f",
+        "х":"h","ц":"ts","ч":"ch","ш":"sh","щ":"shch","ъ":"","ы":"y","ь":"","э":"e","ю":"yu","я":"ya"
+      };
+      let out = (text || "").toLowerCase().split("").map(ch => map[ch] !== undefined ? map[ch] : ch).join("");
+      out = out.replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+      return out || ("candle-" + Date.now());
+    }
+
+    /** Преобразовать ситуацию (строка через запятую) в массив тегов */
+    function getSituationTags(candle) {
+      if (!candle) return [];
+      const raw = candle.situation || "";
+      return raw
+        .split(/[,;]+/)
+        .map(s => s.trim().replace(/\.$/, ""))
+        .filter(Boolean);
+    }
+
+    /**
+     * Привести объект свечи к новой схеме.
+     * Используется при загрузке из localStorage, если там сохранён старый формат
+     * (с полями description / properties / situations / recommendation / link / whyFit).
+     */
+    function migrateCandle(c) {
+      if (!c || typeof c !== "object") return null;
+      if (c.shortDescription !== undefined || c.benefits !== undefined || c.buyLink !== undefined) {
+        if (!c.id) c.id = slugify(c.name);
+        return c;
+      }
+      const situationStr = Array.isArray(c.situations)
+        ? c.situations.join(", ")
+        : (typeof c.situation === "string" ? c.situation : (c.situations || ""));
+      return {
+        id: c.id || slugify(c.name || ""),
+        name: c.name || "",
+        category: c.category || "",
+        shortDescription: c.description || c.shortDescription || "",
+        fullDescription: c.fullDescription || c.whyFit || "",
+        situation: situationStr,
+        benefits: c.benefits || c.properties || c.gives || [],
+        usage: c.usage || c.recommendation || c.recommendations || "",
+        buyLink: c.buyLink || c.link || "",
+        image: c.image || ""
+      };
+    }
+
+    /** Загрузка из localStorage + миграция формата */
     function loadAppState() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
@@ -889,10 +1135,12 @@
           return migrateOldArrayFormat(parsed);
         }
 
+        const list = Array.isArray(parsed.candles) && parsed.candles.length
+          ? parsed.candles.map(migrateCandle).filter(Boolean)
+          : cloneCandles();
+
         return {
-          candles: Array.isArray(parsed.candles) && parsed.candles.length
-            ? parsed.candles
-            : cloneCandles(),
+          candles: list,
           situationCards: Array.isArray(parsed.situationCards) && parsed.situationCards.length
             ? parsed.situationCards
             : cloneSituationCards()
@@ -903,7 +1151,7 @@
     }
 
     function cloneCandles() {
-      return JSON.parse(JSON.stringify(candles));
+      return JSON.parse(JSON.stringify(candlesData));
     }
 
     function cloneSituationCards() {
@@ -914,7 +1162,7 @@
       return { candles: cloneCandles(), situationCards: cloneSituationCards() };
     }
 
-    /** Старый формат: один объект = и ситуация, и свеча */
+    /** Совсем старый формат: один объект = и ситуация, и свеча */
     function migrateOldArrayFormat(oldRows) {
       const situationCards = [];
       const newCandles = [];
@@ -925,17 +1173,17 @@
           icon: row.icon,
           teaser: row.description ? row.description.slice(0, 80) + (row.description.length > 80 ? "…" : "") : ""
         });
-        newCandles.push({
+        newCandles.push(migrateCandle({
           name: row.name,
-          category: row.category || "Без категории",
+          category: row.category || row.situation || "",
           description: row.description,
-          properties: row.gives || row.properties || [],
+          properties: row.gives || row.properties,
           situations: [row.situation],
-          recommendation: row.recommendations || row.recommendation || "",
+          recommendation: row.recommendations || row.recommendation,
           link: row.link,
-          image: row.image || "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600&q=80&auto=format&fit=crop",
-          whyFit: row.reason || row.whyFit || ""
-        });
+          image: row.image,
+          whyFit: row.reason || row.whyFit
+        }));
       });
 
       return { candles: newCandles, situationCards };
@@ -990,10 +1238,11 @@
     /**
      * Для каждой ситуации из свечи: если такой карточки ещё нет — создаём (иконка ✨),
      * чтобы сценарий «Выберите ситуацию» сразу показывал новый пункт.
+     * На вход — массив тегов (см. getSituationTags).
      */
-    function ensureSituationCardsForCandle(situationNames) {
-      situationNames.forEach(function (raw) {
-        var t = raw.trim();
+    function ensureSituationCardsForCandle(situationTags) {
+      (situationTags || []).forEach(function (raw) {
+        var t = (raw || "").trim();
         if (!t) return;
         var key = t.toLowerCase();
         var exists = appState.situationCards.some(function (c) {
@@ -1025,11 +1274,148 @@
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
-    /** Подобрать свечу: все, у кого в situations есть выбранная ситуация */
+    /* ============================================================================
+       Словарь ключевых слов для анализа текста, который пользователь ввёл в плашку.
+       Ключ — название ситуации (как в поле situations у свечи).
+       Значения — корни слов (без окончаний), чтобы ловить разные формы:
+         "деньг" покроет «денег», «деньгами», «денежн…» и т. д.
+       Чтобы добавить новую ситуацию — допишите ключ + список корней.
+    ============================================================================ */
+    const SITUATION_KEYWORDS = {
+      "Деньги": [
+        "денег", "деньг", "финанс", "зарплат", "доход", "богат",
+        "бедн", "трат", "кредит", "долг", "копи", "заработ", "бюджет"
+      ],
+      "Любовь": [
+        "любв", "любов", "любим", "отношен", "парн", "девушк",
+        "муж", "жен", "развод", "одинок", "роман", "чувств", "страст",
+        "брак", "влюб", "расстал", "ссор"
+      ],
+      "Защита": [
+        "защит", "сглаз", "порч", "негатив", "враг", "страх",
+        "тревог", "опас", "безопас", "угроз", "оберег", "зависть"
+      ],
+      "Очищение дома": [
+        "дом", "квартир", "пространств", "очищен", "тяжел", "атмосфер",
+        "энергет", "уютн", "чистот", "ремонт"
+      ],
+      "Здоровье": [
+        "здоров", "болезн", "энерг", "сил", "тонус", "устал",
+        "восстановл", "слаб", "болит", "выгоран", "истощ", "сон"
+      ],
+      "Удача": [
+        "удач", "везен", "шанс", "случа", "совпаден", "благополуч",
+        "успех", "везет", "фортун"
+      ]
+    };
+
+    /**
+     * Подбор свечи по свободному тексту пользователя.
+     * Считаем баллы для каждой свечи:
+     *   +5 — корень из SITUATION_KEYWORDS совпал, и эта ситуация есть у свечи;
+     *   +3 — слово из properties встретилось в тексте;
+     *   +1 — отдельное слово из текста встретилось в name/description/category.
+     * Возвращаем свечу с максимальным баллом или null, если совпадений нет.
+     */
+    function findCandleByText(userText) {
+      const text = (userText || "").toLowerCase();
+      if (!text.trim()) return null;
+
+      const tokens = text
+        .split(/[^a-zа-яё0-9]+/i)
+        .filter(w => w.length >= 4);
+
+      let best = null;
+      let bestScore = 0;
+
+      appState.candles.forEach(candle => {
+        let score = 0;
+
+        const tags = getSituationTags(candle);
+
+        // 1) ключевые корни словаря — самые сильные совпадения
+        tags.forEach(sit => {
+          const roots = SITUATION_KEYWORDS[sit] || [sit.toLowerCase()];
+          roots.forEach(root => {
+            if (text.includes(root.toLowerCase())) score += 5;
+          });
+        });
+
+        // 2) сами теги ситуации (если совпали как слова)
+        tags.forEach(t => {
+          const tl = t.toLowerCase();
+          if (tl.length >= 4 && text.includes(tl)) score += 3;
+        });
+
+        // 3) пункты «что усиливает»
+        (candle.benefits || []).forEach(b => {
+          const bl = (b || "").toLowerCase();
+          if (bl && text.includes(bl)) {
+            score += 3;
+          } else {
+            bl.split(/\s+/).forEach(pw => {
+              if (pw.length >= 4 && text.includes(pw)) score += 1;
+            });
+          }
+        });
+
+        // 4) общий поиск по описанию/названию/категории
+        const blob = (
+          (candle.name || "") + " " +
+          (candle.shortDescription || "") + " " +
+          (candle.fullDescription || "") + " " +
+          (candle.category || "")
+        ).toLowerCase();
+
+        tokens.forEach(t => {
+          if (blob.includes(t)) score += 1;
+        });
+
+        if (score > bestScore) {
+          bestScore = score;
+          best = candle;
+        }
+      });
+
+      return best;
+    }
+
+    /**
+     * Обработчик кнопки «Подобрать свечу» под textarea на главной.
+     * Берёт текст, ищет свечу, показывает результат либо ошибку под полем.
+     */
+    function submitTextSituation() {
+      const ta = document.getElementById("intentText");
+      const err = document.getElementById("intentError");
+      const text = (ta.value || "").trim();
+
+      err.classList.remove("show");
+
+      if (!text) {
+        ta.focus();
+        err.textContent = "Опишите ситуацию хотя бы парой слов.";
+        err.classList.add("show");
+        return;
+      }
+
+      const candle = findCandleByText(text);
+      if (!candle) {
+        err.textContent = "Не удалось распознать ситуацию. Попробуйте подробнее или выберите категорию ниже.";
+        err.classList.add("show");
+        return;
+      }
+
+      const tags = getSituationTags(candle);
+      selectedSituation = tags[0] || "";
+      userAnswers = [text];
+      renderCandleResult(candle);
+    }
+
+    /** Подобрать свечу: все, у кого среди тегов situation есть выбранная ситуация */
     function findCandlesForSituation(situationName) {
-      const key = situationName.trim().toLowerCase();
+      const key = (situationName || "").trim().toLowerCase();
       return appState.candles.filter(c =>
-        (c.situations || []).some(s => s.trim().toLowerCase() === key)
+        getSituationTags(c).some(s => s.toLowerCase() === key)
       );
     }
 
@@ -1049,10 +1435,11 @@
       pool.forEach(c => {
         let score = 0;
         const blob = (
-          (c.name || "") +
-          (c.description || "") +
-          (c.properties || []).join(" ") +
-          (c.recommendation || "")
+          (c.name || "") + " " +
+          (c.shortDescription || "") + " " +
+          (c.fullDescription || "") + " " +
+          (c.benefits || []).join(" ") + " " +
+          (c.usage || "")
         ).toLowerCase();
         text.split(/\s+/).forEach(word => {
           if (word.length > 3 && blob.includes(word)) score++;
@@ -1076,7 +1463,7 @@
 
         const teaser = card.teaser || "";
         const previewCandle = findCandlesForSituation(card.situation)[0];
-        const sub = teaser || (previewCandle ? previewCandle.description : "Выберите, чтобы подобрать свечу");
+        const sub = teaser || (previewCandle ? previewCandle.shortDescription : "Выберите, чтобы подобрать свечу");
 
         el.innerHTML = `
           <div class="icon">${card.icon}</div>
@@ -1130,11 +1517,17 @@
       });
     }
 
-    function showResult() {
-      const result = pickCandle(selectedSituation, userAnswers);
+    /**
+     * Рендер карточки результата по объекту свечи.
+     * Работает с новой схемой (id, shortDescription, fullDescription, benefits, usage, buyLink).
+     */
+    function renderCandleResult(result) {
       if (!result) return;
 
-      document.getElementById("resultName").textContent = result.name;
+      // Название
+      document.getElementById("resultName").textContent = result.name || "Свеча";
+
+      // Категория
       const catEl = document.getElementById("resultCategory");
       if (result.category) {
         catEl.textContent = result.category;
@@ -1143,10 +1536,19 @@
         catEl.textContent = "";
         catEl.classList.add("hidden");
       }
-      document.getElementById("resultDescription").textContent = result.description || "";
-      document.getElementById("resultRecommendations").textContent = result.recommendation || "";
-      document.getElementById("buyButton").href = result.link || "#";
 
+      // Описания
+      document.getElementById("resultShortDescription").textContent = result.shortDescription || "";
+      document.getElementById("resultFullDescription").textContent = result.fullDescription || "";
+
+      // Рекомендация
+      document.getElementById("resultUsage").textContent = result.usage || "";
+
+      // Кнопка «Купить» — на ссылку товара
+      const buyBtn = document.getElementById("buyButton");
+      buyBtn.href = result.buyLink || "#";
+
+      // Изображение свечи
       const img = document.getElementById("resultImage");
       img.src = result.image || "";
       img.alt = result.name || "Свеча";
@@ -1154,32 +1556,33 @@
         img.src = "https://placehold.co/400x500/f5ecdf/b88a24?text=" + encodeURIComponent(result.name || "Свеча");
       };
 
-      const whyBlock = document.getElementById("resultWhyBlock");
-      const whyText = result.whyFit || "";
-      if (whyText) {
-        whyBlock.classList.remove("hidden");
-        document.getElementById("resultReason").textContent = whyText;
-      } else {
-        whyBlock.classList.add("hidden");
-      }
-
+      // Список «что помогает усилить»
       const benefitsList = document.getElementById("benefitsList");
       benefitsList.innerHTML = "";
-      (result.properties || []).forEach(benefit => {
-        const pill = document.createElement("span");
-        pill.className = "pill";
-        pill.textContent = benefit;
-        benefitsList.appendChild(pill);
+      (result.benefits || []).forEach(b => {
+        const li = document.createElement("li");
+        li.textContent = b;
+        benefitsList.appendChild(li);
       });
 
       showScreen("result");
+    }
+
+    /** Финал опросника: подобрать свечу и отрисовать результат */
+    function showResult() {
+      const result = pickCandle(selectedSituation, userAnswers);
+      renderCandleResult(result);
     }
 
     function restartApp() {
       selectedSituation = null;
       currentQuestion = 0;
       userAnswers = [];
-      showScreen("situations");
+      const ta = document.getElementById("intentText");
+      if (ta) ta.value = "";
+      const err = document.getElementById("intentError");
+      if (err) err.classList.remove("show");
+      showScreen("home");
     }
 
     function submitLead(event) {
@@ -1252,10 +1655,10 @@
 
     /**
      * Сохранение свечи из формы:
-     * 1) собираем объект newItem → пишем в appState.candles (новая или замена по индексу/имени);
-     * 2) ensureSituationCardsForCandle — при необходимости добавляем карточки ситуаций;
-     * 3) saveData() → localStorage;
-     * 4) обновляем списки и сетку подбора; toast + очистка формы.
+     * 1) собираем newItem по новой схеме;
+     * 2) пишем в appState.candles (новая или замена по индексу / id / имени);
+     * 3) автогенерим карточки для новых ситуаций;
+     * 4) saveData() → localStorage; обновляем списки/сетку; toast + очистка формы.
      */
     function saveCandle(event) {
       event.preventDefault();
@@ -1263,18 +1666,28 @@
       const name = document.getElementById("adminName").value.trim();
       const editRaw = document.getElementById("adminEditIndex").value;
 
+      // Пункты «Что помогает усилить» — допускаем разделители: запятая или новая строка
+      const benefits = document.getElementById("adminBenefits").value
+        .split(/[\n,]+/)
+        .map(s => s.trim())
+        .filter(Boolean);
+
+      const idInput = document.getElementById("adminId").value.trim();
+
       const newItem = {
+        id: idInput || slugify(name),
         name,
         category: document.getElementById("adminCategory").value.trim(),
-        description: document.getElementById("adminDescription").value.trim(),
-        properties: document.getElementById("adminProperties").value.split(",").map(s => s.trim()).filter(Boolean),
-        situations: document.getElementById("adminSituations").value.split(",").map(s => s.trim()).filter(Boolean),
-        recommendation: document.getElementById("adminRecommendation").value.trim(),
-        link: document.getElementById("adminLink").value.trim(),
-        image: document.getElementById("adminImage").value.trim(),
-        whyFit: document.getElementById("adminWhyFit").value.trim()
+        shortDescription: document.getElementById("adminShortDescription").value.trim(),
+        fullDescription: document.getElementById("adminFullDescription").value.trim(),
+        situation: document.getElementById("adminSituation").value.trim(),
+        benefits,
+        usage: document.getElementById("adminUsage").value.trim(),
+        buyLink: document.getElementById("adminBuyLink").value.trim(),
+        image: document.getElementById("adminImage").value.trim()
       };
 
+      // 1. Явное редактирование по индексу
       if (editRaw !== "") {
         const i = parseInt(editRaw, 10);
         if (!isNaN(i) && i >= 0 && i < appState.candles.length) {
@@ -1283,9 +1696,15 @@
           appState.candles.push(newItem);
         }
       } else {
-        const existingIndex = appState.candles.findIndex(
-          c => c.name.toLowerCase() === name.toLowerCase()
+        // 2. Иначе ищем дубликат по id, потом по name
+        let existingIndex = appState.candles.findIndex(
+          c => (c.id || "").toLowerCase() === newItem.id.toLowerCase()
         );
+        if (existingIndex < 0) {
+          existingIndex = appState.candles.findIndex(
+            c => (c.name || "").toLowerCase() === name.toLowerCase()
+          );
+        }
         if (existingIndex >= 0) {
           appState.candles[existingIndex] = newItem;
         } else {
@@ -1293,12 +1712,10 @@
         }
       }
 
-      // Новые названия ситуаций → карточки на экране выбора (если их ещё не было)
-      ensureSituationCardsForCandle(newItem.situations);
+      ensureSituationCardsForCandle(getSituationTags(newItem));
       saveData();
       renderAdminList();
       renderSituationAdminList();
-      // Обновляем сетку ситуаций, чтобы сразу было видно новые карточки при переходе к подбору
       renderSituations();
 
       var msg = editRaw !== "" ? "Свеча обновлена и сохранена" : "Свеча добавлена в каталог и в подбор";
@@ -1314,9 +1731,11 @@
         const div = document.createElement("div");
         div.className = "admin-item";
 
+        const tags = getSituationTags(item).join(", ");
+
         div.innerHTML = `
-          <strong>${item.name}</strong>
-          <p class="small-note">${item.category} · ${(item.situations || []).join(", ")}</p>
+          <strong>${item.name || "Без названия"}</strong>
+          <p class="small-note">${item.category || "—"} · ${tags || "ситуации не заданы"}</p>
           <div class="admin-item-actions">
             <button type="button" class="btn btn-ghost" onclick="editCandle(${index})">Редактировать</button>
             <button type="button" class="btn btn-ghost" onclick="deleteCandle(${index})">Удалить</button>
@@ -1331,15 +1750,16 @@
       const item = appState.candles[index];
       updateCandleFormMode(true);
       document.getElementById("adminEditIndex").value = String(index);
-      document.getElementById("adminName").value = item.name;
+      document.getElementById("adminName").value = item.name || "";
+      document.getElementById("adminId").value = item.id || "";
       document.getElementById("adminCategory").value = item.category || "";
-      document.getElementById("adminDescription").value = item.description || "";
-      document.getElementById("adminProperties").value = (item.properties || []).join(", ");
-      document.getElementById("adminSituations").value = (item.situations || []).join(", ");
-      document.getElementById("adminRecommendation").value = item.recommendation || "";
-      document.getElementById("adminLink").value = item.link || "";
+      document.getElementById("adminShortDescription").value = item.shortDescription || "";
+      document.getElementById("adminFullDescription").value = item.fullDescription || "";
+      document.getElementById("adminSituation").value = item.situation || "";
+      document.getElementById("adminBenefits").value = (item.benefits || []).join("\n");
+      document.getElementById("adminUsage").value = item.usage || "";
+      document.getElementById("adminBuyLink").value = item.buyLink || "";
       document.getElementById("adminImage").value = item.image || "";
-      document.getElementById("adminWhyFit").value = item.whyFit || "";
       var el = document.getElementById("candleFormSection");
       if (el) {
         setTimeout(function () {
@@ -1351,14 +1771,15 @@
     function clearCandleForm() {
       document.getElementById("adminEditIndex").value = "";
       document.getElementById("adminName").value = "";
+      document.getElementById("adminId").value = "";
       document.getElementById("adminCategory").value = "";
-      document.getElementById("adminDescription").value = "";
-      document.getElementById("adminProperties").value = "";
-      document.getElementById("adminSituations").value = "";
-      document.getElementById("adminRecommendation").value = "";
-      document.getElementById("adminLink").value = "";
+      document.getElementById("adminShortDescription").value = "";
+      document.getElementById("adminFullDescription").value = "";
+      document.getElementById("adminSituation").value = "";
+      document.getElementById("adminBenefits").value = "";
+      document.getElementById("adminUsage").value = "";
+      document.getElementById("adminBuyLink").value = "";
       document.getElementById("adminImage").value = "";
-      document.getElementById("adminWhyFit").value = "";
       updateCandleFormMode(false);
     }
 
