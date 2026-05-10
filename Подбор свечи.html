@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Подбор свечи по ситуации — Волшебный огонь</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #f7f0e6;
+      --milk: #fffdf8;
+      --gold: #D4AF37;
+      --text: #2f271f;
+      --muted: #7a6a59;
+      --line: rgba(212, 175, 55, 0.28);
+      --shadow: 0 24px 70px rgba(92, 70, 38, 0.14);
+      --radius: 28px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Montserrat", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% 10%, rgba(212,175,55,0.18), transparent 28%),
+        radial-gradient(circle at 85% 20%, rgba(255,255,255,0.8), transparent 28%),
+        linear-gradient(135deg, #f5ecdf, #fffaf1 48%, #eadcc7);
+      overflow-x: hidden;
+    }
+
+    .app {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      padding: 28px 20px 60px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 34px;
+    }
+
+    .logo {
+      font-family: "Playfair Display", serif;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: #4c3825;
+    }
+
+    .logo span { color: var(--gold); }
+
+    .admin-link {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.45);
+      color: #6b5333;
+      padding: 11px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .screen {
+      display: none;
+      animation: fadeUp 0.55s ease both;
+    }
+
+    .screen.active { display: block; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero {
+      min-height: 620px;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      align-items: center;
+      gap: 36px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      padding: 9px 14px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: #8a6a2f;
+      font-weight: 600;
+      background: rgba(255,255,255,0.55);
+      margin-bottom: 18px;
+    }
+
+    h1, h2, h3 {
+      font-family: "Playfair Display", serif;
+      margin: 0;
+      line-height: 1.08;
+      color: #3d2f23;
+    }
+
+    h1 { font-size: clamp(44px, 7vw, 82px); }
+    h2 { font-size: clamp(34px, 5vw, 56px); margin-bottom: 14px; }
+    h3 { font-size: 26px; margin-bottom: 10px; }
+
+    .lead {
+      font-size: 18px;
+      line-height: 1.75;
+      color: var(--muted);
+      max-width: 650px;
+      margin: 24px 0 32px;
+    }
+
+    .btn {
+      border: none;
+      cursor: pointer;
+      padding: 16px 24px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-family: "Montserrat", sans-serif;
+      transition: 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #d9b94c, #b88a24);
+      color: #fff;
+      box-shadow: 0 18px 40px rgba(212,175,55,0.34);
+    }
+
+    .btn-primary:hover { transform: translateY(-2px); }
+
+    .btn-ghost {
+      background: rgba(255,255,255,0.55);
+      color: #6f542f;
+      border: 1px solid var(--line);
+    }
+
+    .hero-card, .result-visual {
+      border-radius: 42px;
+      background:
+        radial-gradient(circle at 50% 34%, rgba(212,175,55,0.34), transparent 28%),
+        linear-gradient(145deg, rgba(255,255,255,0.82), rgba(255,247,234,0.58));
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      display: grid;
+      place-items: center;
+      min-height: 480px;
+    }
+
+    .candle {
+      width: 150px;
+      height: 270px;
+      border-radius: 70px 70px 26px 26px;
+      background: linear-gradient(90deg, #e8d8bd, #fff6e9 42%, #caa56a);
+      box-shadow: inset -18px 0 28px rgba(130,84,36,0.16), 0 0 80px rgba(212,175,55,0.36);
+      position: relative;
+    }
+
+    .candle::before {
+      content: "";
+      position: absolute;
+      top: -70px;
+      left: 50%;
+      width: 42px;
+      height: 70px;
+      transform: translateX(-50%);
+      border-radius: 50%;
+      background: radial-gradient(circle at 50% 65%, #fff7bc, #d4af37 45%, rgba(212,175,55,0) 72%);
+      animation: flame 1.8s ease-in-out infinite;
+    }
+
+    .candle::after {
+      content: "✦";
+      position: absolute;
+      top: 92px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--gold);
+      font-size: 42px;
+    }
+
+    @keyframes flame {
+      0%,100% { transform: translateX(-50%) scale(1); }
+      50% { transform: translateX(-50%) scale(1.08); }
+    }
+
+    .section-head { margin-bottom: 28px; }
+
+    .section-head p {
+      color: var(--muted);
+      max-width: 720px;
+      line-height: 1.7;
+      font-size: 17px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.62);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: 0 18px 50px rgba(92,70,38,0.08);
+      transition: 0.25s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 22px 60px rgba(92,70,38,0.14);
+    }
+
+    .situation-card, .answer-card { cursor: pointer; }
+
+    .icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: var(--gold);
+      background: rgba(212,175,55,0.11);
+      border: 1px solid var(--line);
+      font-size: 24px;
+      margin-bottom: 18px;
+    }
+
+    .question-box {
+      max-width: 880px;
+      margin: 0 auto;
+    }
+
+    .progress {
+      height: 8px;
+      background: rgba(212,175,55,0.16);
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 20px 0 30px;
+    }
+
+    .progress span {
+      display: block;
+      height: 100%;
+      width: 33%;
+      background: linear-gradient(90deg, #d4af37, #b88a24);
+      border-radius: 999px;
+      transition: 0.3s ease;
+    }
+
+    .answers {
+      display: grid;
+      gap: 14px;
+    }
+
+    .result-layout {
+      display: grid;
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 24px;
+    }
+
+    .result-content {
+      background: rgba(255,255,255,0.68);
+      border-radius: 42px;
+      padding: 34px;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .pill-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 18px 0 24px;
+    }
+
+    .pill {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(212,175,55,0.12);
+      border: 1px solid var(--line);
+      color: #6c552e;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .text-block {
+      margin: 22px 0;
+    }
+
+    .text-block strong {
+      display: block;
+      margin-bottom: 8px;
+      color: #4b3928;
+    }
+
+    .text-block p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .form {
+      margin-top: 26px;
+      display: grid;
+      gap: 14px;
+    }
+
+    input, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.8);
+      border-radius: 18px;
+      padding: 15px 16px;
+      font-family: "Montserrat", sans-serif;
+      color: var(--text);
+      outline: none;
+    }
+
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    input:focus, textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 4px rgba(212,175,55,0.13);
+    }
+
+    .admin-panel {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .small-note {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .admin-list {
+      display: grid;
+      gap: 12px;
+      max-height: 520px;
+      overflow: auto;
+    }
+
+    .admin-item {
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.58);
+    }
+
+    .hidden { display: none; }
+
+    .success {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(212,175,55,0.12);
+      border: 1px solid var(--line);
+      color: #6f542f;
+      font-weight: 600;
+      margin-top: 12px;
+    }
+
+    @media (max-width: 900px) {
+      .hero,
+      .result-layout,
+      .admin-panel {
+        grid-template-columns: 1fr;
+      }
+
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 560px) {
+      .app { padding: 20px 14px 40px; }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .card,
+      .result-content {
+        padding: 20px;
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="logo">Волшебный <span>огонь</span></div>
+      <button class="admin-link" onclick="showScreen('admin')">Админ-панель</button>
+    </header>
+
+    <section id="home" class="screen active">
+      <div class="hero">
+        <div>
+          <div class="eyebrow">✨ Modern Mystic Premium</div>
+          <h1>Подбор свечи по вашей ситуации</h1>
+          <p class="lead">
+            Ответьте на несколько вопросов, и сервис подберёт свечу, которая лучше всего подходит под вашу задачу:
+            деньги, любовь, защита, очищение дома, здоровье или удача.
+          </p>
+          <button class="btn btn-primary" onclick="showScreen('situations')">
+            Начать подбор
+          </button>
+        </div>
+
+        <div class="hero-card">
+          <div class="candle"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="situations" class="screen">
+      <div class="section-head">
+        <h2>Выберите вашу ситуацию</h2>
+        <p>Это первый шаг диагностики. После выбора сервис задаст 3 уточняющих вопроса и покажет подходящую свечу.</p>
+      </div>
+
+      <div id="situationsGrid" class="grid"></div>
+    </section>
+
+    <section id="diagnostic" class="screen">
+      <div class="question-box">
+        <div class="section-head">
+          <h2 id="questionTitle">Вопрос</h2>
+          <p id="questionSubtitle">Выберите вариант, который ближе всего к вашей ситуации.</p>
+        </div>
+
+        <div class="progress">
+          <span id="progressBar"></span>
+        </div>
+
+        <div id="answersBox" class="answers"></div>
+      </div>
+    </section>
+
+    <section id="result" class="screen">
+      <div class="result-layout">
+        <div class="result-visual">
+          <div class="candle"></div>
+        </div>
+
+        <div class="result-content">
+          <div class="eyebrow">Ваш личный подбор</div>
+          <h2 id="resultName">Название свечи</h2>
+
+          <div class="pill-list" id="benefitsList"></div>
+
+          <div class="text-block">
+            <strong>Краткое описание</strong>
+            <p id="resultDescription"></p>
+          </div>
+
+          <div class="text-block">
+            <strong>Почему подходит именно вам</strong>
+            <p id="resultReason"></p>
+          </div>
+
+          <div class="text-block">
+            <strong>Дополнительные рекомендации</strong>
+            <p id="resultRecommendations"></p>
+          </div>
+
+          <div class="actions">
+            <a id="buyButton" class="btn btn-primary" href="#" target="_blank">Купить свечу</a>
+            <button class="btn btn-ghost" onclick="restartApp()">Пройти заново</button>
+          </div>
+
+          <form class="form" onsubmit="submitLead(event)">
+            <h3>Получить личный подбор</h3>
+            <input id="leadName" type="text" placeholder="Ваше имя" required>
+            <input id="leadContact" type="text" placeholder="Telegram или телефон" required>
+            <textarea id="leadComment" placeholder="Комментарий: какая ситуация, что важно учесть"></textarea>
+            <button class="btn btn-primary" type="submit">Получить личный подбор</button>
+            <div id="leadSuccess" class="success hidden">
+              Заявка сохранена локально. Подключите Telegram, CRM или форму сайта для реальной отправки.
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section id="admin" class="screen">
+      <div class="section-head">
+        <h2>Админ-панель</h2>
+        <p>
+          Простой локальный раздел администратора. Здесь можно добавлять свечи, ситуации, описания,
+          рекомендации и ссылки. Данные сохраняются в localStorage браузера.
+        </p>
+      </div>
+
+      <div class="admin-panel">
+        <div class="card">
+          <h3>Добавить / обновить свечу</h3>
+          <p class="small-note">Если ситуация уже существует — данные обновятся.</p>
+
+          <form class="form" onsubmit="saveCandle(event)">
+            <input id="adminSituation" placeholder="Ситуация, например: Деньги" required>
+            <input id="adminIcon" placeholder="Иконка, например: 💰" required>
+            <input id="adminName" placeholder="Название свечи" required>
+            <textarea id="adminDescription" placeholder="Краткое описание" required></textarea>
+            <textarea id="adminGives" placeholder="Что даёт — через запятую" required></textarea>
+            <textarea id="adminReason" placeholder="Почему подходит пользователю" required></textarea>
+            <textarea id="adminRecommendations" placeholder="Рекомендации: другие свечи, наборы, товары" required></textarea>
+            <input id="adminLink" placeholder="Ссылка на товар" required>
+            <button class="btn btn-primary" type="submit">Сохранить</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <h3>Текущие свечи</h3>
+          <div id="adminList" class="admin-list"></div>
+          <button class="btn btn-ghost" style="margin-top:16px;" onclick="resetData()">
+            Сбросить к демо-данным
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const defaultCandles = [
+      {
+        situation: "Деньги",
+        icon: "💰",
+        name: "Царская печать",
+        description: "Свеча-амулет для усиления денежного потока, уверенности, статуса и благоприятных возможностей.",
+        gives: ["Денежный поток", "Уверенность", "Возможности"],
+        reason: "Вы выбрали денежную ситуацию. Эта свеча подходит, когда нужно усилить решительность, открыть путь к новым возможностям и укрепить ощущение личной ценности.",
+        recommendations: "Дополнительно подойдут свечи на удачу, наборы для финансового роста, талисманы для привлечения возможностей.",
+        link: "https://ruswedma.ru"
+      },
+      {
+        situation: "Любовь",
+        icon: "❤️",
+        name: "Звезда Иштар",
+        description: "Свеча-амулет для раскрытия женственности, привлекательности, романтики и мягкого притяжения внимания.",
+        gives: ["Притяжение", "Романтика", "Харизма"],
+        reason: "Вы выбрали сферу любви. Свеча помогает настроиться на состояние привлекательности, внутреннего света и открытости к отношениям.",
+        recommendations: "Можно дополнить свечами на гармонизацию отношений, любовными наборами и талисманами привлекательности.",
+        link: "https://ruswedma.ru"
+      },
+      {
+        situation: "Защита",
+        icon: "🛡️",
+        name: "Ангел-хранитель",
+        description: "Свеча-оберег для мягкой защиты, поддержки, внутреннего спокойствия и ощущения безопасности.",
+        gives: ["Защита", "Поддержка", "Интуиция"],
+        reason: "Вы выбрали тему защиты. Эта свеча подходит, когда хочется почувствовать опору, снизить тревожность и усилить ощущение защищённости.",
+        recommendations: "Дополнительно подойдут защитные амулеты, свечи от негатива и наборы для очищения пространства.",
+        link: "https://ruswedma.ru"
+      },
+      {
+        situation: "Очищение дома",
+        icon: "🏠",
+        name: "Очищение и защита дома",
+        description: "Свеча-амулет для очищения пространства, снятия тяжёлой атмосферы и создания спокойного энергетического климата.",
+        gives: ["Очищение", "Лёгкость", "Гармония дома"],
+        reason: "Вы выбрали очищение дома. Свеча подходит, когда в пространстве накопилась усталость, напряжение или ощущение тяжёлой энергии.",
+        recommendations: "Рекомендуются наборы для очищения дома, защитные свечи, ароматические и ритуальные аксессуары.",
+        link: "https://ruswedma.ru"
+      },
+      {
+        situation: "Здоровье",
+        icon: "💙",
+        name: "Будь здоров",
+        description: "Свеча-амулет для восстановления жизненного тонуса, укрепления внутреннего ресурса и мягкой поддержки в период усталости или восстановления.",
+        gives: ["Жизненный тонус", "Восстановление", "Гармония"],
+        reason: "Вы выбрали здоровье. Эта свеча подходит, когда хочется поддержать себя, восстановить силы, снизить внутреннее напряжение и вернуть ощущение гармонии.",
+        recommendations: "Дополнительно подойдут свечи «Подпитка», защитные свечи, наборы для восстановления энергии и спокойствия.",
+        link: "https://ruswedma.ru"
+      },
+      {
+        situation: "Удача",
+        icon: "🍀",
+        name: "Счастливая рука",
+        description: "Свеча-амулет для привлечения удачи, счастливых совпадений и правильных решений.",
+        gives: ["Удача", "Шанс", "Поддержка"],
+        reason: "Вы выбрали удачу. Эта свеча подходит, когда нужен хороший поворот событий, поддержка обстоятельств и ясность выбора.",
+        recommendations: "Можно дополнить свечами на деньги, достижение цели и талисманами удачи.",
+        link: "https://ruswedma.ru"
+      }
+    ];
+
+    const questions = [
+      {
+        title: "Что сейчас беспокоит сильнее всего?",
+        answers: [
+          "Не хватает энергии и движения",
+          "Есть ощущение застоя",
+          "Хочется защиты и спокойствия"
+        ]
+      },
+      {
+        title: "Какой результат вы хотите получить?",
+        answers: [
+          "Больше уверенности и сил",
+          "Очистить ситуацию или пространство",
+          "Притянуть благоприятные возможности"
+        ]
+      },
+      {
+        title: "Что ближе по состоянию?",
+        answers: [
+          "Хочу мягкую поддержку",
+          "Нужно быстро сдвинуть ситуацию",
+          "Хочу глубокую настройку и ритуальный эффект"
+        ]
+      }
+    ];
+
+    let appData = JSON.parse(localStorage.getItem("candleAppData")) || defaultCandles;
+    let selectedSituation = null;
+    let currentQuestion = 0;
+    let userAnswers = [];
+
+    function saveData() {
+      localStorage.setItem("candleAppData", JSON.stringify(appData));
+    }
+
+    function showScreen(id) {
+      document.querySelectorAll(".screen").forEach(screen => {
+        screen.classList.remove("active");
+      });
+
+      document.getElementById(id).classList.add("active");
+
+      if (id === "situations") renderSituations();
+      if (id === "admin") renderAdminList();
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function renderSituations() {
+      const grid = document.getElementById("situationsGrid");
+      grid.innerHTML = "";
+
+      appData.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "card situation-card";
+
+        card.innerHTML = `
+          <div class="icon">${item.icon}</div>
+          <h3>${item.situation}</h3>
+          <p class="small-note">${item.description}</p>
+        `;
+
+        card.onclick = () => startDiagnostic(item.situation);
+        grid.appendChild(card);
+      });
+    }
+
+    function startDiagnostic(situation) {
+      selectedSituation = situation;
+      currentQuestion = 0;
+      userAnswers = [];
+      showScreen("diagnostic");
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const question = questions[currentQuestion];
+
+      document.getElementById("questionTitle").textContent = question.title;
+      document.getElementById("questionSubtitle").textContent =
+        `Вопрос ${currentQuestion + 1} из ${questions.length}`;
+
+      document.getElementById("progressBar").style.width =
+        `${((currentQuestion + 1) / questions.length) * 100}%`;
+
+      const answersBox = document.getElementById("answersBox");
+      answersBox.innerHTML = "";
+
+      question.answers.forEach(answer => {
+        const card = document.createElement("div");
+        card.className = "card answer-card";
+        card.textContent = answer;
+
+        card.onclick = () => {
+          userAnswers.push(answer);
+
+          if (currentQuestion < questions.length - 1) {
+            currentQuestion++;
+            renderQuestion();
+          } else {
+            showResult();
+          }
+        };
+
+        answersBox.appendChild(card);
+      });
+    }
+
+    function showResult() {
+      const result = appData.find(item => item.situation === selectedSituation) || appData[0];
+
+      document.getElementById("resultName").textContent = result.name;
+      document.getElementById("resultDescription").textContent = result.description;
+      document.getElementById("resultReason").textContent = result.reason;
+      document.getElementById("resultRecommendations").textContent = result.recommendations;
+      document.getElementById("buyButton").href = result.link;
+
+      const benefitsList = document.getElementById("benefitsList");
+      benefitsList.innerHTML = "";
+
+      result.gives.forEach(benefit => {
+        const pill = document.createElement("span");
+        pill.className = "pill";
+        pill.textContent = benefit;
+        benefitsList.appendChild(pill);
+      });
+
+      showScreen("result");
+    }
+
+    function restartApp() {
+      selectedSituation = null;
+      currentQuestion = 0;
+      userAnswers = [];
+      showScreen("situations");
+    }
+
+    function submitLead(event) {
+      event.preventDefault();
+
+      const lead = {
+        name: document.getElementById("leadName").value,
+        contact: document.getElementById("leadContact").value,
+        comment: document.getElementById("leadComment").value,
+        situation: selectedSituation,
+        answers: userAnswers,
+        date: new Date().toLocaleString("ru-RU")
+      };
+
+      const leads = JSON.parse(localStorage.getItem("candleLeads")) || [];
+      leads.push(lead);
+      localStorage.setItem("candleLeads", JSON.stringify(leads));
+
+      document.getElementById("leadSuccess").classList.remove("hidden");
+      event.target.reset();
+    }
+
+    function saveCandle(event) {
+      event.preventDefault();
+
+      const situation = document.getElementById("adminSituation").value.trim();
+
+      const newItem = {
+        situation,
+        icon: document.getElementById("adminIcon").value.trim(),
+        name: document.getElementById("adminName").value.trim(),
+        description: document.getElementById("adminDescription").value.trim(),
+        gives: document.getElementById("adminGives").value.split(",").map(item => item.trim()),
+        reason: document.getElementById("adminReason").value.trim(),
+        recommendations: document.getElementById("adminRecommendations").value.trim(),
+        link: document.getElementById("adminLink").value.trim()
+      };
+
+      const existingIndex = appData.findIndex(item =>
+        item.situation.toLowerCase() === situation.toLowerCase()
+      );
+
+      if (existingIndex >= 0) {
+        appData[existingIndex] = newItem;
+      } else {
+        appData.push(newItem);
+      }
+
+      saveData();
+      renderAdminList();
+      event.target.reset();
+    }
+
+    function renderAdminList() {
+      const list = document.getElementById("adminList");
+      list.innerHTML = "";
+
+      appData.forEach((item, index) => {
+        const div = document.createElement("div");
+        div.className = "admin-item";
+
+        div.innerHTML = `
+          <strong>${item.icon} ${item.situation}</strong>
+          <p class="small-note">${item.name}</p>
+          <button class="btn btn-ghost" onclick="editCandle(${index})">Редактировать</button>
+          <button class="btn btn-ghost" onclick="deleteCandle(${index})">Удалить</button>
+        `;
+
+        list.appendChild(div);
+      });
+    }
+
+    function editCandle(index) {
+      const item = appData[index];
+
+      document.getElementById("adminSituation").value = item.situation;
+      document.getElementById("adminIcon").value = item.icon;
+      document.getElementById("adminName").value = item.name;
+      document.getElementById("adminDescription").value = item.description;
+      document.getElementById("adminGives").value = item.gives.join(", ");
+      document.getElementById("adminReason").value = item.reason;
+      document.getElementById("adminRecommendations").value = item.recommendations;
+      document.getElementById("adminLink").value = item.link;
+    }
+
+    function deleteCandle(index) {
+      if (confirm("Удалить эту свечу?")) {
+        appData.splice(index, 1);
+        saveData();
+        renderAdminList();
+      }
+    }
+
+    function resetData() {
+      if (confirm("Сбросить все данные к демо-версии?")) {
+        appData = defaultCandles;
+        saveData();
+        renderAdminList();
+      }
+    }
+
+    renderSituations();
+  </script>
+</body>
+</html>
