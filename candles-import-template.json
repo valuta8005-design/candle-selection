@@ -1,0 +1,35 @@
+[
+  {
+    "id": "primer-svechi-1",
+    "name": "Название свечи",
+    "category": "Деньги",
+    "image": "images/primer-svechi-1.png",
+    "shortDescription": "Одно–два предложения для карточки и бота.",
+    "description": "Развёрнутый текст: для чего свеча, в каких жизненных сценариях уместна, какой эффект ожидается.",
+    "situations": [
+      "Деньги",
+      "Финансы",
+      "Уверенность"
+    ],
+    "recommendation": "Как зажигать, где ставить, что сформулировать вслух.",
+    "price": 2490,
+    "buyLink": "https://example.com/product",
+    "benefits": [
+      "опционально — пункты для блока «что усиливает»",
+      "если не указать, список соберётся из situations"
+    ],
+    "upsell": ["drugaya-svecha-id"]
+  },
+  {
+    "id": "primer-svechi-2",
+    "name": "Вторая свеча (пример)",
+    "category": "Защита",
+    "image": "images/primer-svechi-2.png",
+    "shortDescription": "Кратко о назначении.",
+    "description": "Полное описание для экрана результата и Telegram.",
+    "situations": ["Защита", "Тревожность", "Границы"],
+    "recommendation": "Рекомендация по ритуалу.",
+    "price": 0,
+    "buyLink": "https://example.com/product-2"
+  }
+]

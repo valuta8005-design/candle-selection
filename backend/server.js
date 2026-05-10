@@ -19,6 +19,7 @@ require("dotenv").config({ path: path.join(__dirname, "..", ".env") });
 const fs = require("fs");
 const express = require("express");
 const cors = require("cors");
+const { normalizeForWeb } = require("./candleNormalize");
 
 const ROOT = path.join(__dirname, "..");
 const CANDLES_FILE = path.join(ROOT, "candles.json");
@@ -32,7 +33,7 @@ const PORT = parseInt(process.env.PORT || "3000", 10);
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || "*";
 
 const app = express();
-app.use(express.json({ limit: "200kb" }));
+app.use(express.json({ limit: "12mb" }));
 app.use(
   cors({
     origin: ALLOWED_ORIGIN === "*" ? true : ALLOWED_ORIGIN.split(",").map(s => s.trim()),
@@ -48,6 +49,23 @@ function loadCandles() {
     console.error("Не удалось прочитать candles.json:", e.message);
     return { candles: [], categories: [], messages: {}, brand: {} };
   }
+}
+
+/** Сохранить весь объект candles.json (brand, messages, categories, candles). */
+function saveCandlesData(data) {
+  fs.writeFileSync(CANDLES_FILE, JSON.stringify(data, null, 2), "utf8");
+}
+
+/** Слияние массива свечей по id (новые добавляются, существующие перезаписываются). */
+function mergeCandles(existingList, incomingList) {
+  const map = new Map();
+  (existingList || []).forEach(c => {
+    if (c && c.id) map.set(c.id, { ...c });
+  });
+  (incomingList || []).forEach(c => {
+    if (c && c.id) map.set(c.id, { ...map.get(c.id), ...c });
+  });
+  return Array.from(map.values());
 }
 
 function escapeHtml(text) {
@@ -112,9 +130,91 @@ app.get("/api/config", (req, res) => {
   });
 });
 
+/** Каталог для веб-приложения: нормализованные поля + цена. */
 app.get("/api/candles", (req, res) => {
   const data = loadCandles();
-  res.json({ candles: data.candles || [] });
+  const list = (data.candles || []).map(c => normalizeForWeb(c)).filter(Boolean);
+  res.json({ candles: list });
+});
+
+/**
+ * POST /api/admin/candle — добавить или обновить одну свечу в candles.json.
+ * body: объект свечи в канонической схеме (см. candles-import-template.json).
+ */
+app.post("/api/admin/candle", (req, res) => {
+  try {
+    const incoming = req.body;
+    if (!incoming || !incoming.id) {
+      return res.status(400).json({ ok: false, error: "Поле id обязательно." });
+    }
+    const data = loadCandles();
+    const list = data.candles || [];
+    const idx = list.findIndex(c => c.id === incoming.id);
+    if (idx >= 0) list[idx] = { ...list[idx], ...incoming };
+    else list.push(incoming);
+    data.candles = list;
+    saveCandlesData(data);
+    res.json({ ok: true, count: list.length });
+  } catch (e) {
+    console.error("[/api/admin/candle]", e);
+    res.status(500).json({ ok: false, error: String(e.message) });
+  }
+});
+
+/**
+ * POST /api/admin/import — массовый импорт свечей из JSON.
+ * body: { "candles": [ {...}, ... ], "mode": "merge" | "replace" }
+ *   merge    — объединить по id с текущим каталогом (по умолчанию)
+ *   replace  — полностью заменить массив candles (brand/messages/categories не трогаем)
+ */
+app.post("/api/admin/import", (req, res) => {
+  try {
+    const { candles: incoming = [], mode = "merge" } = req.body || {};
+    if (!Array.isArray(incoming) || !incoming.length) {
+      return res.status(400).json({ ok: false, error: "Ожидается { candles: [ ... ] }." });
+    }
+    const data = loadCandles();
+    if (mode === "replace") {
+      data.candles = incoming;
+    } else {
+      data.candles = mergeCandles(data.candles, incoming);
+    }
+    saveCandlesData(data);
+    res.json({ ok: true, total: (data.candles || []).length, mode });
+  } catch (e) {
+    console.error("[/api/admin/import]", e);
+    res.status(500).json({ ok: false, error: String(e.message) });
+  }
+});
+
+/** Скачать шаблон JSON для массового импорта. */
+app.get("/api/candles-import-template.json", (req, res) => {
+  const p = path.join(ROOT, "candles-import-template.json");
+  if (fs.existsSync(p)) {
+    return res.sendFile(p);
+  }
+  res.status(404).json({ ok: false, error: "Шаблон не найден" });
+});
+
+/**
+ * DELETE /api/admin/candle/:id — удалить свечу из candles.json.
+ */
+app.delete("/api/admin/candle/:id", (req, res) => {
+  try {
+    const id = String(req.params.id || "").trim();
+    if (!id) return res.status(400).json({ ok: false, error: "Нужен id." });
+    const data = loadCandles();
+    const before = (data.candles || []).length;
+    data.candles = (data.candles || []).filter(c => c && c.id !== id);
+    if (data.candles.length === before) {
+      return res.status(404).json({ ok: false, error: "Свеча не найдена." });
+    }
+    saveCandlesData(data);
+    res.json({ ok: true, count: data.candles.length });
+  } catch (e) {
+    console.error("[DELETE /api/admin/candle]", e);
+    res.status(500).json({ ok: false, error: String(e.message) });
+  }
 });
 
 /**
