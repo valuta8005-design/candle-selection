@@ -1,0 +1,24 @@
+{
+  "name": "candle-selection",
+  "version": "1.0.0",
+  "description": "Подбор свечи по ситуации + Telegram-бот «Волшебный огонь»",
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "server": "node backend/server.js",
+    "bot": "node bot/bot.js",
+    "dev": "concurrently -n SERVER,BOT -c blue,magenta \"npm run server\" \"npm run bot\"",
+    "start": "npm run dev"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "node-telegram-bot-api": "^0.66.0"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1"
+  }
+}

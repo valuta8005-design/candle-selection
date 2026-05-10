@@ -1,0 +1,6 @@
+node_modules/
+.env
+leads.json
+events.json
+npm-debug.log*
+.DS_Store

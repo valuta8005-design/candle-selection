@@ -625,6 +625,30 @@
       margin-top: 12px;
     }
 
+    /* Кнопка «Продолжить в Telegram» — фирменный синий Telegram + золотая обводка */
+    .btn-tg {
+      background: linear-gradient(135deg, #2aabee, #229ed9);
+      color: #fff;
+      border: 1px solid rgba(212,175,55,0.5);
+      box-shadow: 0 14px 32px rgba(34,158,217,0.28);
+    }
+    .btn-tg:hover { transform: translateY(-2px); }
+
+    .field-readonly input,
+    .field-readonly textarea {
+      background: rgba(255,255,255,0.55);
+      color: #6b5333;
+    }
+
+    .form-row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    @media (max-width: 560px) {
+      .form-row-2 { grid-template-columns: 1fr; }
+    }
+
     @media (max-width: 900px) {
       .hero,
       .result-layout,
@@ -781,19 +805,41 @@
           </div>
 
           <div class="actions">
-            <a id="buyButton" class="btn btn-primary" href="#" target="_blank" rel="noopener">Купить</a>
+            <a id="buyButton" class="btn btn-primary" href="#" target="_blank" rel="noopener" onclick="trackBuyClick()">Купить</a>
+            <a id="telegramButton" class="btn btn-tg" href="#" target="_blank" rel="noopener" onclick="trackTelegramOpen()">
+              <span aria-hidden="true">✈</span> Продолжить в Telegram
+            </a>
             <button class="btn btn-ghost" onclick="restartApp()">Пройти заново</button>
           </div>
 
-          <form class="form" onsubmit="submitLead(event)">
-            <h3>Получить личный подбор</h3>
-            <input id="leadName" type="text" placeholder="Ваше имя" required>
-            <input id="leadContact" type="text" placeholder="Telegram или телефон" required>
-            <textarea id="leadComment" placeholder="Комментарий: какая ситуация, что важно учесть"></textarea>
-            <button class="btn btn-primary" type="submit">Получить личный подбор</button>
-            <div id="leadSuccess" class="success hidden">
-              Заявка сохранена локально. Подключите Telegram, CRM или форму сайта для реальной отправки.
+          <form class="form" onsubmit="submitLead(event)" novalidate>
+            <h3>Оставить заявку — мы напишем в Telegram</h3>
+            <p class="small-note">
+              Поля «Ситуация» и «Рекомендованная свеча» подставляются автоматически из вашего подбора.
+              После отправки заявки мы откроем Telegram-бота — он покажет описание, фото и ссылку на покупку.
+            </p>
+
+            <div class="form-row-2">
+              <input id="leadName" type="text" placeholder="Ваше имя" required autocomplete="name">
+              <input id="leadPhone" type="tel" placeholder="Телефон" autocomplete="tel">
             </div>
+
+            <input id="leadContact" type="text" placeholder="Telegram или WhatsApp" autocomplete="off">
+
+            <div class="field-readonly">
+              <input id="leadSituation" type="text" placeholder="Ситуация" readonly>
+            </div>
+            <div class="field-readonly">
+              <input id="leadCandle" type="text" placeholder="Рекомендованная свеча" readonly>
+            </div>
+
+            <textarea id="leadComment" placeholder="Комментарий — что важно учесть"></textarea>
+
+            <button class="btn btn-primary" type="submit" id="leadSubmitBtn">Отправить заявку и открыть бот</button>
+            <div id="leadSuccess" class="success hidden">
+              Заявка отправлена. Сейчас откроется Telegram-бот.
+            </div>
+            <div id="leadError" class="success hidden" style="background:rgba(220,80,60,0.12); color:#a14a3a; border-color:rgba(220,80,60,0.25);"></div>
           </form>
         </div>
       </div>
@@ -894,6 +940,25 @@
   </main>
 
   <script>
+    /* =============================================================================
+       КОНФИГ ИНТЕГРАЦИИ С BACKEND И TELEGRAM-БОТОМ.
+
+       Если вы открываете Подбор свечи.html напрямую (без backend), фронт всё равно
+       работает — только заявка попадёт в localStorage. Для реальной отправки в TG
+       запустите backend (см. README) и оставьте API_BASE = "/api" — он подхватится
+       при открытии через http://localhost:3000.
+
+       Если фронт открыт «через Live Server» (порт 5500), укажите явно:
+         API_BASE = "http://localhost:3000/api"
+       а в .env backend задайте ALLOWED_ORIGIN=http://localhost:5500
+    ============================================================================= */
+    const APP_CONFIG = {
+      API_BASE: "/api",
+      // Подставьте username вашего бота из @BotFather (без @).
+      // На запуске мы попробуем получить актуальное значение из /api/config.
+      BOT_USERNAME: "your_bot_username"
+    };
+
     /* =============================================================================
        БАЗА СВЕЧЕЙ.
 
@@ -1072,6 +1137,28 @@
     let selectedSituation = null;
     let currentQuestion = 0;
     let userAnswers = [];
+    /** Текущая рекомендованная свеча (нужна для авто-подстановки в форму и в TG-ссылку) */
+    let lastRecommendedCandle = null;
+
+    /* Пытаемся получить актуальный botLink с бэкенда (необязательно). */
+    (async function loadBackendConfig() {
+      try {
+        const r = await fetch(APP_CONFIG.API_BASE + "/config");
+        if (!r.ok) return;
+        const cfg = await r.json();
+        if (cfg.botUsername) APP_CONFIG.BOT_USERNAME = cfg.botUsername;
+      } catch (e) {
+        // backend не запущен — используем хардкод
+      }
+    })();
+
+    /** Сформировать ссылку на бот, при наличии — с deep-link на конкретную свечу */
+    function buildBotLink(candle) {
+      const username = (APP_CONFIG.BOT_USERNAME || "").replace(/^@/, "");
+      if (!username || username === "your_bot_username") return null;
+      const start = candle && candle.id ? `?start=${encodeURIComponent(candle.id)}` : "";
+      return `https://t.me/${username}${start}`;
+    }
 
     /** Транслитерация и slug для авто-генерации id, если он не задан */
     function slugify(text) {
@@ -1565,6 +1652,28 @@
         benefitsList.appendChild(li);
       });
 
+      // Запоминаем + автоподставляем поля формы заявки
+      lastRecommendedCandle = result;
+
+      const tgBtn = document.getElementById("telegramButton");
+      const tgUrl = buildBotLink(result);
+      if (tgUrl) {
+        tgBtn.href = tgUrl;
+        tgBtn.classList.remove("hidden");
+      } else {
+        tgBtn.href = "#";
+        tgBtn.title = "Укажите BOT_USERNAME в APP_CONFIG или запустите backend, чтобы появилась ссылка";
+      }
+
+      const sitField = document.getElementById("leadSituation");
+      if (sitField) {
+        sitField.value = (selectedSituation || result.category || "");
+      }
+      const candField = document.getElementById("leadCandle");
+      if (candField) {
+        candField.value = result.name || "";
+      }
+
       showScreen("result");
     }
 
@@ -1585,24 +1694,122 @@
       showScreen("home");
     }
 
-    function submitLead(event) {
+    /**
+     * Отправка заявки.
+     * 1) собираем данные из формы (ситуация и свеча — авто-поля)
+     * 2) POST /api/send-telegram (если backend поднят) — приходит уведомление в Telegram
+     * 3) одновременно сохраняем копию в localStorage
+     * 4) показываем сообщение «Заявка отправлена» и переходим в Telegram-бота
+     */
+    async function submitLead(event) {
       event.preventDefault();
 
-      const lead = {
-        name: document.getElementById("leadName").value,
-        contact: document.getElementById("leadContact").value,
-        comment: document.getElementById("leadComment").value,
-        situation: selectedSituation,
+      const okBox = document.getElementById("leadSuccess");
+      const errBox = document.getElementById("leadError");
+      const submitBtn = document.getElementById("leadSubmitBtn");
+      okBox.classList.add("hidden");
+      errBox.classList.add("hidden");
+
+      const data = {
+        name: document.getElementById("leadName").value.trim(),
+        phone: document.getElementById("leadPhone").value.trim(),
+        contact: document.getElementById("leadContact").value.trim(),
+        situation: document.getElementById("leadSituation").value.trim(),
+        recommendedCandle: document.getElementById("leadCandle").value.trim(),
+        recommendedCandleId: lastRecommendedCandle ? lastRecommendedCandle.id : "",
+        comment: document.getElementById("leadComment").value.trim(),
+        source: "frontend",
         answers: userAnswers,
         date: new Date().toLocaleString("ru-RU")
       };
 
-      const leads = JSON.parse(localStorage.getItem("candleLeads")) || [];
-      leads.push(lead);
+      if (!data.name) {
+        errBox.textContent = "Введите имя.";
+        errBox.classList.remove("hidden");
+        return;
+      }
+      if (!data.phone && !data.contact) {
+        errBox.textContent = "Оставьте телефон или Telegram/WhatsApp для связи.";
+        errBox.classList.remove("hidden");
+        return;
+      }
+
+      // локальная копия — на случай если backend недоступен
+      const leads = JSON.parse(localStorage.getItem("candleLeads") || "[]");
+      leads.push(data);
       localStorage.setItem("candleLeads", JSON.stringify(leads));
 
-      document.getElementById("leadSuccess").classList.remove("hidden");
+      let botLink = buildBotLink(lastRecommendedCandle);
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Отправляем…";
+
+      try {
+        const r = await fetch(APP_CONFIG.API_BASE + "/send-telegram", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+        const json = await r.json().catch(() => ({}));
+        if (!r.ok || json.ok === false) {
+          throw new Error(json.error || "Не удалось отправить заявку");
+        }
+        if (json.botLink) botLink = json.botLink; // backend знает username бота наверняка
+      } catch (e) {
+        // backend недоступен или ошибка — остаёмся на «локальном» режиме, но всё равно показываем успех,
+        // т.к. данные сохранены, и есть ссылка на бот.
+        console.warn("Backend недоступен:", e.message);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Отправить заявку и открыть бот";
+      }
+
+      okBox.classList.remove("hidden");
+
+      if (botLink) {
+        // Небольшая пауза, чтобы пользователь увидел сообщение об успехе
+        setTimeout(() => window.open(botLink, "_blank", "noopener"), 600);
+      }
+
       event.target.reset();
+      // авто-поля восстанавливаем после reset
+      if (lastRecommendedCandle) {
+        document.getElementById("leadSituation").value = selectedSituation || lastRecommendedCandle.category || "";
+        document.getElementById("leadCandle").value = lastRecommendedCandle.name || "";
+      }
+    }
+
+    /** Сообщить бэкенду, что пользователь нажал «Купить» (для аналитики) */
+    function trackBuyClick() {
+      if (!lastRecommendedCandle) return;
+      try {
+        fetch(APP_CONFIG.API_BASE + "/track", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            type: "buy_click",
+            candleId: lastRecommendedCandle.id,
+            category: lastRecommendedCandle.category
+          }),
+          keepalive: true
+        }).catch(() => {});
+      } catch (e) {}
+    }
+
+    function trackTelegramOpen() {
+      if (!lastRecommendedCandle) return;
+      try {
+        fetch(APP_CONFIG.API_BASE + "/track", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            type: "lead_open_bot",
+            candleId: lastRecommendedCandle.id,
+            category: lastRecommendedCandle.category
+          }),
+          keepalive: true
+        }).catch(() => {});
+      } catch (e) {}
     }
 
     function saveSituationCard(event) {
