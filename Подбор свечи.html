@@ -57,6 +57,14 @@
 
     .logo span { color: var(--gold); }
 
+    .topbar-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
     .admin-link {
       border: 1px solid var(--line);
       background: rgba(255,255,255,0.45);
@@ -65,6 +73,88 @@
       border-radius: 999px;
       cursor: pointer;
       font-weight: 600;
+      font-family: "Montserrat", sans-serif;
+    }
+
+    /* Кнопка «Добавить свечу» — мягкий золотистый акцент */
+    .btn-add-candle {
+      border: 1px solid rgba(212, 175, 55, 0.45);
+      background: linear-gradient(145deg, rgba(255, 252, 245, 0.95), rgba(245, 232, 210, 0.65));
+      color: #5c4a2e;
+      padding: 11px 20px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 14px;
+      font-family: "Montserrat", sans-serif;
+      box-shadow: 0 8px 24px rgba(212, 175, 55, 0.12);
+      transition: 0.2s ease;
+    }
+
+    .btn-add-candle:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 28px rgba(212, 175, 55, 0.2);
+    }
+
+    .candle-form-card {
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: 0 12px 40px rgba(92, 70, 38, 0.07);
+    }
+
+    .candle-form-card .form-title {
+      font-family: "Playfair Display", serif;
+      font-size: 22px;
+      color: #3d2f23;
+      margin: 0 0 8px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #5c4a2e;
+      margin-bottom: 6px;
+      margin-top: 4px;
+    }
+
+    .form-hint {
+      font-size: 12px;
+      color: var(--muted);
+      margin: -4px 0 8px;
+      line-height: 1.45;
+    }
+
+    .form-actions-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      padding: 14px 22px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      font-weight: 600;
+      color: #5c4a2e;
+      z-index: 1000;
+      opacity: 0;
+      transition: 0.35s ease;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
     }
 
     .screen {
@@ -396,6 +486,13 @@
       background: rgba(255,255,255,0.58);
     }
 
+    .admin-item-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
     .hidden { display: none; }
 
     .success {
@@ -428,6 +525,11 @@
         flex-direction: column;
       }
 
+      .topbar-actions {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
       .grid {
         grid-template-columns: 1fr;
       }
@@ -452,7 +554,11 @@
   <main class="app">
     <header class="topbar">
       <div class="logo">Волшебный <span>огонь</span></div>
-      <button class="admin-link" onclick="showScreen('admin')">Админ-панель</button>
+      <div class="topbar-actions">
+        <!-- Открывает экран с формой: новая свеча сразу попадает в appState.candles и localStorage -->
+        <button type="button" class="btn-add-candle" onclick="openAddCandleScreen()">+ Добавить свечу</button>
+        <button type="button" class="admin-link" onclick="showScreen('admin')">Админ-панель</button>
+      </div>
     </header>
 
     <section id="home" class="screen active">
@@ -550,40 +656,73 @@
       <div class="section-head">
         <h2>Админ-панель</h2>
         <p>
-          Простой локальный раздел администратора. Здесь можно добавлять свечи, ситуации, описания,
-          рекомендации и ссылки. Данные сохраняются в localStorage браузера.
+          Добавляйте свечи через форму ниже: они сохраняются в <strong>localStorage</strong>, сразу участвуют в подборе и отображаются в каталоге.
+          Названия ситуаций в поле «для каких ситуаций подходит» должны совпадать с карточками на экране выбора (новые ситуации можно дополнить вручную в блоке карточек).
         </p>
       </div>
 
       <div class="admin-panel">
         <div class="card">
           <h3>Карточка ситуации на главном экране</h3>
-          <p class="small-note">Здесь задаётся список кнопок «ситуация». Название должно совпадать с одной из строк в поле «для каких ситуаций подходит» у свечи.</p>
+          <p class="small-note">Кнопки на шаге «Выберите ситуацию». Название — то же, что вы перечисляете у свечи через запятую.</p>
           <form class="form" onsubmit="saveSituationCard(event)">
-            <input id="adminCardSituation" placeholder="Название ситуации, например: Деньги" required>
-            <input id="adminCardIcon" placeholder="Иконка, например: 💰" required>
-            <input id="adminCardTeaser" placeholder="Краткая подсказка под заголовком (необязательно)">
+            <label class="form-label" for="adminCardSituation">Название ситуации</label>
+            <input id="adminCardSituation" placeholder="Например: Деньги" required>
+            <label class="form-label" for="adminCardIcon">Иконка</label>
+            <input id="adminCardIcon" placeholder="Например: 💰" required>
+            <label class="form-label" for="adminCardTeaser">Подсказка под заголовком</label>
+            <input id="adminCardTeaser" placeholder="Необязательно">
             <button class="btn btn-primary" type="submit">Добавить карточку</button>
           </form>
         </div>
 
-        <div class="card">
-          <h3>Добавить / обновить свечу</h3>
-          <p class="small-note">Чтобы обновить свечу, введите то же название, что уже есть в списке. Новая свеча — уникальное название.</p>
+        <!-- Форма новой свечи: данные → appState.candles → localStorage -->
+        <div class="card candle-form-card" id="candleFormSection">
+          <p class="form-title" id="candleFormHeading">Новая свеча</p>
+          <p class="small-note" id="candleFormSubtext">
+            Заполните поля и нажмите «Сохранить в каталог». При редактировании заголовок сменится на «Редактирование».
+          </p>
 
-          <form class="form" onsubmit="saveCandle(event)">
-            <input id="adminName" placeholder="Название свечи" required>
-            <input id="adminCategory" placeholder="Категория, например: Амулетные свечи" required>
-            <textarea id="adminDescription" placeholder="Краткое описание" required></textarea>
-            <textarea id="adminProperties" placeholder="Основные свойства — через запятую" required></textarea>
-            <textarea id="adminSituations" placeholder="Для каких ситуаций подходит — через запятую (как на карточках)" required></textarea>
-            <textarea id="adminRecommendation" placeholder="Рекомендация по использованию" required></textarea>
-            <input id="adminLink" placeholder="Ссылка на товар" required>
-            <input id="adminImage" placeholder="URL изображения свечи" required>
-            <textarea id="adminWhyFit" placeholder="Почему подходит (необязательно — блок скрыт, если пусто)"></textarea>
+          <form class="form" id="candleForm" onsubmit="saveCandle(event)">
+            <label class="form-label" for="adminName">Название свечи</label>
+            <input id="adminName" name="name" type="text" placeholder="Например: Царская печать" required autocomplete="off">
+
+            <label class="form-label" for="adminCategory">Категория</label>
+            <input id="adminCategory" type="text" placeholder="Например: Амулетные свечи" required>
+
+            <label class="form-label" for="adminDescription">Краткое описание</label>
+            <textarea id="adminDescription" placeholder="2–4 предложения о назначении свечи" required></textarea>
+
+            <label class="form-label" for="adminProperties">Основные свойства</label>
+            <p class="form-hint">Несколько пунктов через запятую: они покажутся плашками на экране результата.</p>
+            <textarea id="adminProperties" placeholder="Денежный поток, Уверенность, Возможности" required></textarea>
+
+            <label class="form-label" for="adminSituations">Для каких ситуаций подходит</label>
+            <p class="form-hint">Как на карточках выбора (через запятую). При сохранении для новых названий можно автоматически создать карточку ✨.</p>
+            <textarea id="adminSituations" placeholder="Деньги, Удача" required></textarea>
+
+            <label class="form-label" for="adminRecommendation">Рекомендация по использованию</label>
+            <textarea id="adminRecommendation" placeholder="С чем сочетать, как применять" required></textarea>
+
+            <label class="form-label" for="adminLink">Ссылка на товар</label>
+            <input id="adminLink" type="text" placeholder="https://..." required>
+
+            <label class="form-label" for="adminImage">Ссылка на изображение</label>
+            <p class="form-hint">Прямой URL картинки (jpg, png, webp).</p>
+            <input id="adminImage" type="text" placeholder="https://..." required>
+
+            <details class="form-extra">
+              <summary style="cursor:pointer; font-weight:600; color:#6b5333; margin:8px 0;">Дополнительно: почему подходит</summary>
+              <label class="form-label" for="adminWhyFit">Текст блока после опроса (необязательно)</label>
+              <textarea id="adminWhyFit" placeholder="Если пусто — блок на экране результата скрыт"></textarea>
+            </details>
+
             <input type="hidden" id="adminEditIndex" value="">
-            <button class="btn btn-primary" type="submit">Сохранить свечу</button>
-            <button type="button" class="btn btn-ghost" onclick="clearCandleForm()">Очистить форму</button>
+
+            <div class="form-actions-row">
+              <button class="btn btn-primary" type="submit">Сохранить в каталог</button>
+              <button type="button" class="btn btn-ghost" onclick="clearCandleForm()">Очистить форму</button>
+            </div>
           </form>
         </div>
 
@@ -594,13 +733,16 @@
 
         <div class="card">
           <h3>Каталог свечей</h3>
+          <p class="small-note">У каждой позиции — «Редактировать» (подставит данные в форму выше) и «Удалить».</p>
           <div id="adminList" class="admin-list"></div>
-          <button class="btn btn-ghost" style="margin-top:16px;" onclick="resetData()">
+          <button type="button" class="btn btn-ghost" style="margin-top:16px;" onclick="resetData()">
             Сбросить к демо-данным
           </button>
         </div>
       </div>
     </section>
+
+    <div id="saveToast" class="toast" role="status" aria-live="polite"></div>
   </main>
 
   <script>
@@ -801,6 +943,70 @@
 
     function saveData() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+    }
+
+    /**
+     * Кнопка в шапке: чистая форма + экран админки + прокрутка к блоку ввода свечи.
+     */
+    function openAddCandleScreen() {
+      clearCandleForm();
+      showScreen("admin");
+      var el = document.getElementById("candleFormSection");
+      if (el) {
+        setTimeout(function () {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 120);
+      }
+    }
+
+    function updateCandleFormMode(isEdit) {
+      var h = document.getElementById("candleFormHeading");
+      var sub = document.getElementById("candleFormSubtext");
+      if (!h) return;
+      if (isEdit) {
+        h.textContent = "Редактирование свечи";
+        if (sub) {
+          sub.textContent = "Измените поля и нажмите «Сохранить в каталог».";
+        }
+      } else {
+        h.textContent = "Новая свеча";
+        if (sub) {
+          sub.textContent = "Заполните поля и нажмите «Сохранить в каталог». Запись сразу попадёт в каталог, localStorage и подбор.";
+        }
+      }
+    }
+
+    function showToast(message) {
+      var t = document.getElementById("saveToast");
+      if (!t) return;
+      t.textContent = message;
+      t.classList.add("show");
+      clearTimeout(showToast._timer);
+      showToast._timer = setTimeout(function () {
+        t.classList.remove("show");
+      }, 2800);
+    }
+
+    /**
+     * Для каждой ситуации из свечи: если такой карточки ещё нет — создаём (иконка ✨),
+     * чтобы сценарий «Выберите ситуацию» сразу показывал новый пункт.
+     */
+    function ensureSituationCardsForCandle(situationNames) {
+      situationNames.forEach(function (raw) {
+        var t = raw.trim();
+        if (!t) return;
+        var key = t.toLowerCase();
+        var exists = appState.situationCards.some(function (c) {
+          return c.situation.toLowerCase() === key;
+        });
+        if (!exists) {
+          appState.situationCards.push({
+            situation: t,
+            icon: "✨",
+            teaser: "Новая ситуация"
+          });
+        }
+      });
     }
 
     function showScreen(id) {
@@ -1015,6 +1221,7 @@
 
       saveData();
       renderSituationAdminList();
+      renderSituations();
       event.target.reset();
     }
 
@@ -1023,6 +1230,7 @@
         appState.situationCards.splice(index, 1);
         saveData();
         renderSituationAdminList();
+        renderSituations();
       }
     }
 
@@ -1042,6 +1250,13 @@
       });
     }
 
+    /**
+     * Сохранение свечи из формы:
+     * 1) собираем объект newItem → пишем в appState.candles (новая или замена по индексу/имени);
+     * 2) ensureSituationCardsForCandle — при необходимости добавляем карточки ситуаций;
+     * 3) saveData() → localStorage;
+     * 4) обновляем списки и сетку подбора; toast + очистка формы.
+     */
     function saveCandle(event) {
       event.preventDefault();
 
@@ -1078,8 +1293,16 @@
         }
       }
 
+      // Новые названия ситуаций → карточки на экране выбора (если их ещё не было)
+      ensureSituationCardsForCandle(newItem.situations);
       saveData();
       renderAdminList();
+      renderSituationAdminList();
+      // Обновляем сетку ситуаций, чтобы сразу было видно новые карточки при переходе к подбору
+      renderSituations();
+
+      var msg = editRaw !== "" ? "Свеча обновлена и сохранена" : "Свеча добавлена в каталог и в подбор";
+      showToast(msg);
       clearCandleForm();
     }
 
@@ -1094,8 +1317,10 @@
         div.innerHTML = `
           <strong>${item.name}</strong>
           <p class="small-note">${item.category} · ${(item.situations || []).join(", ")}</p>
-          <button type="button" class="btn btn-ghost" onclick="editCandle(${index})">Редактировать</button>
-          <button type="button" class="btn btn-ghost" onclick="deleteCandle(${index})">Удалить</button>
+          <div class="admin-item-actions">
+            <button type="button" class="btn btn-ghost" onclick="editCandle(${index})">Редактировать</button>
+            <button type="button" class="btn btn-ghost" onclick="deleteCandle(${index})">Удалить</button>
+          </div>
         `;
 
         list.appendChild(div);
@@ -1104,6 +1329,7 @@
 
     function editCandle(index) {
       const item = appState.candles[index];
+      updateCandleFormMode(true);
       document.getElementById("adminEditIndex").value = String(index);
       document.getElementById("adminName").value = item.name;
       document.getElementById("adminCategory").value = item.category || "";
@@ -1114,6 +1340,12 @@
       document.getElementById("adminLink").value = item.link || "";
       document.getElementById("adminImage").value = item.image || "";
       document.getElementById("adminWhyFit").value = item.whyFit || "";
+      var el = document.getElementById("candleFormSection");
+      if (el) {
+        setTimeout(function () {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 80);
+      }
     }
 
     function clearCandleForm() {
@@ -1127,23 +1359,32 @@
       document.getElementById("adminLink").value = "";
       document.getElementById("adminImage").value = "";
       document.getElementById("adminWhyFit").value = "";
+      updateCandleFormMode(false);
     }
 
     function deleteCandle(index) {
-      if (confirm("Удалить эту свечу из каталога?")) {
-        appState.candles.splice(index, 1);
-        saveData();
-        renderAdminList();
+      if (!confirm("Удалить эту свечу из каталога?")) return;
+      var editIx = document.getElementById("adminEditIndex").value;
+      if (editIx !== "" && parseInt(editIx, 10) === index) {
+        clearCandleForm();
       }
+      appState.candles.splice(index, 1);
+      saveData();
+      renderAdminList();
+      renderSituations();
+      showToast("Свеча удалена");
     }
 
+    /** Вернуть каталог и карточки к массивам candles / defaultSituationCards из кода */
     function resetData() {
-      if (confirm("Сбросить все данные к демо-версии из массива candles в коде?")) {
-        appState = cloneDefaults();
-        saveData();
-        renderAdminList();
-        renderSituationAdminList();
-      }
+      if (!confirm("Сбросить все данные к демо-версии из массива candles в коде?")) return;
+      appState = cloneDefaults();
+      saveData();
+      clearCandleForm();
+      renderAdminList();
+      renderSituationAdminList();
+      renderSituations();
+      showToast("Данные сброшены к демо");
     }
 
     renderSituations();
