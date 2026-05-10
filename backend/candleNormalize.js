@@ -8,6 +8,11 @@
  * Используется в backend/server.js и в bot/bot.js (через require).
  */
 
+const path = require("path");
+const fs = require("fs");
+
+const ROOT = path.join(__dirname, "..");
+
 /**
  * Разбор поля «ситуации»: массив строк ИЛИ одна строка через запятую.
  */
@@ -25,16 +30,24 @@ function parseSituations(c) {
 }
 
 /**
- * Абсолютный URL картинки для Telegram (sendPhoto).
- * Локальные пути images/... требуют PUBLIC_BASE_URL (например https://ваш-сайт.ru).
+ * Источник картинки для Telegram (sendPhoto).
+ *  — http(s)-URL пропускаем как есть;
+ *  — относительный путь images/... превращаем в полный URL, если задан PUBLIC_BASE_URL,
+ *    иначе пытаемся отдать абсолютный путь к файлу на диске —
+ *    node-telegram-bot-api загрузит его как файл.
  */
 function resolveImageUrlForTelegram(image) {
   const s = String(image == null ? "" : image).trim();
   if (!s) return "";
   if (/^https?:\/\//i.test(s)) return s;
   const base = (process.env.PUBLIC_BASE_URL || "").replace(/\/$/, "");
-  if (!base) return s.startsWith("/") ? s : `/${s.replace(/^\.\//, "")}`;
-  return base + (s.startsWith("/") ? s : `/${s.replace(/^\.\//, "")}`);
+  const rel = s.replace(/^\.?\/+/, "");
+  if (base) {
+    return base + "/" + rel;
+  }
+  const abs = path.join(ROOT, rel);
+  if (fs.existsSync(abs)) return abs;
+  return rel;
 }
 
 /**

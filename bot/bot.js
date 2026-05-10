@@ -19,6 +19,7 @@ require("dotenv").config({ path: path.join(__dirname, "..", ".env") });
 
 const fs = require("fs");
 const TelegramBot = require("node-telegram-bot-api");
+const { normalizeForBot } = require("../backend/candleNormalize");
 
 const ROOT = path.join(__dirname, "..");
 const CANDLES_FILE = path.join(ROOT, "candles.json");
@@ -36,7 +37,9 @@ let DATA = loadData();
 
 function loadData() {
   try {
-    return JSON.parse(fs.readFileSync(CANDLES_FILE, "utf8"));
+    const raw = JSON.parse(fs.readFileSync(CANDLES_FILE, "utf8"));
+    raw.candles = (raw.candles || []).map(normalizeForBot).filter(Boolean);
+    return raw;
   } catch (e) {
     console.error("Не удалось прочитать candles.json:", e.message);
     return { candles: [], categories: [], messages: {} };
@@ -399,8 +402,9 @@ bot.on("message", async msg => {
 
 fs.watchFile(CANDLES_FILE, { interval: 2000 }, () => {
   try {
-    DATA = loadData();
-    console.log("🔄 candles.json перезагружен");
+    const fresh = loadData();
+    DATA = fresh;
+    console.log(`🔄 candles.json перезагружен (свечей: ${(DATA.candles || []).length})`);
   } catch (e) {
     console.error("reload error:", e.message);
   }

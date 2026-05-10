@@ -349,6 +349,63 @@
       box-shadow: 0 16px 48px rgba(60, 45, 30, 0.12);
     }
 
+    /* Modern Mystic Premium — заглушка, если изображение свечи не загрузилось */
+    .image-placeholder {
+      width: 100%;
+      max-width: 320px;
+      aspect-ratio: 4 / 5;
+      border-radius: 28px;
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 50% 34%, rgba(255, 220, 140, 0.55), transparent 60%),
+        radial-gradient(circle at 50% 78%, rgba(184, 138, 36, 0.18), transparent 60%),
+        linear-gradient(160deg, #fff7e3 0%, #f4dfb6 55%, #d9b66a 100%);
+      border: 1px solid rgba(212,175,55,0.45);
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.55),
+        0 18px 50px rgba(92,70,38,0.18);
+      color: #6c4d18;
+      font-family: 'Playfair Display', serif;
+    }
+    .image-placeholder::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 70%, rgba(255,255,255,0.55), transparent 55%);
+      pointer-events: none;
+    }
+    .image-placeholder .placeholder-flame {
+      font-size: 64px;
+      filter: drop-shadow(0 4px 18px rgba(212,175,55,0.6));
+      animation: flame-flicker 2.6s ease-in-out infinite;
+    }
+    .image-placeholder .placeholder-title {
+      margin-top: 14px;
+      font-size: 22px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
+      text-align: center;
+      padding: 0 18px;
+    }
+    .image-placeholder .placeholder-sub {
+      margin-top: 8px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 13px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #8b6a2a;
+      opacity: 0.8;
+    }
+    @keyframes flame-flicker {
+      0%, 100% { transform: translateY(0) scale(1); opacity: 1; }
+      50%      { transform: translateY(-3px) scale(1.06); opacity: 0.92; }
+    }
+    .result-visual img.image-failed { display: none; }
+
     .result-category {
       display: inline-block;
       margin-top: 10px;
@@ -777,6 +834,11 @@
       <div class="result-layout">
         <div class="result-visual">
           <img id="resultImage" src="" alt="Изображение свечи" loading="lazy" />
+          <div id="resultImagePlaceholder" class="image-placeholder hidden" aria-hidden="true">
+            <div class="placeholder-flame">🕯</div>
+            <div class="placeholder-title" id="placeholderTitle">Волшебный огонь</div>
+            <div class="placeholder-sub">Modern Mystic Premium</div>
+          </div>
         </div>
 
         <div class="result-content">
@@ -904,12 +966,16 @@
             <label class="form-label" for="adminUsage">Рекомендация по применению</label>
             <textarea id="adminUsage" placeholder="Зажгите свечу в спокойной обстановке…" required></textarea>
 
+            <label class="form-label" for="adminPrice">Цена, ₽</label>
+            <p class="form-hint">Число без пробелов. Можно оставить пустым.</p>
+            <input id="adminPrice" type="number" min="0" step="1" placeholder="2490">
+
             <label class="form-label" for="adminBuyLink">Ссылка на покупку</label>
             <input id="adminBuyLink" type="text" placeholder="https://…" required>
 
-            <label class="form-label" for="adminImage">Ссылка на изображение</label>
-            <p class="form-hint">Прямой URL картинки (jpg, png, webp).</p>
-            <input id="adminImage" type="text" placeholder="https://…" required>
+            <label class="form-label" for="adminImage">Изображение</label>
+            <p class="form-hint">Файл из папки <code>images/</code>, например <code>images/angel-hranitel.png</code>. Если файл не загрузится — покажем красивую заглушку.</p>
+            <input id="adminImage" type="text" placeholder="images/название-файла.png" required>
 
             <input type="hidden" id="adminEditIndex" value="">
 
@@ -923,6 +989,34 @@
         <div class="card">
           <h3>Карточки ситуаций</h3>
           <div id="adminSituationList" class="admin-list"></div>
+        </div>
+
+        <div class="card">
+          <h3>Массовый импорт свечей из JSON</h3>
+          <p class="small-note">
+            Загрузите JSON-файл, в котором массив объектов со свечами в новой схеме
+            (поля <code>id, name, category, image, shortDescription, description, situations, recommendation, price, buyLink</code>).
+            Шаблон — <a href="candles-import-template.json" target="_blank" rel="noopener">candles-import-template.json</a>.
+            Можно вставить JSON и в текстовое поле ниже.
+          </p>
+
+          <div class="form-actions-row" style="flex-wrap:wrap; gap:12px;">
+            <input id="adminImportFile" type="file" accept="application/json,.json" style="flex:1; min-width:220px;">
+            <label style="display:flex; align-items:center; gap:8px; font-size:14px; color:#6c552e;">
+              <input type="radio" name="importMode" value="merge" checked> Дополнить (по id)
+            </label>
+            <label style="display:flex; align-items:center; gap:8px; font-size:14px; color:#6c552e;">
+              <input type="radio" name="importMode" value="replace"> Заменить весь каталог
+            </label>
+          </div>
+
+          <textarea id="adminImportText" placeholder='[{"id":"...","name":"...", ...}, ...]' style="margin-top:14px; min-height:120px; font-family:Consolas, monospace; font-size:13px;"></textarea>
+
+          <div class="form-actions-row" style="margin-top:14px;">
+            <button class="btn btn-primary" type="button" onclick="importCandlesFromForm()">Импортировать</button>
+            <button class="btn btn-ghost" type="button" onclick="document.getElementById('adminImportText').value=''">Очистить поле</button>
+          </div>
+          <p id="adminImportStatus" class="small-note" style="margin-top:10px;"></p>
         </div>
 
         <div class="card">
@@ -1152,6 +1246,34 @@
       }
     })();
 
+    /**
+     * Подгрузить каталог свечей из candles.json через /api/candles.
+     * Если backend поднят — он становится единственным источником правды,
+     * локальная копия в localStorage используется как офлайн-кеш.
+     */
+    async function loadCandlesFromBackend() {
+      try {
+        const r = await fetch(APP_CONFIG.API_BASE + "/candles");
+        if (!r.ok) return;
+        const json = await r.json();
+        const list = Array.isArray(json.candles) ? json.candles.map(migrateCandle).filter(Boolean) : [];
+        if (!list.length) return;
+        appState.candles = list;
+        ensureSituationCardsForCandle(
+          list.reduce((acc, c) => acc.concat(getSituationTags(c)), [])
+        );
+        saveData();
+        renderSituations();
+        if (document.getElementById("admin").classList.contains("active")) {
+          renderAdminList();
+          renderSituationAdminList();
+        }
+      } catch (e) {
+        console.warn("Каталог из API не загружен (работаем по локальной копии):", e.message);
+      }
+    }
+    loadCandlesFromBackend();
+
     /** Сформировать ссылку на бот, при наличии — с deep-link на конкретную свечу */
     function buildBotLink(candle) {
       const username = (APP_CONFIG.BOT_USERNAME || "").replace(/^@/, "");
@@ -1172,9 +1294,12 @@
       return out || ("candle-" + Date.now());
     }
 
-    /** Преобразовать ситуацию (строка через запятую) в массив тегов */
+    /** Преобразовать ситуации свечи (массив или строка через запятую) в массив тегов */
     function getSituationTags(candle) {
       if (!candle) return [];
+      if (Array.isArray(candle.situations) && candle.situations.length) {
+        return candle.situations.map(s => String(s).trim().replace(/\.$/, "")).filter(Boolean);
+      }
       const raw = candle.situation || "";
       return raw
         .split(/[,;]+/)
@@ -1189,24 +1314,35 @@
      */
     function migrateCandle(c) {
       if (!c || typeof c !== "object") return null;
-      if (c.shortDescription !== undefined || c.benefits !== undefined || c.buyLink !== undefined) {
-        if (!c.id) c.id = slugify(c.name);
-        return c;
-      }
-      const situationStr = Array.isArray(c.situations)
-        ? c.situations.join(", ")
-        : (typeof c.situation === "string" ? c.situation : (c.situations || ""));
+
+      const situationsArr = Array.isArray(c.situations)
+        ? c.situations.map(s => String(s).trim()).filter(Boolean)
+        : (typeof c.situation === "string" && c.situation
+          ? c.situation.split(/[,;]+/).map(s => s.trim().replace(/\.$/, "")).filter(Boolean)
+          : []);
+      const situationStr = situationsArr.join(", ");
+
+      const fullDescription =
+        c.fullDescription || c.description || c.whyFit || c.salesPitch || "";
+      const usage = c.usage || c.recommendation || c.recommendations || "";
+      const benefits = Array.isArray(c.benefits) && c.benefits.length
+        ? c.benefits
+        : (Array.isArray(c.properties) ? c.properties : (Array.isArray(c.gives) ? c.gives : []));
+
       return {
         id: c.id || slugify(c.name || ""),
         name: c.name || "",
         category: c.category || "",
-        shortDescription: c.description || c.shortDescription || "",
-        fullDescription: c.fullDescription || c.whyFit || "",
+        shortDescription: c.shortDescription || c.description || "",
+        fullDescription,
         situation: situationStr,
-        benefits: c.benefits || c.properties || c.gives || [],
-        usage: c.usage || c.recommendation || c.recommendations || "",
+        situations: situationsArr,
+        benefits,
+        usage,
         buyLink: c.buyLink || c.link || "",
-        image: c.image || ""
+        image: c.image || "",
+        price: c.price != null && c.price !== "" ? Number(c.price) : null,
+        upsell: Array.isArray(c.upsell) ? c.upsell : []
       };
     }
 
@@ -1635,13 +1771,24 @@
       const buyBtn = document.getElementById("buyButton");
       buyBtn.href = result.buyLink || "#";
 
-      // Изображение свечи
       const img = document.getElementById("resultImage");
-      img.src = result.image || "";
+      const ph = document.getElementById("resultImagePlaceholder");
+      const phTitle = document.getElementById("placeholderTitle");
+      if (phTitle) phTitle.textContent = result.name || "Волшебный огонь";
+      img.classList.remove("image-failed");
+      if (ph) ph.classList.add("hidden");
       img.alt = result.name || "Свеча";
       img.onerror = function () {
-        img.src = "https://placehold.co/400x500/f5ecdf/b88a24?text=" + encodeURIComponent(result.name || "Свеча");
+        img.classList.add("image-failed");
+        if (ph) ph.classList.remove("hidden");
       };
+      if (result.image) {
+        img.src = result.image;
+      } else {
+        img.removeAttribute("src");
+        img.classList.add("image-failed");
+        if (ph) ph.classList.remove("hidden");
+      }
 
       // Список «что помогает усилить»
       const benefitsList = document.getElementById("benefitsList");
@@ -1881,17 +2028,30 @@
 
       const idInput = document.getElementById("adminId").value.trim();
 
+      const situationStr = document.getElementById("adminSituation").value.trim();
+      const situationsArr = situationStr
+        .split(/[\n,;]+/)
+        .map(s => s.trim().replace(/\.$/, ""))
+        .filter(Boolean);
+
+      const priceRaw = document.getElementById("adminPrice").value.trim();
+      const priceNum = priceRaw === "" ? null : Number(priceRaw);
+
       const newItem = {
         id: idInput || slugify(name),
         name,
         category: document.getElementById("adminCategory").value.trim(),
         shortDescription: document.getElementById("adminShortDescription").value.trim(),
         fullDescription: document.getElementById("adminFullDescription").value.trim(),
-        situation: document.getElementById("adminSituation").value.trim(),
+        description: document.getElementById("adminFullDescription").value.trim(),
+        situation: situationsArr.join(", "),
+        situations: situationsArr,
         benefits,
         usage: document.getElementById("adminUsage").value.trim(),
+        recommendation: document.getElementById("adminUsage").value.trim(),
         buyLink: document.getElementById("adminBuyLink").value.trim(),
-        image: document.getElementById("adminImage").value.trim()
+        image: document.getElementById("adminImage").value.trim(),
+        price: priceNum != null && !Number.isNaN(priceNum) ? priceNum : null
       };
 
       // 1. Явное редактирование по индексу
@@ -1928,6 +2088,20 @@
       var msg = editRaw !== "" ? "Свеча обновлена и сохранена" : "Свеча добавлена в каталог и в подбор";
       showToast(msg);
       clearCandleForm();
+
+      // Параллельно отправляем в backend (если он поднят), чтобы запись попала в candles.json и в Telegram-бот
+      try {
+        fetch(APP_CONFIG.API_BASE + "/admin/candle", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newItem)
+        })
+          .then(r => r.json().catch(() => ({})))
+          .then(j => {
+            if (j && j.ok) showToast("Свеча сохранена в candles.json");
+          })
+          .catch(() => {});
+      } catch (e) {}
     }
 
     function renderAdminList() {
@@ -1961,10 +2135,14 @@
       document.getElementById("adminId").value = item.id || "";
       document.getElementById("adminCategory").value = item.category || "";
       document.getElementById("adminShortDescription").value = item.shortDescription || "";
-      document.getElementById("adminFullDescription").value = item.fullDescription || "";
-      document.getElementById("adminSituation").value = item.situation || "";
+      document.getElementById("adminFullDescription").value = item.fullDescription || item.description || "";
+      document.getElementById("adminSituation").value =
+        Array.isArray(item.situations) && item.situations.length
+          ? item.situations.join(", ")
+          : (item.situation || "");
       document.getElementById("adminBenefits").value = (item.benefits || []).join("\n");
-      document.getElementById("adminUsage").value = item.usage || "";
+      document.getElementById("adminUsage").value = item.usage || item.recommendation || "";
+      document.getElementById("adminPrice").value = item.price != null ? String(item.price) : "";
       document.getElementById("adminBuyLink").value = item.buyLink || "";
       document.getElementById("adminImage").value = item.image || "";
       var el = document.getElementById("candleFormSection");
@@ -1985,9 +2163,91 @@
       document.getElementById("adminSituation").value = "";
       document.getElementById("adminBenefits").value = "";
       document.getElementById("adminUsage").value = "";
+      var pr = document.getElementById("adminPrice");
+      if (pr) pr.value = "";
       document.getElementById("adminBuyLink").value = "";
       document.getElementById("adminImage").value = "";
       updateCandleFormMode(false);
+    }
+
+    /**
+     * Импорт массива свечей из JSON (файл или текстовое поле).
+     * Если backend поднят — отправляем POST /api/admin/import (canonical),
+     * иначе работаем только в браузере: миграция + слияние/замена в appState.
+     */
+    async function importCandlesFromForm() {
+      const status = document.getElementById("adminImportStatus");
+      status.textContent = "";
+
+      const fileInput = document.getElementById("adminImportFile");
+      const textArea = document.getElementById("adminImportText");
+      const modeRadio = document.querySelector("input[name='importMode']:checked");
+      const mode = modeRadio ? modeRadio.value : "merge";
+
+      let raw = "";
+      if (fileInput.files && fileInput.files[0]) {
+        raw = await fileInput.files[0].text();
+      } else if (textArea.value.trim()) {
+        raw = textArea.value.trim();
+      } else {
+        status.textContent = "Выберите файл или вставьте JSON.";
+        return;
+      }
+
+      let parsed;
+      try {
+        parsed = JSON.parse(raw);
+      } catch (e) {
+        status.textContent = "Ошибка парсинга JSON: " + e.message;
+        return;
+      }
+
+      const incoming = Array.isArray(parsed)
+        ? parsed
+        : (Array.isArray(parsed.candles) ? parsed.candles : null);
+
+      if (!incoming || !incoming.length) {
+        status.textContent = "Ожидается массив свечей или { candles: [ ... ] }.";
+        return;
+      }
+
+      try {
+        const r = await fetch(APP_CONFIG.API_BASE + "/admin/import", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ candles: incoming, mode })
+        });
+        if (r.ok) {
+          const j = await r.json().catch(() => ({}));
+          status.textContent = `Импортировано в candles.json. Всего свечей: ${j.total || "?"}. Обновляем каталог…`;
+          await loadCandlesFromBackend();
+          renderAdminList();
+          renderSituations();
+          showToast("Импорт завершён");
+          return;
+        }
+      } catch (e) {
+        // backend не доступен — работаем локально
+      }
+
+      const migrated = incoming.map(migrateCandle).filter(Boolean);
+      if (mode === "replace") {
+        appState.candles = migrated;
+      } else {
+        const map = new Map();
+        appState.candles.forEach(c => { if (c && c.id) map.set(c.id, c); });
+        migrated.forEach(c => { if (c && c.id) map.set(c.id, { ...(map.get(c.id) || {}), ...c }); });
+        appState.candles = Array.from(map.values());
+      }
+      ensureSituationCardsForCandle(
+        appState.candles.reduce((acc, c) => acc.concat(getSituationTags(c)), [])
+      );
+      saveData();
+      renderAdminList();
+      renderSituationAdminList();
+      renderSituations();
+      status.textContent = `Импорт в localStorage завершён (backend не подключён). Свечей в каталоге: ${appState.candles.length}.`;
+      showToast("Импорт завершён (локально)");
     }
 
     function deleteCandle(index) {
@@ -1996,11 +2256,21 @@
       if (editIx !== "" && parseInt(editIx, 10) === index) {
         clearCandleForm();
       }
+      const removed = appState.candles[index];
       appState.candles.splice(index, 1);
       saveData();
       renderAdminList();
       renderSituations();
       showToast("Свеча удалена");
+
+      // Если поднят backend — удаляем и из candles.json, чтобы Telegram-бот сразу подхватил
+      if (removed && removed.id) {
+        try {
+          fetch(APP_CONFIG.API_BASE + "/admin/candle/" + encodeURIComponent(removed.id), {
+            method: "DELETE"
+          }).catch(() => {});
+        } catch (e) {}
+      }
     }
 
     /** Вернуть каталог и карточки к массивам candles / defaultSituationCards из кода */
