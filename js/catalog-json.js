@@ -34,22 +34,29 @@
   }
 
   function normalizeImagePath(p) {
-    const s = String(p || "")
+    let s = String(p || "")
       .trim()
       .replace(/\\/g, "/");
     if (!s) return "";
     if (/^https?:\/\//i.test(s)) return s;
-    if (s.startsWith("images/")) return s;
+    s = s.replace(/^\.?\/*/, "");
+    while (/^images\/images\//i.test(s)) {
+      s = s.replace(/^images\/images\//i, "images/");
+    }
+    if (/^images\//i.test(s)) return s;
     if (s.includes("/")) return s;
     return "images/" + s;
   }
 
   function normalizeRaw(p) {
     if (!p || typeof p !== "object") return null;
-    const images = Array.isArray(p.images)
+    const fromArray = Array.isArray(p.images)
       ? p.images.map(normalizeImagePath).filter(Boolean)
       : [];
+    const single = p.image ? [normalizeImagePath(String(p.image))] : [];
+    const images = fromArray.length ? fromArray : single;
     const descPlain = stripHtml(p.description || "");
+    const link = String(p.url || p.buyLink || "").trim();
     return {
       id: String(p.id || "").trim(),
       name: String(p.name || "").trim(),
@@ -60,7 +67,7 @@
       shortPlain: excerpt(descPlain, 220),
       images: images,
       image: images[0] || "",
-      url: String(p.url || "").trim(),
+      url: link,
     };
   }
 
@@ -209,8 +216,8 @@
         situations: [],
         benefits: [],
         usage: "",
-        buyLink: p.url,
-        image: p.image || "",
+        buyLink: p.url || p.buyLink || "",
+        image: normalizeCandleImageSrc(p.image || ""),
         price: p.price ? Number(p.price) : null,
         _catalog: true,
         _images: p.images,

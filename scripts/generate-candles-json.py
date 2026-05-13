@@ -15,6 +15,8 @@ import re
 import sys
 from pathlib import Path
 
+from catalog_images_resolve import disk_images_for_product
+
 
 ROOT = Path(__file__).resolve().parent.parent
 CSV_PATH = ROOT / "data" / "catalog_updated.csv"
@@ -96,6 +98,42 @@ def parse_images_cell(cell: str) -> list[str]:
     return out
 
 
+def resolve_images_for_row(name: str, csv_tokens: list[str], root: Path) -> list[str]:
+    """
+    Берём пути из колонки images, только если каждый локальный путь указывает на существующий файл.
+    Иначе (старые 16327.png, userfiles/..., пусто) — подбор файлов в images/ по названию товара.
+    """
+    images_dir = root / "images"
+    valid_from_csv: list[str] = []
+    use_csv = True
+    for tok in csv_tokens:
+        t = normalize_image_token(tok)
+        if not t:
+            continue
+        if re.match(r"(?i)^https?://", t):
+            valid_from_csv.append(t)
+            continue
+        if "userfiles" in t.lower():
+            use_csv = False
+            break
+        u = t.replace("\\", "/").lstrip("./")
+        while u.lower().startswith("images/images/"):
+            u = "images/" + u[14:].lstrip("/")
+        if not u.lower().startswith("images/"):
+            if "/" in u:
+                use_csv = False
+                break
+            u = f"images/{u}"
+        p = root / u
+        if not p.is_file():
+            use_csv = False
+            break
+        valid_from_csv.append(u.replace("\\", "/"))
+    if use_csv and valid_from_csv:
+        return valid_from_csv
+    return disk_images_for_product(name, images_dir)
+
+
 def category_from_row(row: dict[str, str]) -> str:
     """Одна строка category: лист каталога (после последнего >>) или всё поле."""
     raw = (row.get("category_1") or "").strip()
@@ -147,7 +185,9 @@ def main() -> int:
             sku = (r.get("sku") or "").strip()
             price = (r.get("price") or "").strip()
             description = (r.get("description") or "").strip()
-            images = parse_images_cell(r.get("images") or "")
+            images = resolve_images_for_row(
+                name, parse_images_cell(r.get("images") or ""), ROOT
+            )
             url = pick_url(r)
             cat = category_from_row(r)
 

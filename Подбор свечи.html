@@ -1496,6 +1496,26 @@
       return out || ("candle-" + Date.now());
     }
 
+    /**
+     * URL/путь картинки для <img src>: http(s) — как есть;
+     * убрать дубли images/images/; если уже images/ — оставить;
+     * иначе непустое — префикс images/; пусто — "".
+     */
+    function normalizeCandleImageSrc(raw) {
+      var s = String(raw == null ? "" : raw)
+        .trim()
+        .replace(/\\/g, "/");
+      if (!s) return "";
+      if (/^https?:\/\//i.test(s)) return s;
+      s = s.replace(/^\.?\/*/, "");
+      while (/^images\/images\//i.test(s)) {
+        s = s.replace(/^images\/images\//i, "images/");
+      }
+      if (/^images\//i.test(s)) return s;
+      if (s.includes("/")) return s;
+      return "images/" + s.replace(/^\/+/, "");
+    }
+
     /** Преобразовать ситуации свечи (массив или строка через запятую) в массив тегов */
     function getSituationTags(candle) {
       if (!candle) return [];
@@ -1531,6 +1551,10 @@
         ? c.benefits
         : (Array.isArray(c.properties) ? c.properties : (Array.isArray(c.gives) ? c.gives : []));
 
+      const rawImage =
+        (c.image && String(c.image).trim()) ||
+        (Array.isArray(c.images) && c.images.length ? String(c.images[0]).trim() : "");
+
       return {
         id: c.id || slugify(c.name || ""),
         name: c.name || "",
@@ -1542,7 +1566,7 @@
         benefits,
         usage,
         buyLink: c.buyLink || c.link || "",
-        image: c.image || "",
+        image: normalizeCandleImageSrc(rawImage),
         price: c.price != null && c.price !== "" ? Number(c.price) : null,
         upsell: Array.isArray(c.upsell) ? c.upsell : []
       };
@@ -1792,7 +1816,9 @@
 
         var photoWrap = document.createElement("div");
         photoWrap.className = "card-photo-wrap";
-        var first = p.images && p.images.length ? p.images[0] : "";
+        var first = normalizeCandleImageSrc(
+          (p.image || (p.images && p.images[0]) || "").toString()
+        );
         if (first) {
           var img = document.createElement("img");
           img.alt = p.name || "Свеча";
@@ -2119,7 +2145,7 @@
         if (ph) ph.classList.remove("hidden");
       };
       if (result.image) {
-        img.src = result.image;
+        img.src = normalizeCandleImageSrc(result.image);
       } else {
         img.removeAttribute("src");
         img.classList.add("image-failed");
@@ -2397,7 +2423,7 @@
         usage: document.getElementById("adminUsage").value.trim(),
         recommendation: document.getElementById("adminUsage").value.trim(),
         buyLink: document.getElementById("adminBuyLink").value.trim(),
-        image: document.getElementById("adminImage").value.trim(),
+        image: normalizeCandleImageSrc(document.getElementById("adminImage").value.trim()),
         price: priceNum != null && !Number.isNaN(priceNum) ? priceNum : null
       };
 

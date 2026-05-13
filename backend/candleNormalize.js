@@ -37,7 +37,7 @@ function parseSituations(c) {
  *    node-telegram-bot-api загрузит его как файл.
  */
 function resolveImageUrlForTelegram(image) {
-  const s = String(image == null ? "" : image).trim();
+  const s = normalizeRelativeImagePath(image);
   if (!s) return "";
   if (/^https?:\/\//i.test(s)) return s;
   const base = (process.env.PUBLIC_BASE_URL || "").replace(/\/$/, "");
@@ -51,13 +51,27 @@ function resolveImageUrlForTelegram(image) {
 }
 
 /**
- * URL для браузера: относительные пути оставляем как есть (от корня сайта).
+ * Локальный путь к картинке для браузера: http(s) без изменений;
+ * схлопывание images/images/…; при отсутствии префикса images/ — добавить для файлов из каталога.
+ */
+function normalizeRelativeImagePath(s) {
+  let t = String(s == null ? "").trim().replace(/\\/g, "/");
+  if (!t) return "";
+  if (/^https?:\/\//i.test(t)) return t;
+  t = t.replace(/^\.?\/*/, "");
+  while (/^images\/images\//i.test(t)) {
+    t = t.replace(/^images\/images\//i, "images/");
+  }
+  if (/^images\//i.test(t)) return t;
+  if (t.includes("/")) return t;
+  return "images/" + t.replace(/^\/+/, "");
+}
+
+/**
+ * URL для браузера: относительные пути нормализуем под статику с корня сайта.
  */
 function resolveImageUrlForWeb(image) {
-  const s = String(image == null ? "" : image).trim();
-  if (!s) return "";
-  if (/^https?:\/\//i.test(s)) return s;
-  return s.replace(/^\.\//, "");
+  return normalizeRelativeImagePath(image);
 }
 
 function deriveBenefits(c, situations) {
@@ -87,7 +101,10 @@ function normalizeForBot(c) {
       : c.usage || "";
   const benefits = deriveBenefits(c, situations);
   const salesPitch = c.salesPitch && c.salesPitch !== "" ? String(c.salesPitch) : description;
-  const image = resolveImageUrlForTelegram(c.image);
+  const rawImg =
+    (c.image && String(c.image).trim()) ||
+    (Array.isArray(c.images) && c.images.length ? String(c.images[0]).trim() : "");
+  const image = resolveImageUrlForTelegram(rawImg);
   return {
     ...c,
     id: c.id || "",
@@ -121,6 +138,9 @@ function normalizeForWeb(c) {
       : c.usage || "";
   const benefits = deriveBenefits(c, situations);
   const situationStr = situations.join(", ");
+  const rawImg =
+    (c.image && String(c.image).trim()) ||
+    (Array.isArray(c.images) && c.images.length ? String(c.images[0]).trim() : "");
   return {
     id: c.id || "",
     name: c.name || "",
@@ -132,7 +152,7 @@ function normalizeForWeb(c) {
     benefits,
     usage: recommendation,
     buyLink: c.buyLink || c.link || "",
-    image: resolveImageUrlForWeb(c.image),
+    image: resolveImageUrlForWeb(rawImg),
     price: c.price != null ? Number(c.price) : null,
     upsell: Array.isArray(c.upsell) ? c.upsell : [],
   };
