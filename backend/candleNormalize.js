@@ -55,7 +55,7 @@ function resolveImageUrlForTelegram(image) {
  * схлопывание images/images/…; при отсутствии префикса images/ — добавить для файлов из каталога.
  */
 function normalizeRelativeImagePath(s) {
-  let t = String(s == null ? "").trim().replace(/\\/g, "/");
+  let t = String(s == null ? "" : s).trim().replace(/\\/g, "/");
   if (!t) return "";
   if (/^https?:\/\//i.test(t)) return t;
   t = t.replace(/^\.?\/*/, "");

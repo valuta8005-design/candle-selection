@@ -138,7 +138,11 @@ def main() -> int:
             if nm.casefold() in ignore_names:
                 row_matches.append([])
             else:
-                row_matches.append(find_files_for_product(all_files, row_cleans[i]))
+                row_matches.append(
+                    find_files_for_product(
+                        all_files, row_cleans[i], rows[i].get("name") or ""
+                    )
+                )
 
         # Один файл — только одна строка (порядок CSV): остальным конфликт
         path_owner: dict[Path, int] = {}

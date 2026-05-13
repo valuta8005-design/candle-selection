@@ -106,26 +106,54 @@ def clean_name(raw: str) -> str:
 def stem_matches_clean_name(stem: str, clean: str) -> bool:
     ns = normalize_spaces(stem).casefold()
     nn = normalize_spaces(clean).casefold()
-    if not nn:
-        return False
-    if ns == nn:
-        return True
-    if not ns.startswith(nn):
-        return False
-    rest = ns[len(nn) :].lstrip()
-    if not rest:
-        return True
-    return rest.isdigit()
+    if nn:
+        if ns == nn:
+            return True
+        if ns.startswith(nn):
+            rest = ns[len(nn) :].lstrip()
+            if not rest:
+                return True
+            if rest.isdigit():
+                return True
+    slug = slugify_product_name(clean)
+    if slug:
+        sns = ns.replace(" ", "")
+        slug_cf = slug.casefold()
+        if sns == slug_cf:
+            return True
+        if sns.startswith(slug_cf + "-"):
+            rest = sns[len(slug_cf) + 1 :]
+            if rest.isdigit():
+                return True
+            first = rest.split("-", 1)[0]
+            if first.isdigit():
+                return True
+    return False
 
 
 def trailing_number_for_sort(stem: str, clean: str) -> int:
     ns = normalize_spaces(stem).casefold()
     nn = normalize_spaces(clean).casefold()
-    if ns == nn:
-        return 0
-    rest = ns[len(nn) :].lstrip()
-    if rest.isdigit():
-        return int(rest)
+    if nn:
+        if ns == nn:
+            return 0
+        if ns.startswith(nn):
+            rest = ns[len(nn) :].lstrip()
+            if rest.isdigit():
+                return int(rest)
+    slug = slugify_product_name(clean)
+    if slug:
+        slug_cf = slug.casefold()
+        sns = ns.replace(" ", "")
+        if sns == slug_cf:
+            return 0
+        if sns.startswith(slug_cf + "-"):
+            rest = sns[len(slug_cf) + 1 :]
+            if rest.isdigit():
+                return int(rest)
+            first = rest.split("-", 1)[0]
+            if first.isdigit():
+                return int(first)
     return 10**9
 
 
@@ -166,7 +194,9 @@ def list_image_files(images_dir: Path) -> list[Path]:
     return out
 
 
-def find_files_for_product(all_files: list[Path], clean: str) -> list[Path]:
+def find_files_for_product(
+    all_files: list[Path], clean: str, raw_name: str = ""
+) -> list[Path]:
     c = (clean or "").strip()
     if not c:
         return []
@@ -180,11 +210,41 @@ def find_files_for_product(all_files: list[Path], clean: str) -> list[Path]:
             normalize_spaces(path.stem).casefold(),
         )
     )
-    return matched
+    if matched:
+        return matched
+    # Сокращённые латинские имена на диске (напр. lyubi-menya-zhenshchina vs длинный slug из названия)
+    slug = slugify_product_name(c)
+    parts = slug.split("-") if slug else []
+    if len(parts) < 2:
+        return []
+    prefix = f"{parts[0]}-{parts[1]}"
+    if len(prefix) < 5:
+        return []
+    hint = (raw_name or clean or "").casefold()
+    loose: list[Path] = []
+    for p in all_files:
+        st = p.stem.casefold().replace(" ", "")
+        if not st.startswith(prefix):
+            continue
+        if "женщин" in hint:
+            if "zhen" in st:
+                loose.append(p)
+        elif "мужчин" in hint:
+            if re.search(r"-men-\d+", st) or re.search(r"-men\d+$", st):
+                loose.append(p)
+        else:
+            continue
+    loose.sort(
+        key=lambda path: (
+            trailing_number_for_sort(path.stem, c),
+            normalize_spaces(path.stem).casefold(),
+        )
+    )
+    return loose
 
 
 def disk_images_for_product(name: str, images_dir: Path) -> list[str]:
     """Список путей вида images/<имя_файла> по совпадению stem с clean_name(name)."""
     all_files = list_image_files(images_dir)
-    matched = find_files_for_product(all_files, clean_name(name))
+    matched = find_files_for_product(all_files, clean_name(name), name)
     return [f"images/{p.name}" for p in matched]
