@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Переименование изображений по названию товара (name), без использования колонки images для поиска файлов.
+Переименование изображений по очищенному названию (clean_name из name).
+Колонка images для поиска файлов не используется.
 
 Исходный каталог:  data/catalog.csv   (чтение в CP1251)
 Результат:         data/catalog_updated.csv (запись в UTF-8)
 Исходный CSV не изменяется.
 
 Перед переименованием копируется папка images/ → images_backup/
+errors.txt перезаписывается при каждом запуске.
 
 Запуск из корня проекта:
     python scripts/rename-images.py
@@ -31,7 +33,29 @@ DIR_IMAGES = ROOT / "images"
 DIR_BACKUP = ROOT / "images_backup"
 ERRORS_LOG = ROOT / "errors.txt"
 
+# Товары из списка: не ищем фото, не пишем в errors.txt, строка в catalog_updated без изменений.
+IGNORE_PRODUCTS: list[str] = [
+    "Закон Вселенной свеча 2 и 3 действия",
+    "Мистический Рыцарь свеча 2 и 3 действия",
+    "Судьбоносное решение свеча 2 и 3 действия",
+]
+
 ALLOWED_EXT = {".png", ".jpg", ".jpeg", ".webp"}
+
+# Удаляем по очереди (сначала длинные фразы, затем слово «свеча»).
+_PHRASE_PATTERNS = (
+    r"свеча\s*2\s*и\s*3\s*действия",
+    r"свеча\s*[-–—]\s*талисман",
+    r"свеча-талисман",
+    r"свеча\s*[-–—]\s*программа",
+    r"свеча-программа",
+    r"\bсвеча\b",
+)
+
+_RE_QUOTES = re.compile(
+    r'[\u0022\u0027\u00ab\u00bb\u201c\u201d\u201e\u2039\u203a'
+    r"\u00b4\u0060\u2018\u2019\u201a\u201b]+"
+)
 
 _TRANSLIT = {
     "а": "a",
@@ -106,15 +130,35 @@ def normalize_spaces(s: str) -> str:
     return re.sub(r"\s+", " ", (s or "").strip())
 
 
-def stem_matches_name(stem: str, product_name: str) -> bool:
+def ignored_product_names(names: list[str]) -> set[str]:
+    """Нормализованные имена для сравнения с колонкой name (без учёта регистра)."""
+    return {normalize_spaces(n).casefold() for n in names if normalize_spaces(n)}
+
+
+def clean_name(raw: str) -> str:
     """
-    Совпадение имени файла (без расширения) с name:
-    — тот же текст с учётом схлопывания пробелов;
-    — или name + только цифры в хвосте (с опциональным пробелом): «… действия 1», «…щит2».
-    Сравнение без учёта регистра (учёт регистра ОС/файловой системы).
+    Имя для поиска файлов и для slug: служебные фразы, кавычки,
+    лишние пробелы и двойные дефисы (порядок как в ТЗ: фразы → кавычки → дефисы).
+    """
+    s = raw or ""
+    for pat in _PHRASE_PATTERNS:
+        s = re.sub(pat, " ", s, flags=re.IGNORECASE)
+    s = _RE_QUOTES.sub(" ", s)
+    s = re.sub(r"-{2,}", "-", s)
+    s = normalize_spaces(s)
+    s = s.strip(" -–—")
+    return s
+
+
+def stem_matches_clean_name(stem: str, clean: str) -> bool:
+    """
+    Имя файла без расширения:
+    — совпадает с clean_name (после нормализации пробелов);
+    — или начинается с clean_name, далее только цифры («… 1», «…2»).
+    Сравнение без учёта регистра.
     """
     ns = normalize_spaces(stem).casefold()
-    nn = normalize_spaces(product_name).casefold()
+    nn = normalize_spaces(clean).casefold()
     if not nn:
         return False
     if ns == nn:
@@ -127,10 +171,10 @@ def stem_matches_name(stem: str, product_name: str) -> bool:
     return rest.isdigit()
 
 
-def trailing_number_for_sort(stem: str, product_name: str) -> int:
+def trailing_number_for_sort(stem: str, clean: str) -> int:
     """Порядок сортировки: без суффикса — 0, иначе число в конце."""
     ns = normalize_spaces(stem).casefold()
-    nn = normalize_spaces(product_name).casefold()
+    nn = normalize_spaces(clean).casefold()
     if ns == nn:
         return 0
     rest = ns[len(nn) :].lstrip()
@@ -176,18 +220,17 @@ def list_image_files(images_dir: Path) -> list[Path]:
     return out
 
 
-def find_files_for_product(all_files: list[Path], product_name: str) -> list[Path]:
-    name = (product_name or "").strip()
-    if not name:
+def find_files_for_product(all_files: list[Path], clean: str) -> list[Path]:
+    c = (clean or "").strip()
+    if not c:
         return []
     matched: list[Path] = []
     for p in all_files:
-        stem = p.stem
-        if stem_matches_name(stem, name):
+        if stem_matches_clean_name(p.stem, c):
             matched.append(p)
     matched.sort(
         key=lambda path: (
-            trailing_number_for_sort(path.stem, name),
+            trailing_number_for_sort(path.stem, c),
             normalize_spaces(path.stem).casefold(),
         )
     )
@@ -257,12 +300,18 @@ def main() -> int:
             return 1
 
         all_files = list_image_files(DIR_IMAGES)
+        ignore_names = ignored_product_names(IGNORE_PRODUCTS)
 
-        # Предварительно: какие файлы подходят какому товару
+        row_cleans: list[str] = [clean_name(row.get("name") or "") for row in rows]
+
+        # Предварительно: какие файлы подходят какому товару (по clean_name); игнорируемые — без поиска
         row_matches: list[list[Path]] = []
-        for row in rows:
-            nm = row.get("name") or ""
-            row_matches.append(find_files_for_product(all_files, nm))
+        for i, row in enumerate(rows):
+            nm = normalize_spaces(row.get("name") or "")
+            if nm.casefold() in ignore_names:
+                row_matches.append([])
+            else:
+                row_matches.append(find_files_for_product(all_files, row_cleans[i]))
 
         # Один файл — только одна строка (порядок CSV): остальным конфликт
         path_owner: dict[Path, int] = {}
@@ -279,10 +328,11 @@ def main() -> int:
                     ef.write(
                         f"{pname} | файл уже отнесён к другой строке каталога (строка {owner + 1}): {p.name}\n"
                     )
+            clean = row_cleans[i]
             row_matches[i] = sorted(
                 kept,
                 key=lambda path: (
-                    trailing_number_for_sort(path.stem, rows[i].get("name") or ""),
+                    trailing_number_for_sort(path.stem, clean),
                     normalize_spaces(path.stem).casefold(),
                 ),
             )
@@ -293,6 +343,7 @@ def main() -> int:
 
         for i, row in enumerate(rows):
             name = normalize_spaces(row.get("name") or "")
+            clean = row_cleans[i]
             sku = row.get("sku") or ""
             cell = row.get("images") or ""
             resolved_paths = row_matches[i]
@@ -301,11 +352,17 @@ def main() -> int:
                 updated_rows.append(dict(row))
                 continue
 
+            if name.casefold() in ignore_names:
+                updated_rows.append(dict(row))
+                continue
+
             new_images_cell = cell
-            if not resolved_paths:
+            if not clean.strip():
+                ef.write(f"{name} | фото не найдено по названию\n")
+            elif not resolved_paths:
                 ef.write(f"{name} | фото не найдено по названию\n")
             else:
-                base_slug = slugify_product_name(name)
+                base_slug = slugify_product_name(clean)
                 stem = assign_unique_stem(base_slug, sku, used_stems)
                 new_names = plan_new_filenames(stem, resolved_paths)
                 for src, new_name in zip(resolved_paths, new_names):
