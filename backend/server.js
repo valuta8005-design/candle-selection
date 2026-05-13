@@ -22,6 +22,8 @@ const cors = require("cors");
 const { normalizeForWeb } = require("./candleNormalize");
 
 const ROOT = path.join(__dirname, "..");
+/** Публичный каталог товаров для фронта (массив объектов) — отдаётся по GET /data/candles.json */
+const DATA_CANDLES_JSON = path.join(ROOT, "data", "candles.json");
 const CANDLES_FILE = path.join(ROOT, "candles.json");
 const LEADS_FILE = path.join(ROOT, "leads.json");
 const EVENTS_FILE = path.join(ROOT, "events.json");
@@ -322,9 +324,34 @@ app.post("/api/track", async (req, res) => {
   }
 });
 
-/* ---------- статический фронтенд ---------- */
+/* ---------- статика: фронт, images/, data/ (до общего express.static — явные пути) ---------- */
 
-app.use(express.static(ROOT, { index: ["index.html"] }));
+app.get("/data/candles.json", (req, res, next) => {
+  if (!fs.existsSync(DATA_CANDLES_JSON)) {
+    return res.status(404).type("application/json").json({
+      ok: false,
+      error: "Файл data/candles.json не найден на сервере. Создайте его (например, scripts/generate-candles-json.py).",
+    });
+  }
+  res.setHeader("Cache-Control", "public, max-age=120");
+  res.type("application/json; charset=utf-8");
+  res.sendFile(DATA_CANDLES_JSON, (err) => {
+    if (err) next(err);
+  });
+});
+
+/**
+ * Корень проекта: HTML, js/, images/, data/, JSON-шаблоны и т.д.
+ * Примеры: http://localhost:3000/Подбор свечи.html
+ *           http://localhost:3000/data/candles.json (дублируется явным маршрутом выше)
+ *           http://localhost:3000/images/...
+ */
+app.use(
+  express.static(ROOT, {
+    index: ["index.html"],
+    dotfiles: "ignore",
+  })
+);
 
 // На корне приложения отдаём «Подбор свечи.html», если index.html пустой/отсутствует
 app.get("/", (req, res, next) => {
@@ -340,6 +367,7 @@ app.get("/", (req, res, next) => {
 
 app.listen(PORT, () => {
   console.log(`🟢 Backend запущен:        http://localhost:${PORT}`);
+  console.log(`   Каталог для фронта:      http://localhost:${PORT}/data/candles.json  ${fs.existsSync(DATA_CANDLES_JSON) ? "✓" : "✗ нет файла"}`);
   console.log(`   API health:              http://localhost:${PORT}/api/health`);
   console.log(`   Telegram TOKEN:          ${TG_TOKEN ? "OK" : "❌ не задан в .env"}`);
   console.log(`   Telegram CHAT_ID:        ${TG_CHAT ? "OK" : "❌ не задан в .env"}`);

@@ -718,6 +718,187 @@
       }
     }
 
+    /* ---------- Каталог из data/candles.json: баннер ошибки + сетка карточек ---------- */
+    .catalog-load-error {
+      display: none;
+      margin: 0 0 22px;
+      padding: 18px 22px;
+      border-radius: 22px;
+      border: 1px solid rgba(180, 120, 90, 0.35);
+      background:
+        linear-gradient(135deg, rgba(255, 248, 240, 0.95), rgba(245, 228, 210, 0.75));
+      box-shadow:
+        0 0 40px rgba(212, 175, 55, 0.18),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+      color: #5c3d28;
+      font-weight: 600;
+      font-size: 15px;
+      line-height: 1.55;
+      position: relative;
+      overflow: hidden;
+    }
+    .catalog-load-error::before {
+      content: "";
+      position: absolute;
+      inset: -40% -20%;
+      background: radial-gradient(circle at 30% 50%, rgba(212, 175, 55, 0.12), transparent 55%);
+      pointer-events: none;
+    }
+    .catalog-load-error.show { display: block; }
+    .catalog-load-error .catalog-error-icon {
+      font-size: 22px;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+
+    .catalog-results-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+    .catalog-results-head {
+      margin-bottom: 26px;
+      text-align: center;
+    }
+    .catalog-results-head h2 {
+      margin-bottom: 10px;
+    }
+    .catalog-results-sub {
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.65;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 22px;
+      margin-bottom: 32px;
+    }
+
+    .candle-product-card {
+      position: relative;
+      border-radius: 26px;
+      padding: 0 0 22px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255, 252, 245, 0.95), rgba(255, 247, 234, 0.72));
+      border: 1px solid rgba(212, 175, 55, 0.32);
+      box-shadow:
+        0 16px 48px rgba(92, 70, 38, 0.1),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.45);
+      transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+    }
+    .candle-product-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      box-shadow: inset 0 0 60px rgba(212, 175, 55, 0.06);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+    .candle-product-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(212, 175, 55, 0.55);
+      box-shadow:
+        0 22px 56px rgba(92, 70, 38, 0.16),
+        0 0 48px rgba(212, 175, 55, 0.22),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.55);
+    }
+    .candle-product-card:hover::after {
+      opacity: 1;
+    }
+
+    .candle-product-card .card-photo-wrap {
+      aspect-ratio: 4 / 3;
+      background: linear-gradient(160deg, #fff7e8, #ead9b8);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    }
+    .candle-product-card .card-photo-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 12px;
+      transition: transform 0.35s ease;
+    }
+    .candle-product-card:hover .card-photo-wrap img {
+      transform: scale(1.04);
+    }
+    .candle-product-card .card-photo-placeholder {
+      font-size: 52px;
+      filter: drop-shadow(0 4px 16px rgba(212, 175, 55, 0.45));
+    }
+
+    .candle-product-card .card-body {
+      padding: 18px 20px 0;
+    }
+    .candle-product-card .card-category {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #9a7b45;
+      margin-bottom: 8px;
+    }
+    .candle-product-card h3 {
+      font-size: 19px;
+      margin-bottom: 10px;
+      line-height: 1.25;
+      color: #3d2f23;
+    }
+    .candle-product-card .card-teaser {
+      font-size: 14px;
+      line-height: 1.55;
+      color: var(--muted);
+      margin: 0 0 16px;
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .candle-product-card .card-price {
+      font-size: 15px;
+      font-weight: 700;
+      color: #6b542e;
+      margin-bottom: 14px;
+    }
+    .candle-product-card .btn-buy-card {
+      width: 100%;
+      justify-content: center;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      padding: 14px 18px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-family: "Montserrat", sans-serif;
+      background: linear-gradient(135deg, #e0c15a, #b88a24);
+      color: #fff;
+      box-shadow: 0 12px 32px rgba(212, 175, 55, 0.35);
+      transition: transform 0.22s ease, box-shadow 0.22s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .candle-product-card .btn-buy-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 40px rgba(212, 175, 55, 0.45);
+    }
+
+    .catalog-results-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 8px;
+    }
+
     @media (max-width: 560px) {
       .app { padding: 20px 14px 40px; }
 
@@ -761,6 +942,11 @@
         <button type="button" class="admin-link" onclick="showScreen('admin')">Админ-панель</button>
       </div>
     </header>
+
+    <div id="catalogLoadError" class="catalog-load-error hidden" role="alert" aria-live="polite">
+      <span class="catalog-error-icon" aria-hidden="true">✦</span>
+      <span class="catalog-error-text"></span>
+    </div>
 
     <section id="home" class="screen active">
       <div class="hero">
@@ -907,6 +1093,21 @@
       </div>
     </section>
 
+    <section id="catalogResults" class="screen">
+      <div class="catalog-results-inner">
+        <div class="catalog-results-head">
+          <div class="eyebrow">Каталог</div>
+          <h2 id="catalogResultsTitle">Подобранные свечи</h2>
+          <p id="catalogResultsSub" class="catalog-results-sub"></p>
+        </div>
+        <div id="catalogCardsGrid" class="cards-grid" aria-live="polite"></div>
+        <div class="catalog-results-actions">
+          <button type="button" class="btn btn-ghost" onclick="closeCatalogResults()">На главную</button>
+          <button type="button" class="btn btn-primary" onclick="showScreen('situations')">Выбрать другую ситуацию</button>
+        </div>
+      </div>
+    </section>
+
     <section id="admin" class="screen">
       <div class="section-head">
         <h2>Админ-панель</h2>
@@ -1033,6 +1234,7 @@
     <div id="saveToast" class="toast" role="status" aria-live="polite"></div>
   </main>
 
+  <script src="js/catalog-json.js"></script>
   <script>
     /* =============================================================================
        КОНФИГ ИНТЕГРАЦИИ С BACKEND И TELEGRAM-БОТОМ.
@@ -1532,6 +1734,126 @@
       ]
     };
 
+    function updateCatalogBanner() {
+      var box = document.getElementById("catalogLoadError");
+      if (!box) return;
+      var txt = box.querySelector(".catalog-error-text");
+      if (typeof CandleCatalog === "undefined") {
+        box.classList.remove("hidden");
+        box.classList.add("show");
+        if (txt) {
+          txt.textContent =
+            "Модуль каталога не подключён. Проверьте наличие файла js/catalog-json.js и откройте страницу через локальный сервер.";
+        }
+        return;
+      }
+      if (CandleCatalog.loaded) {
+        box.classList.remove("show");
+        box.classList.add("hidden");
+        return;
+      }
+      box.classList.remove("hidden");
+      box.classList.add("show");
+      if (txt) {
+        txt.textContent =
+          "Каталог data/candles.json не загрузился — подбор идёт по встроенному списку свечей. Откройте сайт через сервер (npm run server), чтобы JSON подхватился автоматически.";
+      }
+    }
+
+    (function initCatalogJson() {
+      if (typeof CandleCatalog === "undefined") {
+        updateCatalogBanner();
+        return;
+      }
+      CandleCatalog.load()
+        .then(function () {
+          updateCatalogBanner();
+        })
+        .catch(function () {
+          updateCatalogBanner();
+        });
+    })();
+
+    function closeCatalogResults() {
+      showScreen("home");
+    }
+
+    function renderCatalogResults(matches, subtitle) {
+      var titleEl = document.getElementById("catalogResultsTitle");
+      var subEl = document.getElementById("catalogResultsSub");
+      var grid = document.getElementById("catalogCardsGrid");
+      if (!grid) return;
+      if (titleEl) titleEl.textContent = "Подобранные свечи";
+      if (subEl) subEl.textContent = subtitle || "Свечи из каталога по вашему запросу.";
+      grid.innerHTML = "";
+      (matches || []).forEach(function (p) {
+        var card = document.createElement("article");
+        card.className = "candle-product-card";
+
+        var photoWrap = document.createElement("div");
+        photoWrap.className = "card-photo-wrap";
+        var first = p.images && p.images.length ? p.images[0] : "";
+        if (first) {
+          var img = document.createElement("img");
+          img.alt = p.name || "Свеча";
+          img.loading = "lazy";
+          img.src = first;
+          img.onerror = function () {
+            img.remove();
+            var ph = document.createElement("div");
+            ph.className = "card-photo-placeholder";
+            ph.setAttribute("aria-hidden", "true");
+            ph.textContent = "🕯";
+            photoWrap.appendChild(ph);
+          };
+          photoWrap.appendChild(img);
+        } else {
+          var ph0 = document.createElement("div");
+          ph0.className = "card-photo-placeholder";
+          ph0.textContent = "🕯";
+          photoWrap.appendChild(ph0);
+        }
+
+        var body = document.createElement("div");
+        body.className = "card-body";
+        var cat = document.createElement("div");
+        cat.className = "card-category";
+        cat.textContent = p.category || "Каталог";
+        var h = document.createElement("h3");
+        h.textContent = p.name || "Без названия";
+        var teaser = document.createElement("p");
+        teaser.className = "card-teaser";
+        teaser.textContent = p.shortPlain || "";
+
+        body.appendChild(cat);
+        body.appendChild(h);
+        body.appendChild(teaser);
+
+        if (p.price) {
+          var price = document.createElement("div");
+          price.className = "card-price";
+          price.textContent = p.price + " ₽";
+          body.appendChild(price);
+        }
+
+        var buy = document.createElement("a");
+        buy.className = "btn-buy-card";
+        buy.textContent = "Купить";
+        buy.href = p.url || "#";
+        buy.target = "_blank";
+        buy.rel = "noopener noreferrer";
+        buy.addEventListener("click", function () {
+          lastRecommendedCandle = CandleCatalog.toLegacyCandle(p);
+          trackBuyClick();
+        });
+        body.appendChild(buy);
+
+        card.appendChild(photoWrap);
+        card.appendChild(body);
+        grid.appendChild(card);
+      });
+    }
+
     /**
      * Подбор свечи по свободному тексту пользователя.
      * Считаем баллы для каждой свечи:
@@ -1619,6 +1941,20 @@
         err.textContent = "Опишите ситуацию хотя бы парой слов.";
         err.classList.add("show");
         return;
+      }
+
+      if (typeof CandleCatalog !== "undefined" && CandleCatalog.loaded && CandleCatalog.products.length) {
+        const cm = CandleCatalog.matchByText(text, SITUATION_KEYWORDS, 24);
+        if (cm.length > 0) {
+          selectedSituation = "";
+          userAnswers = [text];
+          renderCatalogResults(
+            cm,
+            "Подбор по вашему тексту — совпадения в категории и описании товаров из data/candles.json."
+          );
+          showScreen("catalogResults");
+          return;
+        }
       }
 
       const candle = findCandleByText(text);
@@ -1826,6 +2162,17 @@
 
     /** Финал опросника: подобрать свечу и отрисовать результат */
     function showResult() {
+      if (typeof CandleCatalog !== "undefined" && CandleCatalog.loaded && CandleCatalog.products.length) {
+        const matches = CandleCatalog.matchSituation(selectedSituation, userAnswers, SITUATION_KEYWORDS, 24);
+        if (matches.length > 0) {
+          renderCatalogResults(
+            matches,
+            "Ситуация: «" + selectedSituation + "». Найдены товары, у которых категория или описание созвучны с выбором."
+          );
+          showScreen("catalogResults");
+          return;
+        }
+      }
       const result = pickCandle(selectedSituation, userAnswers);
       renderCandleResult(result);
     }
