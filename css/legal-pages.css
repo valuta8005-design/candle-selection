@@ -1,0 +1,257 @@
+/* Общие стили юридических страниц и футера — Волшебный Огонь */
+:root {
+  --bg: #f7f0e6;
+  --milk: #fffdf8;
+  --gold: #d4af37;
+  --text: #2f271f;
+  --muted: #7a6a59;
+  --line: rgba(212, 175, 55, 0.28);
+  --shadow: 0 24px 70px rgba(92, 70, 38, 0.12);
+  --radius: 28px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body.legal-page-body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: "Montserrat", sans-serif;
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 12% 8%, rgba(212, 175, 55, 0.16), transparent 32%),
+    radial-gradient(circle at 88% 12%, rgba(255, 255, 255, 0.75), transparent 35%),
+    linear-gradient(145deg, #f3e9d8, #fffaf3 50%, #eadcc7);
+  overflow-x: hidden;
+}
+
+.legal-skip {
+  position: absolute;
+  left: -9999px;
+}
+.legal-skip:focus {
+  left: 16px;
+  top: 16px;
+  z-index: 10;
+  padding: 10px 16px;
+  background: var(--milk);
+  border-radius: 12px;
+  border: 1px solid var(--line);
+}
+
+.legal-page-header {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  padding: 28px 20px 12px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.legal-page-logo {
+  font-family: "Playfair Display", serif;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #4c3825;
+  text-decoration: none;
+}
+.legal-page-logo span {
+  color: var(--gold);
+}
+
+.legal-back-link {
+  font-weight: 600;
+  font-size: 14px;
+  color: #6b5333;
+  text-decoration: none;
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.5);
+  transition: box-shadow 0.25s ease, transform 0.2s ease;
+}
+.legal-back-link:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 28px rgba(212, 175, 55, 0.25);
+}
+
+.legal-container {
+  width: min(760px, 100%);
+  margin: 0 auto;
+  padding: 32px 20px 80px;
+}
+
+.legal-page-main {
+  background: rgba(255, 253, 248, 0.88);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: clamp(28px, 4vw, 44px) clamp(22px, 4vw, 40px);
+  box-shadow: var(--shadow);
+  flex: 1 0 auto;
+}
+
+.legal-page-main h1 {
+  font-family: "Playfair Display", serif;
+  font-size: clamp(26px, 4vw, 34px);
+  font-weight: 700;
+  color: #3d2a14;
+  margin: 0 0 12px;
+  line-height: 1.25;
+}
+
+.legal-updated {
+  font-size: 14px;
+  color: var(--muted);
+  margin: 0 0 32px;
+}
+
+.legal-page-main h2 {
+  font-family: "Playfair Display", serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: #4c3825;
+  margin: 36px 0 14px;
+  line-height: 1.35;
+}
+
+.legal-page-main h2:first-of-type {
+  margin-top: 0;
+}
+
+.legal-page-main p {
+  margin: 0 0 16px;
+  color: #4a3828;
+}
+
+.legal-page-main ul,
+.legal-page-main ol {
+  margin: 0 0 18px;
+  padding-left: 1.35em;
+  color: #4a3828;
+}
+
+.legal-page-main li {
+  margin-bottom: 8px;
+}
+
+.legal-page-main a {
+  color: #7a5a28;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: rgba(212, 175, 55, 0.55);
+  text-underline-offset: 3px;
+}
+.legal-page-main a:hover {
+  color: #5c4218;
+}
+
+.legal-page-main strong {
+  color: #3d2f23;
+}
+
+/* Футер сайта (общий с приложением) */
+.site-footer {
+  margin-top: auto;
+  padding: 36px 20px 28px;
+  border-top: 1px solid rgba(212, 175, 55, 0.22);
+  background:
+    linear-gradient(180deg, rgba(255, 252, 246, 0.55), rgba(245, 232, 210, 0.35));
+}
+
+.site-footer-inner {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  text-align: center;
+}
+
+.site-footer-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 20px;
+}
+
+.site-footer-nav a {
+  font-family: "Montserrat", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #5c4528;
+  text-decoration: none;
+  padding: 6px 4px;
+  border-bottom: 1px solid transparent;
+  transition: color 0.2s ease, border-color 0.2s ease, text-shadow 0.25s ease;
+}
+.site-footer-nav a:hover {
+  color: #3d2a14;
+  border-bottom-color: rgba(212, 175, 55, 0.55);
+  text-shadow: 0 0 20px rgba(212, 175, 55, 0.35);
+}
+
+.site-footer-copy {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0;
+}
+
+@media (max-width: 560px) {
+  .legal-page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .site-footer-nav {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+/* Согласие под формой заявки (Подбор свечи.html) */
+.legal-consent {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin: 18px 0 8px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #6b5a4a;
+  max-width: 520px;
+}
+
+.legal-consent input[type="checkbox"] {
+  width: auto;
+  min-width: 18px;
+  height: 18px;
+  margin-top: 3px;
+  flex-shrink: 0;
+  accent-color: #b88a24;
+  cursor: pointer;
+}
+
+.legal-consent span a {
+  color: #6b4e24;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: rgba(212, 175, 55, 0.55);
+  text-underline-offset: 2px;
+}
+
+.legal-consent span a:hover {
+  color: #4a3618;
+}

@@ -2,11 +2,77 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>Подбор свечи — Волшебный огонь</title>
-  <meta http-equiv="refresh" content="0; url=Подбор свечи.html" />
-  <script>location.replace("Подбор свечи.html");</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Волшебный Огонь — подбор свечи по ситуации</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/legal-pages.css" />
+  <style>
+    .index-wrap {
+      flex: 1 0 auto;
+      width: min(720px, 100%);
+      margin: 0 auto;
+      padding: 48px 20px 40px;
+      text-align: center;
+    }
+    .index-hero h1 {
+      font-family: "Playfair Display", serif;
+      font-size: clamp(28px, 5vw, 40px);
+      font-weight: 700;
+      color: #3d2a14;
+      margin: 0 0 16px;
+      line-height: 1.2;
+    }
+    .index-hero h1 span {
+      color: var(--gold);
+    }
+    .index-hero p {
+      font-size: 17px;
+      line-height: 1.7;
+      color: #5c4a38;
+      margin: 0 0 28px;
+    }
+    .index-cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 32px;
+      border-radius: 999px;
+      font-family: "Montserrat", sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      text-decoration: none;
+      color: #2f271f;
+      background: linear-gradient(145deg, rgba(255, 252, 245, 0.98), rgba(245, 228, 200, 0.75));
+      border: 1px solid rgba(212, 175, 55, 0.45);
+      box-shadow: 0 12px 36px rgba(212, 175, 55, 0.2);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .index-cta:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 18px 48px rgba(212, 175, 55, 0.32);
+    }
+  </style>
 </head>
-<body>
-  Открываем приложение… Если не сработало — <a href="Подбор свечи.html">нажмите сюда</a>.
+<body class="legal-page-body">
+  <div class="index-wrap">
+    <header class="index-hero">
+      <h1>Волшебный <span>Огонь</span></h1>
+      <p>Свечи для магии и жизни. Персональный подбор свечи по вашей ситуации — в несколько шагов.</p>
+      <a class="index-cta" href="Подбор%20свечи.html">Открыть подбор свечи</a>
+    </header>
+  </div>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="site-footer-inner">
+      <nav class="site-footer-nav" aria-label="Юридическая информация">
+        <a href="/terms.html">Пользовательское соглашение</a>
+        <a href="/privacy.html">Политика конфиденциальности</a>
+        <a href="/personal-data.html">Обработка персональных данных</a>
+        <a href="https://ruswedma.ru" target="_blank" rel="noopener noreferrer">Контакты</a>
+        <a href="https://t.me/ruswedma" target="_blank" rel="noopener noreferrer">Telegram</a>
+      </nav>
+      <p class="site-footer-copy">© Волшебный Огонь</p>
+    </div>
+  </footer>
 </body>
 </html>

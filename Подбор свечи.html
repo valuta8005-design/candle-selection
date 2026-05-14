@@ -7,6 +7,8 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
 
+  <link rel="stylesheet" href="css/legal-pages.css" />
+
   <style>
     :root {
       --bg: #f7f0e6;
@@ -24,6 +26,8 @@
     body {
       margin: 0;
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
       font-family: "Montserrat", sans-serif;
       color: var(--text);
       background:
@@ -34,9 +38,10 @@
     }
 
     .app {
+      flex: 1 0 auto;
       width: min(1180px, 100%);
       margin: 0 auto;
-      padding: 28px 20px 60px;
+      padding: 28px 20px 40px;
     }
 
     .topbar {
@@ -2417,6 +2422,16 @@
 
             <textarea id="leadComment" placeholder="Комментарий — что важно учесть"></textarea>
 
+            <label class="legal-consent" for="leadPrivacyConsent">
+              <input type="checkbox" id="leadPrivacyConsent" name="leadPrivacyConsent" />
+              <span>
+                Нажимая кнопку, вы соглашаетесь с
+                <a href="/privacy.html" target="_blank" rel="noopener noreferrer">Политикой конфиденциальности</a>
+                и
+                <a href="/personal-data.html" target="_blank" rel="noopener noreferrer">обработкой персональных данных</a>.
+              </span>
+            </label>
+
             <button class="btn btn-primary" type="submit" id="leadSubmitBtn">Отправить заявку и открыть бот</button>
             <div id="leadSuccess" class="success hidden">
               Заявка отправлена. Сейчас откроется Telegram-бот.
@@ -2686,6 +2701,19 @@
       </div>
     </div>
   </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="site-footer-inner">
+      <nav class="site-footer-nav" aria-label="Юридическая информация">
+        <a href="/terms.html">Пользовательское соглашение</a>
+        <a href="/privacy.html">Политика конфиденциальности</a>
+        <a href="/personal-data.html">Обработка персональных данных</a>
+        <a href="https://ruswedma.ru" target="_blank" rel="noopener noreferrer">Контакты</a>
+        <a href="https://t.me/ruswedma" target="_blank" rel="noopener noreferrer">Telegram</a>
+      </nav>
+      <p class="site-footer-copy">© Волшебный Огонь</p>
+    </div>
+  </footer>
 
   <script src="js/catalog-json.js"></script>
   <script>
@@ -4318,6 +4346,14 @@
       }
       if (!data.phone && !data.contact) {
         errBox.textContent = "Оставьте телефон или Telegram/WhatsApp для связи.";
+        errBox.classList.remove("hidden");
+        return;
+      }
+
+      const consent = document.getElementById("leadPrivacyConsent");
+      if (!consent || !consent.checked) {
+        errBox.textContent =
+          "Подтвердите согласие с Политикой конфиденциальности и обработкой персональных данных.";
         errBox.classList.remove("hidden");
         return;
       }
