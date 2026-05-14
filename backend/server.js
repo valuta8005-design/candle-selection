@@ -91,6 +91,24 @@ function appendJsonFile(file, item) {
   }
 }
 
+/** Каталог веб-магазина: массив в data/candles.json */
+function loadDataCatalogArray() {
+  try {
+    if (!fs.existsSync(DATA_CANDLES_JSON)) return [];
+    const raw = JSON.parse(fs.readFileSync(DATA_CANDLES_JSON, "utf8"));
+    return Array.isArray(raw) ? raw : [];
+  } catch (e) {
+    console.error("[data/candles.json] read error:", e.message);
+    return [];
+  }
+}
+
+function saveDataCatalogArray(arr) {
+  const dir = path.dirname(DATA_CANDLES_JSON);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(DATA_CANDLES_JSON, JSON.stringify(arr, null, 2), "utf8");
+}
+
 async function sendTelegramMessage(text, opts = {}) {
   if (!TG_TOKEN || !TG_CHAT) {
     console.warn("[telegram] TOKEN/CHAT_ID не заданы — сообщение пропущено.");
@@ -333,11 +351,73 @@ app.get("/data/candles.json", (req, res, next) => {
       error: "Файл data/candles.json не найден на сервере. Создайте его (например, scripts/generate-candles-json.py).",
     });
   }
-  res.setHeader("Cache-Control", "public, max-age=120");
-  res.type("application/json; charset=utf-8");
-  res.sendFile(DATA_CANDLES_JSON, (err) => {
-    if (err) next(err);
-  });
+  try {
+    const arr = loadDataCatalogArray();
+    const visible = arr.filter(p => p && p.hidden !== true);
+    res.setHeader("Cache-Control", "no-store");
+    res.type("application/json; charset=utf-8");
+    res.json(visible);
+  } catch (e) {
+    next(e);
+  }
+});
+
+/**
+ * GET /api/admin/catalog — полный список товаров из data/candles.json (включая hidden).
+ */
+app.get("/api/admin/catalog", (req, res) => {
+  try {
+    const products = loadDataCatalogArray();
+    res.json({ ok: true, products, total: products.length });
+  } catch (e) {
+    console.error("[GET /api/admin/catalog]", e);
+    res.status(500).json({ ok: false, error: String(e.message) });
+  }
+});
+
+/**
+ * PUT /api/admin/catalog/:id — создать или обновить товар (частичное слияние полей).
+ */
+app.put("/api/admin/catalog/:id", (req, res) => {
+  try {
+    const id = String(req.params.id || "").trim();
+    if (!id) return res.status(400).json({ ok: false, error: "Нужен id в пути." });
+    const patch = req.body && typeof req.body === "object" ? req.body : {};
+    const list = loadDataCatalogArray();
+    const idx = list.findIndex(p => p && String(p.id) === id);
+    if (idx >= 0) {
+      list[idx] = { ...list[idx], ...patch, id };
+    } else {
+      list.push({ ...patch, id });
+    }
+    saveDataCatalogArray(list);
+    const saved = list.find(p => p && String(p.id) === id) || null;
+    res.json({ ok: true, product: saved });
+  } catch (e) {
+    console.error("[PUT /api/admin/catalog]", e);
+    res.status(500).json({ ok: false, error: String(e.message) });
+  }
+});
+
+/**
+ * DELETE /api/admin/catalog/:id — удалить товар из data/candles.json.
+ */
+app.delete("/api/admin/catalog/:id", (req, res) => {
+  try {
+    const id = String(req.params.id || "").trim();
+    if (!id) return res.status(400).json({ ok: false, error: "Нужен id." });
+    const list = loadDataCatalogArray();
+    const before = list.length;
+    const next = list.filter(p => !p || String(p.id) !== id);
+    if (next.length === before) {
+      return res.status(404).json({ ok: false, error: "Товар не найден." });
+    }
+    saveDataCatalogArray(next);
+    res.json({ ok: true, total: next.length });
+  } catch (e) {
+    console.error("[DELETE /api/admin/catalog]", e);
+    res.status(500).json({ ok: false, error: String(e.message) });
+  }
 });
 
 /**

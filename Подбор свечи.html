@@ -169,17 +169,608 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .hero {
-      min-height: 620px;
+    /* ---------- Главная: hero + быстрые ситуации (Modern Mystic Premium) ---------- */
+    .home-hero {
       display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
+      grid-template-columns: 1.05fr 0.95fr;
       align-items: center;
-      gap: 36px;
+      gap: clamp(28px, 4vw, 52px);
+      min-height: min(72vh, 720px);
+      padding: clamp(12px, 2vw, 28px) 0 clamp(36px, 5vw, 56px);
+    }
+
+    .home-hero__copy {
+      position: relative;
+      z-index: 1;
+      max-width: 560px;
+    }
+
+    .home-hero__brand {
+      display: flex;
+      align-items: center;
+      gap: clamp(16px, 3vw, 24px);
+      margin-bottom: clamp(18px, 3vw, 28px);
+    }
+
+    .home-brand-mark--hero {
+      width: clamp(88px, 18vw, 120px);
+      height: clamp(88px, 18vw, 120px);
+      flex-shrink: 0;
+    }
+
+    .home-brand-mark {
+      border-radius: 50%;
+      padding: 5px;
+      background:
+        radial-gradient(circle at 40% 35%, rgba(255, 252, 245, 0.98), rgba(245, 232, 210, 0.82));
+      border: 1px solid rgba(212, 175, 55, 0.42);
+      box-shadow:
+        0 18px 50px rgba(92, 70, 38, 0.12),
+        0 0 40px rgba(212, 175, 55, 0.2),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.55);
+    }
+
+    .home-brand-mark img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: contain;
+      object-position: center;
+      display: block;
+      background: radial-gradient(circle at 50% 45%, rgba(40, 32, 28, 0.05), transparent 65%);
+    }
+
+    .home-hero__logotype {
+      font-family: "Playfair Display", serif;
+      font-size: clamp(22px, 3.2vw, 30px);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: #4c3825;
+      margin: 0;
+      line-height: 1.15;
+    }
+
+    .home-hero__logotype span {
+      color: var(--gold);
+    }
+
+    .home-hero__tagline {
+      margin: 6px 0 0;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #9a7b45;
+    }
+
+    .home-hero__badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #7a6238;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      margin-bottom: 20px;
+      box-shadow: 0 4px 20px rgba(212, 175, 55, 0.1);
+    }
+
+    #home .home-hero__title {
+      font-family: "Playfair Display", serif;
+      font-size: clamp(32px, 4.2vw, 48px);
+      font-weight: 700;
+      line-height: 1.12;
+      color: #3d2f23;
+      margin: 0 0 16px;
+      letter-spacing: -0.02em;
+    }
+
+    .home-hero__lead {
+      font-size: clamp(16px, 1.35vw, 18px);
+      line-height: 1.7;
+      color: var(--muted);
+      margin: 0 0 28px;
+      max-width: 520px;
+    }
+
+    .home-hero__cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .btn-hero-primary {
+      padding: 18px 32px;
+      font-size: 16px;
+      letter-spacing: 0.02em;
+    }
+
+    .home-hero__fine {
+      margin: 0;
+      font-size: 13px;
+      color: #9a8a78;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+    }
+
+    .home-hero__visual {
+      position: relative;
+      min-height: min(520px, 58vh);
+      border-radius: 40px;
+      overflow: hidden;
+      isolation: isolate;
+      border: 1px solid rgba(212, 175, 55, 0.22);
+      box-shadow:
+        0 28px 80px rgba(92, 70, 38, 0.1),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+    }
+
+    .home-hero__sand {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 120% 80% at 50% 100%, rgba(232, 214, 188, 0.55), transparent 50%),
+        radial-gradient(ellipse 80% 60% at 20% 30%, rgba(255, 252, 245, 0.9), transparent 45%),
+        linear-gradient(165deg, #fdf9f2 0%, #f5ead8 40%, #ebe0cf 100%);
+    }
+
+    .home-hero__glow {
+      position: absolute;
+      width: 70%;
+      height: 70%;
+      left: 50%;
+      top: 42%;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.42) 0%, rgba(212, 175, 55, 0.12) 38%, transparent 68%);
+      filter: blur(28px);
+      pointer-events: none;
+      animation: heroGlowPulse 6s ease-in-out infinite;
+    }
+
+    @keyframes heroGlowPulse {
+      0%, 100% { opacity: 0.85; transform: translate(-50%, -50%) scale(1); }
+      50% { opacity: 1; transform: translate(-50%, -50%) scale(1.06); }
+    }
+
+    .home-hero__particles {
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 12% 22%, rgba(212, 175, 55, 0.35) 0, transparent 1.5px),
+        radial-gradient(circle at 78% 18%, rgba(184, 138, 36, 0.3) 0, transparent 1.5px),
+        radial-gradient(circle at 88% 62%, rgba(212, 175, 55, 0.25) 0, transparent 1.5px),
+        radial-gradient(circle at 22% 78%, rgba(212, 175, 55, 0.22) 0, transparent 1.5px),
+        radial-gradient(circle at 55% 12%, rgba(255, 220, 160, 0.4) 0, transparent 2px),
+        radial-gradient(circle at 40% 88%, rgba(212, 175, 55, 0.2) 0, transparent 1.5px);
+      background-size: 100% 100%;
+      opacity: 0.65;
+      pointer-events: none;
+      animation: particlesDrift 22s linear infinite;
+    }
+
+    @keyframes particlesDrift {
+      0% { transform: translate(0, 0); }
+      50% { transform: translate(-1.5%, 1%); }
+      100% { transform: translate(0, 0); }
+    }
+
+    .home-hero__smoke {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(32px);
+      opacity: 0.35;
+      pointer-events: none;
+      background: radial-gradient(ellipse, rgba(255, 255, 255, 0.95), rgba(245, 236, 220, 0.2) 55%, transparent 70%);
+    }
+
+    .home-hero__smoke--1 {
+      width: 55%;
+      height: 38%;
+      left: 8%;
+      bottom: 12%;
+      animation: smokeRise 14s ease-in-out infinite;
+    }
+
+    .home-hero__smoke--2 {
+      width: 45%;
+      height: 32%;
+      right: 5%;
+      bottom: 22%;
+      animation: smokeRise 18s ease-in-out infinite reverse;
+    }
+
+    @keyframes smokeRise {
+      0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.28; }
+      50% { transform: translate(8px, -16px) scale(1.05); opacity: 0.42; }
+    }
+
+    .home-hero__crystal {
+      position: absolute;
+      width: 22px;
+      height: 34px;
+      background: linear-gradient(145deg, rgba(255, 252, 248, 0.95), rgba(212, 175, 55, 0.35));
+      clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.25);
+      opacity: 0.75;
+      pointer-events: none;
+    }
+
+    .home-hero__crystal--1 { left: 14%; top: 28%; transform: rotate(-8deg); }
+    .home-hero__crystal--2 { right: 18%; top: 22%; width: 16px; height: 26px; transform: rotate(12deg); }
+    .home-hero__crystal--3 { right: 12%; bottom: 26%; width: 18px; height: 28px; transform: rotate(-4deg); }
+
+    .home-hero__herb {
+      position: absolute;
+      border-radius: 60% 40% 70% 30% / 50% 55% 45% 50%;
+      background: linear-gradient(135deg, rgba(196, 168, 130, 0.35), rgba(230, 210, 180, 0.15));
+      border: 1px solid rgba(212, 175, 55, 0.15);
+      opacity: 0.55;
+      pointer-events: none;
+    }
+
+    .home-hero__herb--1 { width: 64px; height: 38px; left: 10%; bottom: 18%; transform: rotate(-25deg); }
+    .home-hero__herb--2 { width: 48px; height: 30px; right: 22%; bottom: 14%; transform: rotate(18deg); }
+
+    .home-hero__candle {
+      position: absolute;
+      left: 50%;
+      bottom: 6%;
+      transform: translateX(-50%);
+      width: min(78%, 340px);
+      max-height: 88%;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 2;
+      filter: drop-shadow(0 24px 48px rgba(80, 60, 40, 0.18));
+    }
+
+    .home-hero__candle img {
+      width: 100%;
+      max-width: 400px;
+      height: auto;
+      max-height: min(480px, 52vh);
+      object-fit: contain;
+      object-position: bottom center;
+    }
+
+    .home-situations {
+      margin-top: clamp(8px, 2vw, 20px);
+      padding: clamp(28px, 4vw, 48px) 0;
+    }
+
+    .home-situations__head {
+      text-align: center;
+      max-width: 640px;
+      margin: 0 auto clamp(28px, 3vw, 36px);
+    }
+
+    .home-situations__title {
+      font-family: "Playfair Display", serif;
+      font-size: clamp(26px, 3.2vw, 36px);
+      font-weight: 700;
+      color: #3d2f23;
+      margin: 0 0 10px;
+    }
+
+    .home-situations__sub {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.65;
+      color: var(--muted);
+    }
+
+    .home-quick-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+      max-width: 1040px;
+      margin: 0 auto;
+    }
+
+    .home-qcard {
+      appearance: none;
+      font-family: "Montserrat", sans-serif;
+      text-align: center;
+      padding: 22px 16px 20px;
+      border-radius: 22px;
+      cursor: pointer;
+      border: 1px solid rgba(212, 175, 55, 0.38);
+      background:
+        linear-gradient(160deg, rgba(255, 253, 249, 0.98), rgba(255, 248, 238, 0.88));
+      box-shadow: 0 10px 36px rgba(92, 70, 38, 0.06);
+      color: #5c4528;
+      transition:
+        transform 0.28s ease,
+        box-shadow 0.28s ease,
+        border-color 0.28s ease,
+        background 0.28s ease;
+    }
+
+    .home-qcard:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.65);
+      box-shadow:
+        0 18px 50px rgba(212, 175, 55, 0.22),
+        0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+      background:
+        linear-gradient(160deg, rgba(255, 255, 255, 1), rgba(255, 246, 228, 0.95));
+    }
+
+    .home-qcard:focus-visible {
+      outline: 2px solid rgba(184, 138, 36, 0.9);
+      outline-offset: 3px;
+    }
+
+    .home-qcard__icon {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 12px;
+      color: #b8943a;
+    }
+
+    .home-qcard__icon svg {
+      display: block;
+    }
+
+    .home-qcard__label {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.35;
+      letter-spacing: 0.02em;
+    }
+
+    .home-trust {
+      padding: clamp(32px, 5vw, 56px) 0;
+      border-top: 1px solid rgba(212, 175, 55, 0.15);
+      border-bottom: 1px solid rgba(212, 175, 55, 0.12);
+    }
+
+    .home-trust__title {
+      font-family: "Playfair Display", serif;
+      font-size: clamp(24px, 2.8vw, 32px);
+      text-align: center;
+      color: #3d2f23;
+      margin: 0 0 clamp(24px, 3vw, 36px);
+      font-weight: 700;
+    }
+
+    .home-trust__grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: clamp(16px, 2.5vw, 28px);
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .home-trust__item {
+      padding: clamp(22px, 3vw, 30px) clamp(18px, 2.5vw, 24px);
+      border-radius: 24px;
+      background: rgba(255, 252, 246, 0.65);
+      border: 1px solid rgba(212, 175, 55, 0.18);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition:
+        transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.35s ease,
+        border-color 0.35s ease,
+        background 0.35s ease;
+    }
+
+    .home-trust__item:hover {
+      transform: translateY(-5px);
+      border-color: rgba(212, 175, 55, 0.42);
+      background: rgba(255, 255, 255, 0.88);
+      box-shadow:
+        0 20px 48px rgba(212, 175, 55, 0.14),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.65);
+    }
+
+    .home-trust__item h3 {
+      font-family: "Montserrat", sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: #4a3828;
+      margin: 0 0 8px;
+      letter-spacing: 0.02em;
+    }
+
+    .home-trust__item p {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--muted);
+      max-width: 240px;
+    }
+
+    .home-trust__icon-wrap {
+      position: relative;
+      width: clamp(64px, 7.5vw, 82px);
+      height: clamp(64px, 7.5vw, 82px);
+      margin: 0 0 18px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      animation: trustIconFloat 5.5s ease-in-out infinite;
+    }
+
+    .home-trust__item:nth-child(1) .home-trust__icon-wrap { animation-delay: 0s; }
+    .home-trust__item:nth-child(2) .home-trust__icon-wrap { animation-delay: 0.6s; }
+    .home-trust__item:nth-child(3) .home-trust__icon-wrap { animation-delay: 1.2s; }
+    .home-trust__item:nth-child(4) .home-trust__icon-wrap { animation-delay: 1.8s; }
+
+    @keyframes trustIconFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    .home-trust__icon-glow {
+      position: absolute;
+      inset: -18%;
+      border-radius: 50%;
+      background: radial-gradient(
+        circle at 50% 45%,
+        rgba(255, 236, 200, 0.55) 0%,
+        rgba(212, 175, 55, 0.22) 38%,
+        transparent 68%
+      );
+      filter: blur(6px);
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.95;
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+
+    .home-trust__item:hover .home-trust__icon-glow {
+      opacity: 1;
+      transform: scale(1.08);
+    }
+
+    .home-trust__icon {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      color: #9a7b45;
+      filter:
+        drop-shadow(0 0 10px rgba(212, 175, 55, 0.35))
+        drop-shadow(0 0 22px rgba(212, 175, 55, 0.18));
+      transition:
+        transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+        color 0.35s ease,
+        filter 0.35s ease;
+    }
+
+    .home-trust__item:hover .home-trust__icon {
+      transform: scale(1.06);
+      color: #b8943a;
+      filter:
+        drop-shadow(0 0 14px rgba(212, 175, 55, 0.5))
+        drop-shadow(0 0 28px rgba(255, 220, 160, 0.35));
+    }
+
+    .home-trust__icon path,
+    .home-trust__icon circle,
+    .home-trust__icon line,
+    .home-trust__icon polyline,
+    .home-trust__icon polygon {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.15;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .home-trust__icon .trust-stroke-soft {
+      opacity: 0.45;
+      stroke-width: 0.95;
+    }
+
+    .home-quote {
+      margin: 0;
+      padding: clamp(36px, 5vw, 56px) clamp(16px, 4vw, 48px);
+      text-align: center;
+      border: none;
+    }
+
+    .home-quote p {
+      font-family: "Playfair Display", serif;
+      font-size: clamp(20px, 2.6vw, 28px);
+      font-style: italic;
+      font-weight: 600;
+      line-height: 1.45;
+      color: #5c4528;
+      margin: 0 auto;
+      max-width: 720px;
+      position: relative;
+    }
+
+    .home-quote p::before,
+    .home-quote p::after {
+      content: "";
+      display: block;
+      width: min(120px, 25vw);
+      height: 1px;
+      margin: 0 auto 20px;
+      background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.55), transparent);
+    }
+
+    .home-quote p::after {
+      margin: 20px auto 0;
+    }
+
+    .home-intent-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #9a7b45;
+      margin: 0 0 8px;
+    }
+
+    @media (max-width: 1024px) {
+      .home-hero {
+        grid-template-columns: 1fr;
+        min-height: 0;
+      }
+      .home-hero__copy {
+        max-width: none;
+        text-align: center;
+      }
+      .home-hero__brand {
+        justify-content: center;
+      }
+      .home-hero__brand-texts {
+        text-align: center;
+      }
+      .home-hero__lead {
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .home-hero__cta-row {
+        justify-content: center;
+      }
+      .home-hero__visual {
+        order: -1;
+        min-height: 380px;
+        max-width: 520px;
+        margin: 0 auto;
+        width: 100%;
+      }
+      .home-trust__grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 560px) {
+      .home-hero__brand-texts {
+        text-align: center;
+      }
+      .home-hero__visual {
+        min-height: 300px;
+        border-radius: 28px;
+      }
+      .home-trust__grid {
+        grid-template-columns: 1fr;
+      }
+      .home-quick-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     /* ---------- Большая плашка «Опишите вашу ситуацию» на главной ---------- */
     .intent-card {
-      margin-top: 28px;
+      margin-top: clamp(32px, 4vw, 56px);
       padding: 36px 38px;
       border-radius: 32px;
       background:
@@ -455,6 +1046,174 @@
       50% { transform: translateX(-50%) scale(1.08); }
     }
 
+    /* ---------- Дополнительные анимации (экраны, сетки, акценты) ---------- */
+    @keyframes cardEnter {
+      from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes heroLine {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes brandGlow {
+      0%, 100% {
+        box-shadow:
+          0 18px 50px rgba(92, 70, 38, 0.14),
+          0 0 40px rgba(212, 175, 55, 0.18),
+          inset 0 0 0 1px rgba(255, 255, 255, 0.55);
+      }
+      50% {
+        box-shadow:
+          0 22px 56px rgba(92, 70, 38, 0.16),
+          0 0 56px rgba(212, 175, 55, 0.32),
+          inset 0 0 0 1px rgba(255, 255, 255, 0.55);
+      }
+    }
+
+    @keyframes intentShimmer {
+      0%, 100% { transform: translate(0, 0) scale(1); opacity: 1; }
+      50% { transform: translate(-6px, 4px) scale(1.03); opacity: 0.85; }
+    }
+
+    .home-brand-mark {
+      animation: brandGlow 5s ease-in-out infinite;
+    }
+
+    .intent-card::before {
+      animation: intentShimmer 12s ease-in-out infinite;
+    }
+
+    #home.screen.active .home-hero__copy > * {
+      animation: heroLine 0.55s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    }
+    #home.screen.active .home-hero__copy > *:nth-child(1) { animation-delay: 0.04s; }
+    #home.screen.active .home-hero__copy > *:nth-child(2) { animation-delay: 0.08s; }
+    #home.screen.active .home-hero__copy > *:nth-child(3) { animation-delay: 0.12s; }
+    #home.screen.active .home-hero__copy > *:nth-child(4) { animation-delay: 0.16s; }
+    #home.screen.active .home-hero__copy > *:nth-child(5) { animation-delay: 0.2s; }
+    #home.screen.active .home-hero__copy > *:nth-child(6) { animation-delay: 0.24s; }
+    #home.screen.active .home-hero__copy > *:nth-child(7) { animation-delay: 0.28s; }
+
+    #home.screen.active .home-hero__visual {
+      animation: cardEnter 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.12s backwards;
+    }
+
+    #home.screen.active .home-qcard:nth-child(1) { animation: cardEnter 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.05s backwards; }
+    #home.screen.active .home-qcard:nth-child(2) { animation: cardEnter 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.09s backwards; }
+    #home.screen.active .home-qcard:nth-child(3) { animation: cardEnter 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.13s backwards; }
+    #home.screen.active .home-qcard:nth-child(4) { animation: cardEnter 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.17s backwards; }
+    #home.screen.active .home-qcard:nth-child(5) { animation: cardEnter 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.21s backwards; }
+    #home.screen.active .home-qcard:nth-child(6) { animation: cardEnter 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.25s backwards; }
+    #home.screen.active .home-qcard:nth-child(7) { animation: cardEnter 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.29s backwards; }
+
+    #home.screen.active .intent-card {
+      animation: cardEnter 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.08s backwards;
+    }
+
+    #situations.screen.active #situationsGrid > .card,
+    #diagnostic.screen.active #answersBox > .card {
+      animation: cardEnter 0.48s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    }
+    #situations.screen.active #situationsGrid > .card:nth-child(1),
+    #diagnostic.screen.active #answersBox > .card:nth-child(1) { animation-delay: 0.03s; }
+    #situations.screen.active #situationsGrid > .card:nth-child(2),
+    #diagnostic.screen.active #answersBox > .card:nth-child(2) { animation-delay: 0.07s; }
+    #situations.screen.active #situationsGrid > .card:nth-child(3),
+    #diagnostic.screen.active #answersBox > .card:nth-child(3) { animation-delay: 0.11s; }
+    #situations.screen.active #situationsGrid > .card:nth-child(4),
+    #diagnostic.screen.active #answersBox > .card:nth-child(4) { animation-delay: 0.15s; }
+    #situations.screen.active #situationsGrid > .card:nth-child(5),
+    #diagnostic.screen.active #answersBox > .card:nth-child(5) { animation-delay: 0.19s; }
+    #situations.screen.active #situationsGrid > .card:nth-child(6),
+    #diagnostic.screen.active #answersBox > .card:nth-child(6) { animation-delay: 0.23s; }
+    #situations.screen.active #situationsGrid > .card:nth-child(7) { animation-delay: 0.27s; }
+    #situations.screen.active #situationsGrid > .card:nth-child(8) { animation-delay: 0.31s; }
+    #situations.screen.active #situationsGrid > .card:nth-child(9) { animation-delay: 0.35s; }
+    #situations.screen.active #situationsGrid > .card:nth-child(10) { animation-delay: 0.39s; }
+    #situations.screen.active #situationsGrid > .card:nth-child(11) { animation-delay: 0.43s; }
+    #situations.screen.active #situationsGrid > .card:nth-child(12) { animation-delay: 0.47s; }
+
+    #catalogResults.screen.active #catalogCardsGrid > .candle-product-card {
+      animation: cardEnter 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    }
+    #catalogResults.screen.active #catalogCardsGrid > .candle-product-card:nth-child(1) { animation-delay: 0.04s; }
+    #catalogResults.screen.active #catalogCardsGrid > .candle-product-card:nth-child(2) { animation-delay: 0.09s; }
+    #catalogResults.screen.active #catalogCardsGrid > .candle-product-card:nth-child(3) { animation-delay: 0.14s; }
+    #catalogResults.screen.active #catalogCardsGrid > .candle-product-card:nth-child(4) { animation-delay: 0.19s; }
+    #catalogResults.screen.active #catalogCardsGrid > .candle-product-card:nth-child(5) { animation-delay: 0.24s; }
+    #catalogResults.screen.active #catalogCardsGrid > .candle-product-card:nth-child(6) { animation-delay: 0.29s; }
+
+    #result.screen.active .result-layout {
+      animation: cardEnter 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.06s backwards;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .home-brand-mark,
+      .intent-card::before {
+        animation: none !important;
+      }
+      .home-hero__glow,
+      .home-hero__particles,
+      .home-hero__smoke {
+        animation: none !important;
+      }
+      #home.screen.active .home-hero__copy > *,
+      #home.screen.active .home-hero__visual,
+      #home.screen.active .home-qcard,
+      #home.screen.active .intent-card,
+      #situations.screen.active #situationsGrid > .card,
+      #diagnostic.screen.active #answersBox > .card,
+      #catalogResults.screen.active #catalogCardsGrid > .candle-product-card,
+      #result.screen.active .result-layout {
+        animation: none !important;
+        opacity: 1;
+        transform: none;
+      }
+      .screen {
+        animation-duration: 0.2s;
+      }
+      .situation-card:hover .icon,
+      .answer-card:hover .icon {
+        transform: none;
+      }
+      .home-trust__icon-wrap {
+        animation: none !important;
+      }
+      .home-trust__item:hover {
+        transform: none;
+      }
+      .home-trust__item:hover .home-trust__icon {
+        transform: none;
+      }
+      .home-trust__item:hover .home-trust__icon-glow {
+        transform: none;
+      }
+      .progress span {
+        transition: none;
+      }
+    }
+
     .section-head { margin-bottom: 28px; }
 
     .section-head p {
@@ -497,6 +1256,13 @@
       border: 1px solid var(--line);
       font-size: 24px;
       margin-bottom: 18px;
+      transition: transform 0.28s ease, box-shadow 0.28s ease, background 0.28s ease;
+    }
+
+    .situation-card:hover .icon,
+    .answer-card:hover .icon {
+      transform: scale(1.1) rotate(-3deg);
+      box-shadow: 0 8px 22px rgba(212, 175, 55, 0.25);
     }
 
     .question-box {
@@ -518,7 +1284,7 @@
       width: 33%;
       background: linear-gradient(90deg, #d4af37, #b88a24);
       border-radius: 999px;
-      transition: 0.3s ease;
+      transition: width 0.45s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
     }
 
     .answers {
@@ -670,6 +1436,224 @@
       margin-top: 12px;
     }
 
+    /* ---------- Админ: каталог товаров (data/candles.json) ---------- */
+    .admin-data-catalog-card {
+      grid-column: 1 / -1;
+    }
+    .admin-data-catalog-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin: 16px 0 20px;
+    }
+    .admin-data-catalog-toolbar input[type="search"] {
+      flex: 1;
+      min-width: 200px;
+      max-width: 420px;
+    }
+    .admin-data-catalog-meta {
+      font-size: 14px;
+      color: var(--muted);
+      margin-left: auto;
+    }
+    .admin-data-catalog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 18px;
+    }
+    .admin-data-catalog-card-item {
+      position: relative;
+      border-radius: 22px;
+      padding: 18px;
+      background:
+        linear-gradient(155deg, rgba(255, 252, 246, 0.98), rgba(245, 232, 210, 0.55));
+      border: 1px solid rgba(212, 175, 55, 0.28);
+      box-shadow:
+        0 12px 36px rgba(92, 70, 38, 0.08),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+      transition:
+        transform 0.28s ease,
+        box-shadow 0.32s ease,
+        border-color 0.28s ease;
+    }
+    .admin-data-catalog-card-item:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow:
+        0 18px 44px rgba(92, 70, 38, 0.12),
+        0 0 36px rgba(212, 175, 55, 0.2),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+    }
+    .admin-data-catalog-card-item.is-hidden {
+      opacity: 0.72;
+      border-style: dashed;
+    }
+    .admin-data-catalog-card-item .row-top {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .admin-data-catalog-thumb {
+      width: 76px;
+      height: 76px;
+      border-radius: 16px;
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      background: rgba(255, 255, 255, 0.6);
+    }
+    .admin-data-catalog-thumb-ph {
+      width: 76px;
+      height: 76px;
+      border-radius: 16px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      background: rgba(212, 175, 55, 0.12);
+      border: 1px dashed rgba(180, 140, 80, 0.45);
+      color: #8a6b3a;
+    }
+    .admin-data-catalog-card-item h4 {
+      margin: 0 0 6px;
+      font-size: 16px;
+      color: #3d2e1c;
+      line-height: 1.35;
+    }
+    .admin-data-catalog-card-item .meta-line {
+      font-size: 13px;
+      color: #6b5333;
+      line-height: 1.5;
+    }
+    .admin-data-catalog-card-item .id-line {
+      font-size: 12px;
+      color: var(--muted);
+      word-break: break-all;
+      margin-top: 8px;
+      font-family: ui-monospace, Consolas, monospace;
+    }
+    .admin-data-catalog-badge {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      background: rgba(120, 90, 60, 0.12);
+      color: #5c4428;
+      border: 1px solid rgba(180, 140, 90, 0.35);
+    }
+    .admin-data-catalog-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .admin-data-catalog-pager {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 22px;
+    }
+    .admin-data-catalog-pager button:disabled {
+      opacity: 0.45;
+      pointer-events: none;
+    }
+
+    .admin-catalog-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1200;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 24px 16px 40px;
+      overflow: auto;
+      box-sizing: border-box;
+    }
+    .admin-catalog-modal.hidden {
+      display: none;
+    }
+    .admin-catalog-modal__backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(45, 32, 18, 0.45);
+      backdrop-filter: blur(4px);
+    }
+    .admin-catalog-modal__panel {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 720px;
+      margin-top: 12px;
+      padding: 26px 28px 30px;
+      border-radius: 28px;
+      background:
+        linear-gradient(165deg, rgba(255, 253, 248, 0.98), rgba(248, 236, 218, 0.88));
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      box-shadow:
+        0 28px 80px rgba(60, 42, 24, 0.18),
+        0 0 48px rgba(212, 175, 55, 0.15);
+    }
+    .admin-catalog-modal__head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .admin-catalog-modal__head h3 {
+      margin: 0;
+      font-size: 20px;
+      color: #3d2a14;
+    }
+    .admin-catalog-photo-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .admin-catalog-photo-tile {
+      position: relative;
+      width: 72px;
+      height: 72px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(212, 175, 55, 0.35);
+    }
+    .admin-catalog-photo-tile img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .admin-catalog-photo-tile button {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      width: 22px;
+      height: 22px;
+      border-radius: 8px;
+      border: none;
+      background: rgba(40, 28, 14, 0.72);
+      color: #fff;
+      font-size: 14px;
+      line-height: 1;
+      cursor: pointer;
+      padding: 0;
+    }
+    .admin-catalog-modal textarea.code-ish {
+      min-height: 140px;
+      font-family: ui-monospace, Consolas, monospace;
+      font-size: 13px;
+    }
+
     .hidden { display: none; }
 
     .success {
@@ -707,7 +1691,7 @@
     }
 
     @media (max-width: 900px) {
-      .hero,
+      .home-hero,
       .result-layout,
       .admin-panel {
         grid-template-columns: 1fr;
@@ -813,18 +1797,24 @@
     }
 
     .candle-product-card .card-photo-wrap {
-      aspect-ratio: 4 / 3;
-      background: linear-gradient(160deg, #fff7e8, #ead9b8);
-      display: grid;
-      place-items: center;
+      height: 280px;
+      min-height: 260px;
+      max-height: 320px;
+      background: linear-gradient(180deg, #faf6ef 0%, #f2e8d4 55%, #ebe0cc 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       overflow: hidden;
-      border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+      border-bottom: 1px solid rgba(212, 175, 55, 0.22);
     }
     .candle-product-card .card-photo-wrap img {
-      width: 100%;
-      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
       object-fit: contain;
-      padding: 12px;
+      object-position: center;
+      padding: 16px;
       transition: transform 0.35s ease;
     }
     .candle-product-card:hover .card-photo-wrap img {
@@ -856,9 +1846,9 @@
       font-size: 14px;
       line-height: 1.55;
       color: var(--muted);
-      margin: 0 0 16px;
+      margin: 0 0 14px;
       display: -webkit-box;
-      -webkit-line-clamp: 4;
+      -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
@@ -867,6 +1857,27 @@
       font-weight: 700;
       color: #6b542e;
       margin-bottom: 14px;
+    }
+    .candle-product-card .card-actions-row {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .candle-product-card .btn-detail-more {
+      width: 100%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 18px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-family: "Montserrat", sans-serif;
+      cursor: pointer;
+      border: 1px solid rgba(184, 138, 36, 0.45);
+      background: rgba(255, 252, 246, 0.85);
+      color: #6b542e;
+      box-shadow: 0 6px 20px rgba(92, 70, 38, 0.08);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
     }
     .candle-product-card .btn-buy-card {
       width: 100%;
@@ -897,6 +1908,171 @@
       gap: 12px;
       justify-content: center;
       margin-top: 8px;
+    }
+
+    /* ---------- Подробная карточка товара из каталога ---------- */
+    .catalog-detail-inner {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 4px 48px;
+    }
+    .catalog-detail-back {
+      margin-bottom: 22px;
+    }
+    .catalog-detail-eyebrow {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #9a7b45;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    .catalog-detail-inner h2 {
+      text-align: center;
+      font-size: 26px;
+      line-height: 1.25;
+      color: #3d2f23;
+      margin: 0 0 14px;
+    }
+    .catalog-detail-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 20px;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 15px;
+      color: #6b5333;
+    }
+    .catalog-detail-meta .detail-price {
+      font-weight: 800;
+      color: #8a6a2e;
+      font-size: 18px;
+    }
+    .catalog-detail-gallery {
+      margin: 26px 0 28px;
+      padding: 22px 18px 20px;
+      border-radius: 26px;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255, 252, 245, 0.98), rgba(248, 236, 216, 0.88));
+      border: 1px solid rgba(212, 175, 55, 0.32);
+      box-shadow:
+        0 16px 48px rgba(92, 70, 38, 0.08),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.45);
+    }
+    .catalog-detail-main {
+      min-height: 220px;
+      max-height: 380px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(180deg, #faf6ef, #f0e6d4);
+      border-radius: 20px;
+      margin-bottom: 14px;
+      border: 1px solid rgba(212, 175, 55, 0.15);
+    }
+    .catalog-detail-main img {
+      max-width: 100%;
+      max-height: 360px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      object-position: center;
+      padding: 14px;
+    }
+    .catalog-detail-main .card-photo-placeholder {
+      font-size: 64px;
+      filter: drop-shadow(0 4px 16px rgba(212, 175, 55, 0.35));
+    }
+    .catalog-detail-thumbs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+    .catalog-detail-thumbs button {
+      padding: 5px;
+      border: 2px solid transparent;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.75);
+      cursor: pointer;
+      line-height: 0;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    }
+    .catalog-detail-thumbs button:hover {
+      transform: translateY(-2px);
+    }
+    .catalog-detail-thumbs button.active {
+      border-color: rgba(184, 138, 36, 0.95);
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.28);
+    }
+    .catalog-detail-thumbs button img {
+      width: 72px;
+      height: 72px;
+      object-fit: contain;
+      display: block;
+      border-radius: 10px;
+    }
+    .catalog-detail-block {
+      margin-bottom: 22px;
+      padding: 20px 22px;
+      border-radius: 22px;
+      background: rgba(255, 252, 246, 0.72);
+      border: 1px solid rgba(212, 175, 55, 0.22);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+    }
+    .catalog-detail-block h3 {
+      margin: 0 0 12px;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #9a7b45;
+    }
+    .catalog-detail-html {
+      font-size: 15px;
+      line-height: 1.65;
+      color: #4a3828;
+    }
+    .catalog-detail-html p {
+      margin: 0 0 12px;
+    }
+    .catalog-detail-html p:last-child {
+      margin-bottom: 0;
+    }
+    .catalog-detail-text {
+      font-size: 15px;
+      line-height: 1.65;
+      color: #4a3828;
+      white-space: pre-wrap;
+    }
+    .catalog-detail-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .catalog-detail-tags span {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      background: rgba(212, 175, 55, 0.14);
+      color: #5c4528;
+      border: 1px solid rgba(212, 175, 55, 0.28);
+    }
+    .catalog-detail-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 28px;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .catalog-detail-actions .btn-buy-card {
+      text-align: center;
+      justify-content: center;
     }
 
     @media (max-width: 560px) {
@@ -935,7 +2111,7 @@
 <body>
   <main class="app">
     <header class="topbar">
-      <div class="logo">Волшебный <span>огонь</span></div>
+      <div class="logo">Волшебный <span>Огонь</span></div>
       <div class="topbar-actions">
         <!-- Открывает экран с формой: новая свеча сразу попадает в appState.candles и localStorage -->
         <button type="button" class="btn-add-candle" onclick="openAddCandleScreen()">+ Добавить свечу</button>
@@ -949,27 +2125,185 @@
     </div>
 
     <section id="home" class="screen active">
-      <div class="hero">
-        <div>
-          <div class="eyebrow">✨ Modern Mystic Premium</div>
-          <h1>Подбор свечи по вашей ситуации</h1>
-          <p class="lead">
-            Опишите свою ситуацию своими словами или пройдите короткий подбор по категориям —
-            сервис проанализирует текст и подберёт свечу под вашу задачу.
+      <div class="home-hero">
+        <div class="home-hero__copy">
+          <div class="home-hero__brand">
+            <div class="home-brand-mark home-brand-mark--hero" aria-hidden="true">
+              <img
+                src="images/logo-volshebnyy-ogon.jpg"
+                width="120"
+                height="120"
+                alt=""
+                loading="eager"
+                decoding="async"
+              />
+            </div>
+            <div class="home-hero__brand-texts">
+              <p class="home-hero__logotype">Волшебный <span>Огонь</span></p>
+              <p class="home-hero__tagline">Свечи для магии и жизни</p>
+            </div>
+          </div>
+          <p class="home-hero__badge">Персональный подбор свечи</p>
+          <h1 class="home-hero__title">Какая свеча нужна вам именно сейчас?</h1>
+          <p class="home-hero__lead">
+            Ответьте на несколько вопросов о вашей ситуации — и мы подберём свечу, которая поможет именно вам.
           </p>
+          <div class="home-hero__cta-row">
+            <button class="btn btn-primary btn-hero-primary" type="button" onclick="scrollToHomeQuickSituations()">
+              Начать подбор
+            </button>
+          </div>
+          <p class="home-hero__fine">Конфиденциально и с заботой о вашей энергии</p>
         </div>
 
-        <div class="hero-card">
-          <div class="candle"></div>
+        <div class="home-hero__visual" aria-hidden="true">
+          <div class="home-hero__sand"></div>
+          <div class="home-hero__glow"></div>
+          <div class="home-hero__particles"></div>
+          <div class="home-hero__smoke home-hero__smoke--1"></div>
+          <div class="home-hero__smoke home-hero__smoke--2"></div>
+          <div class="home-hero__crystal home-hero__crystal--1"></div>
+          <div class="home-hero__crystal home-hero__crystal--2"></div>
+          <div class="home-hero__crystal home-hero__crystal--3"></div>
+          <div class="home-hero__herb home-hero__herb--1"></div>
+          <div class="home-hero__herb home-hero__herb--2"></div>
+          <div class="home-hero__candle">
+            <img
+              src="images/krylya-angela-1.png"
+              width="400"
+              height="520"
+              alt=""
+              loading="eager"
+              decoding="async"
+            />
+          </div>
         </div>
       </div>
 
-      <!-- Большая плашка ввода ситуации.
-           Текст из textarea -> findCandleByText() -> renderCandleResult() -->
-      <div class="intent-card" role="region" aria-labelledby="intentTitle">
+      <div id="home-quick-situations" class="home-situations">
+        <div class="home-situations__head">
+          <h2 class="home-situations__title">Свеча для любой ситуации</h2>
+          <p class="home-situations__sub">Выберите направление — откроется короткий подбор из трёх вопросов.</p>
+        </div>
+        <div class="home-quick-grid" role="list">
+          <button type="button" class="home-qcard" role="listitem" onclick="startDiagnostic('Любовь')">
+            <span class="home-qcard__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </span>
+            <span class="home-qcard__label">Любовь и отношения</span>
+          </button>
+          <button type="button" class="home-qcard" role="listitem" onclick="startDiagnostic('Деньги')">
+            <span class="home-qcard__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 6v12"/><path d="M16 10c0-2-1.8-3-4-3s-4 1-4 3 2 3 4 3 4 1 4 3-1.8 3-4 3-4-1-4-3"/></svg>
+            </span>
+            <span class="home-qcard__label">Деньги и успех</span>
+          </button>
+          <button type="button" class="home-qcard" role="listitem" onclick="startDiagnostic('Защита')">
+            <span class="home-qcard__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </span>
+            <span class="home-qcard__label">Защита и очищение</span>
+          </button>
+          <button type="button" class="home-qcard" role="listitem" onclick="startDiagnostic('Здоровье')">
+            <span class="home-qcard__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a8 8 0 0 0 8-8c0-5-8-11-8-11S4 8 4 13a8 8 0 0 0 8 8z"/><path d="M12 8v5l3 2"/></svg>
+            </span>
+            <span class="home-qcard__label">Здоровье и энергия</span>
+          </button>
+          <button type="button" class="home-qcard" role="listitem" onclick="startDiagnostic('Удача')">
+            <span class="home-qcard__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.4h7.6l-6 4.6 2.3 7-6.3-4.6-6.3 4.6 2.3-7-6-4.6h7.6L12 2z"/></svg>
+            </span>
+            <span class="home-qcard__label">Удача и возможности</span>
+          </button>
+          <button type="button" class="home-qcard" role="listitem" onclick="startDiagnostic('Обучение')">
+            <span class="home-qcard__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8M8 11h6"/></svg>
+            </span>
+            <span class="home-qcard__label">Обучение и знания</span>
+          </button>
+          <button type="button" class="home-qcard" role="listitem" onclick="startDiagnostic('Сила и уверенность')">
+            <span class="home-qcard__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </span>
+            <span class="home-qcard__label">Сила и уверенность</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="home-trust">
+        <h2 class="home-trust__title">Почему выбирают «Волшебный Огонь»</h2>
+        <div class="home-trust__grid">
+          <div class="home-trust__item">
+            <div class="home-trust__icon-wrap" aria-hidden="true">
+              <span class="home-trust__icon-glow"></span>
+              <svg class="home-trust__icon" viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                <path d="M36 60c-9-7.5-15.5-17.5-14-29.5S34 14 36 14s11.5 5.5 14 16.5S45 52.5 36 60z"/>
+                <path d="M36 20v34"/>
+                <path d="M28.5 40c-5.5-2-9.5-6.5-12-13M43.5 40c5.5-2 9.5-6.5 12-13"/>
+                <path class="trust-stroke-soft" d="M20 52c4.5 4 9 6 16 7M52 50c-3.5 4.5-8.5 8-16 10"/>
+                <path class="trust-stroke-soft" d="M44 56c2-3 4-7 5-11"/>
+              </svg>
+            </div>
+            <h3>Натуральные ингредиенты</h3>
+            <p>Пчелиный воск, травы и масла — бережно к вам и к природе.</p>
+          </div>
+          <div class="home-trust__item">
+            <div class="home-trust__icon-wrap" aria-hidden="true">
+              <span class="home-trust__icon-glow"></span>
+              <svg class="home-trust__icon" viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                <path d="M11 49c3-10 12-18 17.5-16 1.5 6 .5 12.5-2.5 16C21.5 47 14.5 51 11 49z"/>
+                <path d="M61 49c-3-10-12-18-17.5-16-1.5 6-.5 12.5 2.5 16C50.5 47 57.5 51 61 49z"/>
+                <path d="M30.5 52.5V31a5.5 5.5 0 0 1 11 0v21.5"/>
+                <path d="M36 31v-4"/>
+                <path d="M36 9c-4.5 8-3 14.5 0 17.5C39 23.5 40.5 17 36 9z"/>
+                <path class="trust-stroke-soft" d="M22 20v3M22.5 21.5h-3"/>
+                <path class="trust-stroke-soft" d="M50 17v3M50.5 18.5h-3"/>
+                <path class="trust-stroke-soft" d="M58 28l2 2M60 28l-2 2"/>
+              </svg>
+            </div>
+            <h3>Ручная работа и энергия</h3>
+            <p>Каждая свеча создаётся вручную с вниманием к деталям и намерению.</p>
+          </div>
+          <div class="home-trust__item">
+            <div class="home-trust__icon-wrap" aria-hidden="true">
+              <span class="home-trust__icon-glow"></span>
+              <svg class="home-trust__icon" viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                <circle cx="36" cy="38" r="23.5"/>
+                <path d="M48 24a11 11 0 1 0 0 27 8.5 8.5 0 1 1 0-27z"/>
+                <polygon points="36,15 37.6,20.4 43.2,20.4 38.8,23.8 40.4,29.2 36,25.8 31.6,29.2 33.2,23.8 28.8,20.4 34.4,20.4"/>
+                <path class="trust-stroke-soft" d="M36 50v5M33.5 52.5h5"/>
+                <path class="trust-stroke-soft" d="M26 44l-3.5-2M46 44l3.5-2"/>
+              </svg>
+            </div>
+            <h3>Проверенные ритуалы</h3>
+            <p>Формулы и обряды, выверенные годами практики Modern Mystic Premium.</p>
+          </div>
+          <div class="home-trust__item">
+            <div class="home-trust__icon-wrap" aria-hidden="true">
+              <span class="home-trust__icon-glow"></span>
+              <svg class="home-trust__icon" viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                <path d="M22.5 28c0-6.5 5.5-11 11.5-11 3 0 5.5 1.2 7 3 1.5-1.8 4-3 7-3 6 0 11.5 4.5 11.5 11 0 11-18.5 22-18.5 22S22.5 39 22.5 28z"/>
+                <path class="trust-stroke-soft" d="M18 46c3 6 9.5 11 18 14.5M54 46c-3 6-9.5 11-18 14.5"/>
+                <path d="M14 52c5-2 12-3 18.5-2M58 52c-5-2-12-3-18.5-2"/>
+                <path class="trust-stroke-soft" d="M36 11v5M26 14.5l4 3M46 14.5l-4 3M23.5 19.5l3.5 3M48.5 19.5l-3.5 3"/>
+              </svg>
+            </div>
+            <h3>Забота о каждом</h3>
+            <p>Поддержка на пути: подбор, описание и рекомендации по применению.</p>
+          </div>
+        </div>
+      </div>
+
+      <blockquote class="home-quote">
+        <p>Свеча — это не просто огонь, это ваш проводник к переменам.</p>
+      </blockquote>
+
+      <div id="home-intent" class="intent-card" role="region" aria-labelledby="intentTitle">
+        <p class="home-intent-eyebrow">Или своими словами</p>
         <h2 id="intentTitle">Опишите вашу ситуацию</h2>
         <p class="intent-sub">
-          Расскажите своими словами, что вас сейчас волнует. Приложение проанализирует ключевые слова и подберёт подходящую свечу из каталога.
+          Расскажите, что вас сейчас волнует — приложение проанализирует текст и подберёт свечу из каталога.
         </p>
 
         <textarea
@@ -986,7 +2320,7 @@
             Подобрать свечу
           </button>
           <button class="intent-secondary" type="button" onclick="showScreen('situations')">
-            или выбрать ситуацию из списка →
+            Полный список ситуаций →
           </button>
         </div>
       </div>
@@ -1108,6 +2442,46 @@
       </div>
     </section>
 
+    <section id="catalogProductDetail" class="screen">
+      <div class="catalog-detail-inner">
+        <button type="button" class="btn btn-ghost catalog-detail-back" onclick="closeCatalogProductDetail()">
+          ← Назад к подбору
+        </button>
+        <div class="catalog-detail-eyebrow">Каталог</div>
+        <h2 id="catalogDetailTitle">Товар</h2>
+        <div class="catalog-detail-meta">
+          <span id="catalogDetailCategory"></span>
+          <span id="catalogDetailPrice" class="detail-price"></span>
+        </div>
+        <div class="catalog-detail-gallery">
+          <div class="catalog-detail-main" id="catalogDetailMainWrap">
+            <img id="catalogDetailMainImg" alt="" style="display: none;">
+            <div id="catalogDetailPhotoPh" class="card-photo-placeholder" aria-hidden="true">🕯</div>
+          </div>
+          <div id="catalogDetailThumbs" class="catalog-detail-thumbs" hidden></div>
+        </div>
+        <div class="catalog-detail-block" id="catalogDetailDescBlock">
+          <h3>Описание</h3>
+          <div id="catalogDetailDescription" class="catalog-detail-html"></div>
+        </div>
+        <div class="catalog-detail-block" id="catalogDetailRecBlock" hidden>
+          <h3>Рекомендации</h3>
+          <p id="catalogDetailRecommendation" class="catalog-detail-text"></p>
+        </div>
+        <div class="catalog-detail-block" id="catalogDetailSitBlock" hidden>
+          <h3>Ситуации</h3>
+          <div id="catalogDetailSituations" class="catalog-detail-tags"></div>
+        </div>
+        <div class="catalog-detail-block" id="catalogDetailBenBlock" hidden>
+          <h3>Что помогает усилить</h3>
+          <div id="catalogDetailBenefits" class="catalog-detail-tags"></div>
+        </div>
+        <div class="catalog-detail-actions">
+          <a id="catalogDetailBuy" class="btn-buy-card" href="#" target="_blank" rel="noopener noreferrer">Купить</a>
+        </div>
+      </div>
+    </section>
+
     <section id="admin" class="screen">
       <div class="section-head">
         <h2>Админ-панель</h2>
@@ -1220,6 +2594,28 @@
           <p id="adminImportStatus" class="small-note" style="margin-top:10px;"></p>
         </div>
 
+        <div class="card admin-data-catalog-card">
+          <h3>Каталог товаров</h3>
+          <p class="small-note">
+            Управление витриной из <strong>data/candles.json</strong> (через backend). Скрытые позиции остаются в файле с полем
+            <code>hidden: true</code> и не показываются в подборе и каталоге для пользователей.
+          </p>
+          <div class="admin-data-catalog-toolbar">
+            <input
+              id="adminDataCatalogSearch"
+              type="search"
+              placeholder="Поиск по названию, категории или ID…"
+              autocomplete="off"
+              oninput="onAdminDataCatalogSearchInput()"
+            >
+            <button type="button" class="btn btn-ghost" onclick="loadAdminDataCatalog(true)">Обновить список</button>
+            <span id="adminDataCatalogMeta" class="admin-data-catalog-meta"></span>
+          </div>
+          <p id="adminDataCatalogError" class="small-note" style="color:#8b4513;"></p>
+          <div id="adminDataCatalogGrid" class="admin-data-catalog-grid"></div>
+          <div id="adminDataCatalogPager" class="admin-data-catalog-pager hidden"></div>
+        </div>
+
         <div class="card">
           <h3>Каталог свечей</h3>
           <p class="small-note">У каждой позиции — «Редактировать» (подставит данные в форму выше) и «Удалить».</p>
@@ -1232,6 +2628,63 @@
     </section>
 
     <div id="saveToast" class="toast" role="status" aria-live="polite"></div>
+
+    <div id="adminCatalogEditModal" class="admin-catalog-modal hidden" role="dialog" aria-modal="true" aria-labelledby="adminCatalogEditTitle">
+      <div class="admin-catalog-modal__backdrop" onclick="closeAdminCatalogEditModal()"></div>
+      <div class="admin-catalog-modal__panel card">
+        <div class="admin-catalog-modal__head">
+          <h3 id="adminCatalogEditTitle">Редактирование товара</h3>
+          <button type="button" class="btn btn-ghost" onclick="closeAdminCatalogEditModal()">Закрыть</button>
+        </div>
+        <form class="form" id="adminCatalogEditForm" onsubmit="saveAdminCatalogEdit(event)">
+          <label class="form-label" for="adminCatalogEditId">ID товара</label>
+          <input id="adminCatalogEditId" type="text" readonly class="field-readonly">
+
+          <div class="form-row-2">
+            <div>
+              <label class="form-label" for="adminCatalogEditName">Название</label>
+              <input id="adminCatalogEditName" type="text" required autocomplete="off">
+            </div>
+            <div>
+              <label class="form-label" for="adminCatalogEditPrice">Цена</label>
+              <input id="adminCatalogEditPrice" type="text" placeholder="420" autocomplete="off">
+            </div>
+          </div>
+
+          <label class="form-label" for="adminCatalogEditCategory">Категория</label>
+          <input id="adminCatalogEditCategory" type="text" autocomplete="off">
+
+          <label class="form-label" for="adminCatalogEditDescription">Описание (HTML)</label>
+          <textarea id="adminCatalogEditDescription" class="code-ish"></textarea>
+
+          <label class="form-label" for="adminCatalogEditRecommendation">Рекомендация (recommendation)</label>
+          <textarea id="adminCatalogEditRecommendation"></textarea>
+
+          <label class="form-label" for="adminCatalogEditSituations">Ситуации (situations)</label>
+          <p class="form-hint">Через запятую или с новой строки — как теги для подбора.</p>
+          <textarea id="adminCatalogEditSituations" placeholder="Деньги, Защита"></textarea>
+
+          <label class="form-label" for="adminCatalogEditBenefits">Преимущества (benefits)</label>
+          <p class="form-hint">Каждый пункт с новой строки или через запятую.</p>
+          <textarea id="adminCatalogEditBenefits"></textarea>
+
+          <label class="form-label" for="adminCatalogEditBuyLink">Ссылка на покупку (buyLink / url)</label>
+          <input id="adminCatalogEditBuyLink" type="text" placeholder="https://…" autocomplete="off">
+
+          <label class="form-label">Фото (images)</label>
+          <div id="adminCatalogEditPhotoStrip" class="admin-catalog-photo-strip"></div>
+          <div class="form-row-2" style="margin-top:10px;">
+            <input id="adminCatalogEditPhotoAdd" type="text" placeholder="URL или путь, например images/photo.png">
+            <button type="button" class="btn btn-ghost" onclick="adminCatalogAddPhotoFromInput()">Добавить фото</button>
+          </div>
+
+          <div class="form-actions-row" style="margin-top:8px;">
+            <button class="btn btn-primary" type="submit">Сохранить</button>
+            <button type="button" class="btn btn-ghost" onclick="closeAdminCatalogEditModal()">Отмена</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </main>
 
   <script src="js/catalog-json.js"></script>
@@ -1396,7 +2849,8 @@
       { situation: "Защита", icon: "🛡️", teaser: "Опора и спокойствие" },
       { situation: "Очищение дома", icon: "🏠", teaser: "Энергия пространства" },
       { situation: "Здоровье", icon: "💙", teaser: "Тонус и восстановление" },
-      { situation: "Удача", icon: "🍀", teaser: "Совпадения и шанс" }
+      { situation: "Удача", icon: "🍀", teaser: "Совпадения и шанс" },
+      { situation: "Обучение", icon: "📚", teaser: "Экзамены и концентрация" }
     ];
 
     const STORAGE_KEY = "candleAppData";
@@ -1476,6 +2930,403 @@
     }
     loadCandlesFromBackend();
 
+    /** После правок data/candles.json — перезагрузить CandleCatalog без перезапуска сервера. */
+    async function reloadPublicCatalogFromServer() {
+      if (typeof CandleCatalog === "undefined" || typeof CandleCatalog.reload !== "function") {
+        updateCatalogBanner();
+        return;
+      }
+      try {
+        await CandleCatalog.reload();
+        updateCatalogBanner();
+      } catch (e) {
+        updateCatalogBanner();
+      }
+    }
+
+    var adminDataCatalogState = {
+      products: [],
+      search: "",
+      page: 1,
+      pageSize: 24,
+      loading: false,
+    };
+    var adminCatalogEditImages = [];
+
+    async function loadAdminDataCatalog(force) {
+      var errEl = document.getElementById("adminDataCatalogError");
+      var meta = document.getElementById("adminDataCatalogMeta");
+      if (errEl) errEl.textContent = "";
+      if (adminDataCatalogState.loading && !force) return;
+      adminDataCatalogState.loading = true;
+      if (meta) meta.textContent = "Загрузка…";
+      try {
+        var r = await fetch(APP_CONFIG.API_BASE + "/admin/catalog", { credentials: "same-origin" });
+        var j = await r.json().catch(function () {
+          return {};
+        });
+        if (!r.ok || !j || j.ok === false) {
+          throw new Error((j && j.error) || "HTTP " + r.status);
+        }
+        adminDataCatalogState.products = Array.isArray(j.products) ? j.products : [];
+        adminDataCatalogState.page = 1;
+        if (errEl) errEl.textContent = "";
+        renderAdminDataCatalog();
+        if (meta) meta.textContent = "Всего: " + (j.total != null ? j.total : adminDataCatalogState.products.length);
+      } catch (e) {
+        if (errEl) {
+          errEl.textContent =
+            "Не удалось загрузить каталог: " +
+            (e.message || String(e)) +
+            ". Запустите backend (npm run server) и откройте сайт с того же хоста.";
+        }
+        if (meta) meta.textContent = "";
+        adminDataCatalogState.products = [];
+        renderAdminDataCatalog();
+      } finally {
+        adminDataCatalogState.loading = false;
+      }
+    }
+
+    function onAdminDataCatalogSearchInput() {
+      var inp = document.getElementById("adminDataCatalogSearch");
+      adminDataCatalogState.search = inp ? String(inp.value || "").trim().toLowerCase() : "";
+      adminDataCatalogState.page = 1;
+      renderAdminDataCatalog();
+    }
+
+    function adminDataCatalogFiltered() {
+      var q = adminDataCatalogState.search;
+      var list = adminDataCatalogState.products.slice();
+      if (!q) return list;
+      return list.filter(function (p) {
+        if (!p) return false;
+        var id = String(p.id || "").toLowerCase();
+        var name = String(p.name || "").toLowerCase();
+        var cat = String(p.category || "").toLowerCase();
+        return id.indexOf(q) !== -1 || name.indexOf(q) !== -1 || cat.indexOf(q) !== -1;
+      });
+    }
+
+    function adminDataCatalogThumbSrc(p) {
+      var imgs = Array.isArray(p.images) ? p.images : [];
+      var first = imgs.length ? imgs[0] : p.image;
+      return first ? normalizeCandleImageSrc(String(first)) : "";
+    }
+
+    function adminDataCatalogImageCount(p) {
+      if (Array.isArray(p.images) && p.images.length) return p.images.length;
+      if (p.image) return 1;
+      return 0;
+    }
+
+    function renderAdminDataCatalog() {
+      var grid = document.getElementById("adminDataCatalogGrid");
+      var pager = document.getElementById("adminDataCatalogPager");
+      if (!grid) return;
+      grid.innerHTML = "";
+      var filtered = adminDataCatalogFiltered();
+      var n = filtered.length;
+      var usePager = n > 100;
+      var page = adminDataCatalogState.page;
+      var size = adminDataCatalogState.pageSize;
+      var slice = usePager ? filtered.slice((page - 1) * size, page * size) : filtered;
+      if (!slice.length) {
+        grid.innerHTML =
+          '<p class="small-note" style="grid-column:1/-1;">Нет товаров или ничего не найдено по запросу.</p>';
+      } else {
+        slice.forEach(function (p) {
+          var card = document.createElement("article");
+          card.className = "admin-data-catalog-card-item" + (p.hidden === true ? " is-hidden" : "");
+          var thumb = adminDataCatalogThumbSrc(p);
+          var priceDisp = p.price != null && p.price !== "" ? String(p.price) + " ₽" : "—";
+          var hid = p.hidden === true ? '<span class="admin-data-catalog-badge">Скрыт</span>' : "";
+          card.innerHTML =
+            '<div class="row-top">' +
+            (thumb
+              ? '<img class="admin-data-catalog-thumb" alt="" loading="lazy" src="' +
+                String(thumb).replace(/"/g, "&quot;") +
+                '">'
+              : '<div class="admin-data-catalog-thumb-ph" aria-hidden="true">🕯</div>') +
+            "<div>" +
+            "<h4>" +
+            escapeHtml(String(p.name || "Без названия")) +
+            "</h4>" +
+            '<div class="meta-line">' +
+            escapeHtml(String(p.category || "—")) +
+            " · " +
+            escapeHtml(priceDisp) +
+            " · фото: " +
+            adminDataCatalogImageCount(p) +
+            "</div>" +
+            hid +
+            '<div class="id-line">ID: ' +
+            escapeHtml(String(p.id || "")) +
+            "</div>" +
+            "</div></div>" +
+            '<div class="admin-data-catalog-actions">' +
+            '<button type="button" class="btn btn-ghost" data-act="edit" data-id="' +
+            escapeHtml(String(p.id || "")) +
+            '">Редактировать</button>' +
+            '<button type="button" class="btn btn-ghost" data-act="hide" data-id="' +
+            escapeHtml(String(p.id || "")) +
+            '">' +
+            (p.hidden === true ? "Показать" : "Скрыть") +
+            "</button>" +
+            '<button type="button" class="btn btn-ghost" data-act="del" data-id="' +
+            escapeHtml(String(p.id || "")) +
+            '">Удалить</button>' +
+            "</div>";
+          card.querySelectorAll("button[data-act]").forEach(function (btn) {
+            btn.addEventListener("click", function () {
+              var id = btn.getAttribute("data-id");
+              var act = btn.getAttribute("data-act");
+              if (act === "edit") openAdminCatalogEditModal(id);
+              else if (act === "hide") toggleAdminCatalogHidden(id);
+              else if (act === "del") deleteAdminCatalogProduct(id);
+            });
+          });
+          grid.appendChild(card);
+        });
+      }
+      if (pager) {
+        if (!usePager) {
+          pager.classList.add("hidden");
+          pager.innerHTML = "";
+        } else {
+          var totalPages = Math.max(1, Math.ceil(n / size));
+          if (page > totalPages) {
+            adminDataCatalogState.page = totalPages;
+            return renderAdminDataCatalog();
+          }
+          pager.classList.remove("hidden");
+          pager.innerHTML =
+            '<button type="button" class="btn btn-ghost" ' +
+            (page <= 1 ? "disabled" : "") +
+            ' onclick="adminDataCatalogPrevPage()">Назад</button>' +
+            '<span class="small-note">Стр. ' +
+            page +
+            " из " +
+            totalPages +
+            " (" +
+            n +
+            ")</span>" +
+            '<button type="button" class="btn btn-ghost" ' +
+            (page >= totalPages ? "disabled" : "") +
+            ' onclick="adminDataCatalogNextPage()">Вперёд</button>';
+        }
+      }
+    }
+
+    function adminDataCatalogPrevPage() {
+      if (adminDataCatalogState.page > 1) {
+        adminDataCatalogState.page--;
+        renderAdminDataCatalog();
+      }
+    }
+    function adminDataCatalogNextPage() {
+      adminDataCatalogState.page++;
+      renderAdminDataCatalog();
+    }
+
+    function escapeHtml(s) {
+      return String(s == null ? "" : s)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function parseListArea(text) {
+      return String(text || "")
+        .split(/[\n,;]+/)
+        .map(function (x) {
+          return x.trim().replace(/\.$/, "");
+        })
+        .filter(Boolean);
+    }
+
+    function openAdminCatalogEditModal(id) {
+      var sid = String(id || "").trim();
+      var p = adminDataCatalogState.products.filter(function (x) {
+        return x && String(x.id) === sid;
+      })[0];
+      if (!p) {
+        showToast("Товар не найден");
+        return;
+      }
+      adminCatalogEditImages = Array.isArray(p.images)
+        ? p.images.map(function (u) {
+            return String(u || "").trim();
+          }).filter(Boolean)
+        : p.image
+          ? [String(p.image).trim()]
+          : [];
+      document.getElementById("adminCatalogEditId").value = p.id || "";
+      document.getElementById("adminCatalogEditName").value = p.name || "";
+      document.getElementById("adminCatalogEditPrice").value = p.price != null ? String(p.price) : "";
+      document.getElementById("adminCatalogEditCategory").value = p.category || "";
+      document.getElementById("adminCatalogEditDescription").value = p.description || "";
+      document.getElementById("adminCatalogEditRecommendation").value = p.recommendation || "";
+      var sits = Array.isArray(p.situations) && p.situations.length
+        ? p.situations.join(", ")
+        : String(p.situation || "");
+      document.getElementById("adminCatalogEditSituations").value = sits;
+      var ben = Array.isArray(p.benefits) ? p.benefits.join("\n") : "";
+      document.getElementById("adminCatalogEditBenefits").value = ben;
+      document.getElementById("adminCatalogEditBuyLink").value = (p.url || p.buyLink || "").trim();
+      renderAdminCatalogEditPhotoStrip();
+      var modal = document.getElementById("adminCatalogEditModal");
+      if (modal) {
+        modal.classList.remove("hidden");
+        modal.setAttribute("aria-hidden", "false");
+      }
+    }
+
+    function closeAdminCatalogEditModal() {
+      var modal = document.getElementById("adminCatalogEditModal");
+      if (modal) {
+        modal.classList.add("hidden");
+        modal.setAttribute("aria-hidden", "true");
+      }
+      adminCatalogEditImages = [];
+    }
+
+    function renderAdminCatalogEditPhotoStrip() {
+      var strip = document.getElementById("adminCatalogEditPhotoStrip");
+      if (!strip) return;
+      strip.innerHTML = "";
+      adminCatalogEditImages.forEach(function (url, idx) {
+        var u = normalizeCandleImageSrc(url);
+        var wrap = document.createElement("div");
+        wrap.className = "admin-catalog-photo-tile";
+        var img = document.createElement("img");
+        img.src = u;
+        img.alt = "";
+        img.loading = "lazy";
+        var rm = document.createElement("button");
+        rm.type = "button";
+        rm.setAttribute("aria-label", "Удалить фото");
+        rm.textContent = "×";
+        rm.addEventListener("click", function () {
+          adminCatalogEditImages.splice(idx, 1);
+          renderAdminCatalogEditPhotoStrip();
+        });
+        wrap.appendChild(img);
+        wrap.appendChild(rm);
+        strip.appendChild(wrap);
+      });
+    }
+
+    function adminCatalogAddPhotoFromInput() {
+      var inp = document.getElementById("adminCatalogEditPhotoAdd");
+      var v = inp ? inp.value.trim() : "";
+      if (!v) {
+        showToast("Введите URL или путь к файлу");
+        return;
+      }
+      adminCatalogEditImages.push(v);
+      if (inp) inp.value = "";
+      renderAdminCatalogEditPhotoStrip();
+    }
+
+    async function saveAdminCatalogEdit(ev) {
+      if (ev && ev.preventDefault) ev.preventDefault();
+      var id = document.getElementById("adminCatalogEditId").value.trim();
+      if (!id) return;
+      var body = {
+        id: id,
+        name: document.getElementById("adminCatalogEditName").value.trim(),
+        price: document.getElementById("adminCatalogEditPrice").value.trim(),
+        category: document.getElementById("adminCatalogEditCategory").value.trim(),
+        description: document.getElementById("adminCatalogEditDescription").value,
+        recommendation: document.getElementById("adminCatalogEditRecommendation").value.trim(),
+        situations: parseListArea(document.getElementById("adminCatalogEditSituations").value),
+        benefits: parseListArea(document.getElementById("adminCatalogEditBenefits").value),
+        images: adminCatalogEditImages.map(function (x) {
+          return normalizeCandleImageSrc(String(x).trim());
+        }).filter(Boolean),
+      };
+      var link = document.getElementById("adminCatalogEditBuyLink").value.trim();
+      body.url = link;
+      body.buyLink = link;
+      if (body.situations.length) body.situation = body.situations.join(", ");
+      else body.situation = "";
+      if (body.images.length) body.image = body.images[0];
+      try {
+        var r = await fetch(APP_CONFIG.API_BASE + "/admin/catalog/" + encodeURIComponent(id), {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          credentials: "same-origin",
+          body: JSON.stringify(body),
+        });
+        var j = await r.json().catch(function () {
+          return {};
+        });
+        if (!r.ok || !j || j.ok === false) {
+          throw new Error((j && j.error) || "HTTP " + r.status);
+        }
+        showToast("Товар сохранён");
+        closeAdminCatalogEditModal();
+        await loadAdminDataCatalog(true);
+        await reloadPublicCatalogFromServer();
+      } catch (e) {
+        showToast("Ошибка сохранения: " + (e.message || String(e)));
+      }
+    }
+
+    async function toggleAdminCatalogHidden(id) {
+      var sid = String(id || "").trim();
+      var p = adminDataCatalogState.products.filter(function (x) {
+        return x && String(x.id) === sid;
+      })[0];
+      if (!p) return;
+      var nextHidden = !(p.hidden === true);
+      try {
+        var r = await fetch(APP_CONFIG.API_BASE + "/admin/catalog/" + encodeURIComponent(sid), {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          credentials: "same-origin",
+          body: JSON.stringify({ hidden: nextHidden }),
+        });
+        var j = await r.json().catch(function () {
+          return {};
+        });
+        if (!r.ok || !j || j.ok === false) {
+          throw new Error((j && j.error) || "HTTP " + r.status);
+        }
+        showToast(nextHidden ? "Товар скрыт с витрины" : "Товар снова на витрине");
+        await loadAdminDataCatalog(true);
+        await reloadPublicCatalogFromServer();
+      } catch (e) {
+        showToast("Ошибка: " + (e.message || String(e)));
+      }
+    }
+
+    async function deleteAdminCatalogProduct(id) {
+      var sid = String(id || "").trim();
+      if (!sid) return;
+      if (!confirm("Удалить свечу?")) return;
+      try {
+        var r = await fetch(APP_CONFIG.API_BASE + "/admin/catalog/" + encodeURIComponent(sid), {
+          method: "DELETE",
+          credentials: "same-origin",
+        });
+        var j = await r.json().catch(function () {
+          return {};
+        });
+        if (!r.ok || !j || j.ok === false) {
+          throw new Error((j && j.error) || "HTTP " + r.status);
+        }
+        showToast("Свеча удалена из каталога");
+        closeAdminCatalogEditModal();
+        await loadAdminDataCatalog(true);
+        await reloadPublicCatalogFromServer();
+      } catch (e) {
+        showToast("Ошибка удаления: " + (e.message || String(e)));
+      }
+    }
+
     /** Сформировать ссылку на бот, при наличии — с deep-link на конкретную свечу */
     function buildBotLink(candle) {
       const username = (APP_CONFIG.BOT_USERNAME || "").replace(/^@/, "");
@@ -1554,6 +3405,18 @@
       const rawImage =
         (c.image && String(c.image).trim()) ||
         (Array.isArray(c.images) && c.images.length ? String(c.images[0]).trim() : "");
+      const imagesFromImport = Array.isArray(c.images)
+        ? c.images.map(function (x) {
+            return normalizeCandleImageSrc(String(x || "").trim());
+          }).filter(Boolean)
+        : [];
+      const primary = normalizeCandleImageSrc(rawImage);
+      const imagesList =
+        imagesFromImport.length > 0
+          ? imagesFromImport
+          : primary
+            ? [primary]
+            : [];
 
       return {
         id: c.id || slugify(c.name || ""),
@@ -1566,7 +3429,8 @@
         benefits,
         usage,
         buyLink: c.buyLink || c.link || "",
-        image: normalizeCandleImageSrc(rawImage),
+        image: imagesList[0] || "",
+        images: imagesList,
         price: c.price != null && c.price !== "" ? Number(c.price) : null,
         upsell: Array.isArray(c.upsell) ? c.upsell : []
       };
@@ -1707,6 +3571,13 @@
       });
     }
 
+    function scrollToHomeQuickSituations() {
+      var el = document.getElementById("home-quick-situations");
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+
     function showScreen(id) {
       document.querySelectorAll(".screen").forEach(screen => {
         screen.classList.remove("active");
@@ -1718,6 +3589,7 @@
       if (id === "admin") {
         renderAdminList();
         renderSituationAdminList();
+        loadAdminDataCatalog(false);
       }
 
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -1732,29 +3604,36 @@
     ============================================================================ */
     const SITUATION_KEYWORDS = {
       "Деньги": [
-        "денег", "деньг", "финанс", "зарплат", "доход", "богат",
-        "бедн", "трат", "кредит", "долг", "копи", "заработ", "бюджет"
+        "деньги", "денег", "финанс", "зарплат", "доход", "богат",
+        "прибыл", "кредит", "долг", "заработ", "успех", "капитал"
       ],
       "Любовь": [
-        "любв", "любов", "любим", "отношен", "парн", "девушк",
-        "муж", "жен", "развод", "одинок", "роман", "чувств", "страст",
-        "брак", "влюб", "расстал", "ссор"
+        "любов", "любим", "отношен", "романт", "страст",
+        "брак", "влюб", "семь", "партнер", "свидани"
       ],
       "Защита": [
         "защит", "сглаз", "порч", "негатив", "враг", "страх",
         "тревог", "опас", "безопас", "угроз", "оберег", "зависть"
       ],
       "Очищение дома": [
-        "дом", "квартир", "пространств", "очищен", "тяжел", "атмосфер",
-        "энергет", "уютн", "чистот", "ремонт"
+        "квартир", "пространств", "очищен", "атмосфер",
+        "энергетик", "гармон", "очистк"
       ],
       "Здоровье": [
-        "здоров", "болезн", "энерг", "сил", "тонус", "устал",
-        "восстановл", "слаб", "болит", "выгоран", "истощ", "сон"
+        "здоровье", "здоров", "болезнь", "болезни", "исцеление",
+        "целитель", "энергия", "силы", "восстановление", "самочувствие"
       ],
       "Удача": [
         "удач", "везен", "шанс", "случа", "совпаден", "благополуч",
-        "успех", "везет", "фортун"
+        "фортун", "судьб"
+      ],
+      "Обучение": [
+        "обучен", "учеб", "экзамен", "знан", "школ", "университет",
+        "концентрац", "памят", "успеваем"
+      ],
+      "Сила и уверенность": [
+        "сил", "уверен", "смел", "внутрен", "опор", "стойк", "стабиль",
+        "энергич", "активн", "самоцен", "характер"
       ]
     };
 
@@ -1800,6 +3679,181 @@
 
     function closeCatalogResults() {
       showScreen("home");
+    }
+
+    /** Подробная карточка товара из каталога (CandleCatalog / data/candles.json). */
+    function closeCatalogProductDetail() {
+      showScreen("catalogResults");
+    }
+
+    function openCatalogProductDetail(productOrId) {
+      if (typeof CandleCatalog === "undefined") {
+        showToast("Каталог недоступен");
+        return;
+      }
+      var p =
+        typeof productOrId === "string" || typeof productOrId === "number"
+          ? typeof CandleCatalog.findById === "function"
+            ? CandleCatalog.findById(String(productOrId))
+            : CandleCatalog.products.filter(function (x) {
+                return x.id === String(productOrId);
+              })[0]
+          : productOrId;
+      if (!p || !p.id) {
+        showToast("Товар не найден");
+        return;
+      }
+      lastRecommendedCandle = CandleCatalog.toLegacyCandle(p);
+
+      var titleEl = document.getElementById("catalogDetailTitle");
+      var catEl = document.getElementById("catalogDetailCategory");
+      var priceEl = document.getElementById("catalogDetailPrice");
+      if (titleEl) titleEl.textContent = p.name || "Товар";
+      if (catEl) catEl.textContent = p.category || "Каталог";
+      if (priceEl) {
+        if (p.price) {
+          priceEl.textContent = p.price + " ₽";
+          priceEl.style.display = "";
+        } else {
+          priceEl.textContent = "";
+          priceEl.style.display = "none";
+        }
+      }
+
+      var imgs = [];
+      if (Array.isArray(p.images) && p.images.length) {
+        imgs = p.images
+          .map(function (u) {
+            return normalizeCandleImageSrc(String(u || ""));
+          })
+          .filter(Boolean);
+      } else if (p.image) {
+        imgs = [normalizeCandleImageSrc(String(p.image))];
+      }
+      var mainImg = document.getElementById("catalogDetailMainImg");
+      var ph = document.getElementById("catalogDetailPhotoPh");
+      var thumbs = document.getElementById("catalogDetailThumbs");
+      function setMain(src) {
+        if (!mainImg || !ph) return;
+        if (src) {
+          mainImg.onload = function () {
+            ph.style.display = "none";
+            mainImg.style.display = "";
+          };
+          mainImg.onerror = function () {
+            mainImg.style.display = "none";
+            ph.style.display = "";
+          };
+          mainImg.src = src;
+          mainImg.alt = p.name || "Свеча";
+        } else {
+          mainImg.removeAttribute("src");
+          mainImg.style.display = "none";
+          ph.style.display = "";
+        }
+      }
+      if (thumbs) {
+        thumbs.innerHTML = "";
+        if (imgs.length > 1) {
+          thumbs.removeAttribute("hidden");
+          imgs.forEach(function (src, i) {
+            var b = document.createElement("button");
+            b.type = "button";
+            b.setAttribute("aria-label", "Показать фото " + (i + 1));
+            if (i === 0) b.classList.add("active");
+            var im = document.createElement("img");
+            im.src = src;
+            im.alt = "";
+            im.loading = "lazy";
+            b.appendChild(im);
+            b.addEventListener("click", function () {
+              setMain(src);
+              thumbs.querySelectorAll("button").forEach(function (x) {
+                x.classList.remove("active");
+              });
+              b.classList.add("active");
+            });
+            thumbs.appendChild(b);
+          });
+        } else {
+          thumbs.setAttribute("hidden", "hidden");
+        }
+      }
+      setMain(imgs[0] || "");
+
+      var descEl = document.getElementById("catalogDetailDescription");
+      var descBlock = document.getElementById("catalogDetailDescBlock");
+      var html = (p.descriptionHtml || "").trim();
+      var plain = (p.descriptionPlain || "").trim();
+      if (descEl) {
+        descEl.innerHTML = "";
+        descEl.textContent = "";
+        if (html && html.indexOf("<") !== -1) {
+          descEl.innerHTML = html;
+          descEl.className = "catalog-detail-html";
+        } else {
+          descEl.textContent = plain || html || "Описание отсутствует.";
+          descEl.className = "catalog-detail-text";
+        }
+      }
+      if (descBlock) {
+        if (plain || (html && html.indexOf("<") !== -1)) descBlock.removeAttribute("hidden");
+        else descBlock.setAttribute("hidden", "hidden");
+      }
+
+      var rec = (p.recommendation || "").trim();
+      var recBlock = document.getElementById("catalogDetailRecBlock");
+      var recP = document.getElementById("catalogDetailRecommendation");
+      if (rec && recP && recBlock) {
+        recBlock.removeAttribute("hidden");
+        recP.textContent = rec;
+      } else if (recBlock) {
+        recBlock.setAttribute("hidden", "hidden");
+      }
+
+      var sits = Array.isArray(p.situations) ? p.situations : [];
+      var sitWrap = document.getElementById("catalogDetailSituations");
+      var sitBlock = document.getElementById("catalogDetailSitBlock");
+      if (sitWrap) {
+        sitWrap.innerHTML = "";
+        sits.forEach(function (t) {
+          var sp = document.createElement("span");
+          sp.textContent = t;
+          sitWrap.appendChild(sp);
+        });
+      }
+      if (sitBlock) {
+        if (sits.length) sitBlock.removeAttribute("hidden");
+        else sitBlock.setAttribute("hidden", "hidden");
+      }
+
+      var bens = Array.isArray(p.benefits) ? p.benefits : [];
+      var benWrap = document.getElementById("catalogDetailBenefits");
+      var benBlock = document.getElementById("catalogDetailBenBlock");
+      if (benWrap) {
+        benWrap.innerHTML = "";
+        bens.forEach(function (t) {
+          var sp = document.createElement("span");
+          sp.textContent = t;
+          benWrap.appendChild(sp);
+        });
+      }
+      if (benBlock) {
+        if (bens.length) benBlock.removeAttribute("hidden");
+        else benBlock.setAttribute("hidden", "hidden");
+      }
+
+      var buyHref = (p.url || p.buyLink || "").trim();
+      var buyA = document.getElementById("catalogDetailBuy");
+      if (buyA) {
+        buyA.href = buyHref || "#";
+        buyA.style.opacity = buyHref ? "1" : "0.55";
+        buyA.onclick = function () {
+          trackBuyClick();
+        };
+      }
+
+      showScreen("catalogProductDetail");
     }
 
     function renderCatalogResults(matches, subtitle) {
@@ -1862,17 +3916,31 @@
           body.appendChild(price);
         }
 
+        var actions = document.createElement("div");
+        actions.className = "card-actions-row";
+
+        var moreBtn = document.createElement("button");
+        moreBtn.type = "button";
+        moreBtn.className = "btn-detail-more";
+        moreBtn.textContent = "Подробнее";
+        moreBtn.addEventListener("click", function (e) {
+          e.preventDefault();
+          openCatalogProductDetail(p);
+        });
+
         var buy = document.createElement("a");
         buy.className = "btn-buy-card";
         buy.textContent = "Купить";
-        buy.href = p.url || "#";
+        buy.href = (p.url || p.buyLink || "#").trim() || "#";
         buy.target = "_blank";
         buy.rel = "noopener noreferrer";
         buy.addEventListener("click", function () {
           lastRecommendedCandle = CandleCatalog.toLegacyCandle(p);
           trackBuyClick();
         });
-        body.appendChild(buy);
+        actions.appendChild(moreBtn);
+        actions.appendChild(buy);
+        body.appendChild(actions);
 
         card.appendChild(photoWrap);
         card.appendChild(body);
@@ -1970,7 +4038,7 @@
       }
 
       if (typeof CandleCatalog !== "undefined" && CandleCatalog.loaded && CandleCatalog.products.length) {
-        const cm = CandleCatalog.matchByText(text, SITUATION_KEYWORDS, 24);
+        const cm = CandleCatalog.matchByText(text, SITUATION_KEYWORDS, 6);
         if (cm.length > 0) {
           selectedSituation = "";
           userAnswers = [text];
@@ -2189,11 +4257,11 @@
     /** Финал опросника: подобрать свечу и отрисовать результат */
     function showResult() {
       if (typeof CandleCatalog !== "undefined" && CandleCatalog.loaded && CandleCatalog.products.length) {
-        const matches = CandleCatalog.matchSituation(selectedSituation, userAnswers, SITUATION_KEYWORDS, 24);
+        const matches = CandleCatalog.matchSituation(selectedSituation, userAnswers, SITUATION_KEYWORDS, 6);
         if (matches.length > 0) {
           renderCatalogResults(
             matches,
-            "Ситуация: «" + selectedSituation + "». Найдены товары, у которых категория или описание созвучны с выбором."
+            "Ситуация: «" + selectedSituation + "». Сначала товары с совпадением в поле situations, затем — по точным ключевым словам в названии, категории и описании (до 6 позиций)."
           );
           showScreen("catalogResults");
           return;
