@@ -296,6 +296,109 @@
       letter-spacing: 0.02em;
     }
 
+    .btn-hero-primary:disabled {
+      opacity: 0.48;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .home-legal-consent {
+      max-width: 520px;
+      margin: 0 0 22px;
+      padding: 18px 20px;
+      border-radius: 22px;
+      background:
+        linear-gradient(145deg, rgba(255, 252, 246, 0.95), rgba(245, 232, 210, 0.45));
+      border: 1px solid rgba(212, 175, 55, 0.32);
+      box-shadow:
+        0 10px 36px rgba(92, 70, 38, 0.06),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.55);
+      transition: box-shadow 0.35s ease, border-color 0.3s ease, transform 0.25s ease;
+    }
+
+    .home-legal-consent:hover {
+      border-color: rgba(212, 175, 55, 0.48);
+      box-shadow:
+        0 14px 44px rgba(92, 70, 38, 0.1),
+        0 0 32px rgba(212, 175, 55, 0.18),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.65);
+    }
+
+    .home-legal-consent--pulse {
+      animation: homeLegalPulse 0.85s ease;
+    }
+
+    @keyframes homeLegalPulse {
+      0%,
+      100% {
+        box-shadow:
+          0 10px 36px rgba(92, 70, 38, 0.06),
+          inset 0 0 0 1px rgba(255, 255, 255, 0.55);
+      }
+      40% {
+        border-color: rgba(212, 175, 55, 0.65);
+        box-shadow:
+          0 16px 48px rgba(92, 70, 38, 0.12),
+          0 0 40px rgba(212, 175, 55, 0.28),
+          inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+      }
+    }
+
+    .home-legal-consent__title {
+      margin: 0 0 12px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #9a7b45;
+    }
+
+    .home-legal-consent__label {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      cursor: pointer;
+      margin: 0;
+    }
+
+    .home-legal-consent__label input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      min-width: 20px;
+      margin-top: 3px;
+      accent-color: #b88a24;
+      cursor: pointer;
+      border-radius: 6px;
+    }
+
+    .home-legal-consent__text {
+      font-size: 14px;
+      line-height: 1.65;
+      color: #5c4a38;
+    }
+
+    .home-legal-consent__text a {
+      color: #6b4e24;
+      font-weight: 600;
+      text-decoration: underline;
+      text-decoration-color: rgba(212, 175, 55, 0.55);
+      text-underline-offset: 2px;
+    }
+
+    .home-legal-consent__text a:hover {
+      color: #3d2a14;
+    }
+
+    @media (max-width: 560px) {
+      .home-legal-consent {
+        padding: 16px 16px;
+      }
+      .home-legal-consent__text {
+        font-size: 13px;
+      }
+    }
+
     .home-hero__fine {
       margin: 0;
       font-size: 13px;
@@ -1162,6 +1265,17 @@
     #catalogResults.screen.active #catalogCardsGrid > .candle-product-card:nth-child(5) { animation-delay: 0.24s; }
     #catalogResults.screen.active #catalogCardsGrid > .candle-product-card:nth-child(6) { animation-delay: 0.29s; }
 
+    #aiEmotionalResult.screen.active #aiMainGrid > .candle-product-card,
+    #aiEmotionalResult.screen.active #aiExtraGrid > .candle-product-card {
+      animation: cardEnter 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    }
+    #aiEmotionalResult.screen.active #aiMainGrid > .candle-product-card:nth-child(1) { animation-delay: 0.04s; }
+    #aiEmotionalResult.screen.active #aiMainGrid > .candle-product-card:nth-child(2) { animation-delay: 0.09s; }
+    #aiEmotionalResult.screen.active #aiMainGrid > .candle-product-card:nth-child(3) { animation-delay: 0.14s; }
+    #aiEmotionalResult.screen.active #aiExtraGrid > .candle-product-card:nth-child(1) { animation-delay: 0.18s; }
+    #aiEmotionalResult.screen.active #aiExtraGrid > .candle-product-card:nth-child(2) { animation-delay: 0.23s; }
+    #aiEmotionalResult.screen.active #aiExtraGrid > .candle-product-card:nth-child(3) { animation-delay: 0.28s; }
+
     #result.screen.active .result-layout {
       animation: cardEnter 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.06s backwards;
     }
@@ -1915,6 +2029,197 @@
       margin-top: 8px;
     }
 
+    /* ---------- AI-экран подбора по свободному тексту ---------- */
+    .ai-result-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 28px 16px 56px;
+    }
+    .ai-result-hero {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .ai-result-eyebrow {
+      color: #b88a24;
+    }
+    .ai-result-inner h2 {
+      font-size: clamp(1.45rem, 3.5vw, 2rem);
+      line-height: 1.25;
+      color: #3d2f23;
+      margin: 10px 0 12px;
+    }
+    .ai-result-sub {
+      max-width: 560px;
+      margin: 0 auto;
+      font-size: 15px;
+      line-height: 1.55;
+      color: #6b5333;
+    }
+    .ai-narrative-card {
+      max-width: 640px;
+      margin: 0 auto 28px;
+      padding: 20px 22px;
+      border-radius: 18px;
+      background: linear-gradient(145deg, rgba(255, 252, 246, 0.98), rgba(250, 244, 232, 0.92));
+      border: 1px solid rgba(212, 175, 55, 0.28);
+      box-shadow:
+        0 16px 40px rgba(92, 70, 38, 0.1),
+        0 0 48px rgba(212, 175, 55, 0.12);
+    }
+    .ai-narrative-text {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.65;
+      color: #4a3a2a;
+      text-align: center;
+    }
+    .ai-focus-section {
+      margin-bottom: 32px;
+      text-align: center;
+    }
+    .ai-section-title {
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: #9a7b45;
+      margin: 0 0 14px;
+    }
+    .ai-focus-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+    .ai-focus-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #5c4628;
+      background: rgba(255, 248, 235, 0.95);
+      border: 1px solid rgba(184, 138, 36, 0.35);
+      box-shadow: 0 4px 14px rgba(92, 70, 38, 0.06);
+    }
+    .ai-block {
+      margin-bottom: 36px;
+    }
+    .ai-block .ai-section-title {
+      text-align: center;
+      margin-bottom: 18px;
+    }
+    .ai-result-actions {
+      margin-top: 12px;
+    }
+
+    .ai-analyze-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 10050;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      background: rgba(38, 30, 22, 0.52);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .ai-analyze-overlay.ai-analyze-overlay--visible {
+      display: flex;
+    }
+    .ai-analyze-sparks {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .ai-analyze-glow {
+      position: absolute;
+      width: min(92vw, 420px);
+      height: min(92vw, 420px);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(224, 193, 90, 0.45) 0%, rgba(212, 175, 55, 0.08) 55%, transparent 70%);
+      filter: blur(2px);
+      animation: aiGlowPulse 2.2s ease-in-out infinite;
+    }
+    .ai-analyze-particles {
+      position: relative;
+      z-index: 1;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 220, 150, 0.55);
+      box-shadow:
+        0 0 32px rgba(255, 212, 120, 0.55),
+        inset 0 0 24px rgba(255, 236, 190, 0.35);
+      animation: aiRingSpin 2.8s linear infinite;
+    }
+    .ai-analyze-particles::before,
+    .ai-analyze-particles::after {
+      content: "";
+      position: absolute;
+      inset: -18px;
+      border-radius: 50%;
+      border: 1px dashed rgba(255, 214, 140, 0.35);
+      animation: aiRingSpin 4.5s linear infinite reverse;
+    }
+    .ai-analyze-particles::after {
+      inset: -36px;
+      opacity: 0.5;
+      animation-duration: 6s;
+    }
+    .ai-analyze-label {
+      position: relative;
+      z-index: 2;
+      margin: 0;
+      font-size: 17px;
+      font-weight: 700;
+      color: #fff8e8;
+      text-shadow: 0 2px 18px rgba(212, 175, 55, 0.65);
+      letter-spacing: 0.02em;
+    }
+    @keyframes aiGlowPulse {
+      0%, 100% { opacity: 0.75; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.06); }
+    }
+    @keyframes aiRingSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes aiSparkFloat {
+      0% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.85; }
+      50% { transform: translate3d(6px, -10px, 0) scale(1.15); opacity: 1; }
+      100% { transform: translate3d(-4px, 6px, 0) scale(1); opacity: 0.85; }
+    }
+    .ai-analyze-spark {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fff6cc, #e0c15a 60%, transparent 70%);
+      box-shadow: 0 0 12px rgba(255, 220, 140, 0.9);
+      animation: aiSparkFloat 2.4s ease-in-out infinite;
+    }
+    .ai-analyze-spark:nth-child(1) { top: 18%; left: 22%; animation-delay: 0s; }
+    .ai-analyze-spark:nth-child(2) { top: 28%; right: 18%; animation-delay: 0.35s; }
+    .ai-analyze-spark:nth-child(3) { bottom: 24%; left: 30%; animation-delay: 0.7s; }
+    .ai-analyze-spark:nth-child(4) { bottom: 18%; right: 26%; animation-delay: 1s; }
+    .ai-analyze-spark:nth-child(5) { top: 42%; left: 12%; animation-delay: 0.2s; }
+    .ai-analyze-spark:nth-child(6) { top: 36%; right: 12%; animation-delay: 0.55s; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ai-analyze-glow,
+      .ai-analyze-particles,
+      .ai-analyze-particles::before,
+      .ai-analyze-particles::after,
+      .ai-analyze-spark {
+        animation: none !important;
+      }
+    }
+
     /* ---------- Подробная карточка товара из каталога ---------- */
     .catalog-detail-inner {
       max-width: 720px;
@@ -2153,8 +2458,28 @@
           <p class="home-hero__lead">
             Ответьте на несколько вопросов о вашей ситуации — и мы подберём свечу, которая поможет именно вам.
           </p>
+
+          <div id="homeLegalConsentBlock" class="home-legal-consent" role="group" aria-labelledby="homeLegalConsentHeading">
+            <p id="homeLegalConsentHeading" class="home-legal-consent__title">Перед подбором</p>
+            <label class="home-legal-consent__label" for="homeLegalConsentCheckbox">
+              <input type="checkbox" id="homeLegalConsentCheckbox" autocomplete="off" />
+              <span class="home-legal-consent__text">
+                «Я ознакомлен(а) и соглашаюсь<br>
+                с <a href="/terms.html" target="_blank" rel="noopener noreferrer">Пользовательским соглашением</a>,<br>
+                <a href="/privacy.html" target="_blank" rel="noopener noreferrer">Политикой конфиденциальности</a><br>
+                и <a href="/personal-data.html" target="_blank" rel="noopener noreferrer">обработкой персональных данных</a>.»
+              </span>
+            </label>
+          </div>
+
           <div class="home-hero__cta-row">
-            <button class="btn btn-primary btn-hero-primary" type="button" onclick="scrollToHomeQuickSituations()">
+            <button
+              id="heroStartDiagnosticBtn"
+              class="btn btn-primary btn-hero-primary"
+              type="button"
+              disabled
+              onclick="onHeroStartDiagnosticClick()"
+            >
               Начать подбор
             </button>
           </div>
@@ -2324,7 +2649,7 @@
           <button class="btn btn-primary" type="button" onclick="submitTextSituation()">
             Подобрать свечу
           </button>
-          <button class="intent-secondary" type="button" onclick="showScreen('situations')">
+          <button class="intent-secondary" type="button" onclick="goToFullSituationListFromHome()">
             Полный список ситуаций →
           </button>
         </div>
@@ -2452,6 +2777,37 @@
         <div id="catalogCardsGrid" class="cards-grid" aria-live="polite"></div>
         <div class="catalog-results-actions">
           <button type="button" class="btn btn-ghost" onclick="closeCatalogResults()">На главную</button>
+          <button type="button" class="btn btn-primary" onclick="showScreen('situations')">Выбрать другую ситуацию</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="aiEmotionalResult" class="screen">
+      <div class="ai-result-inner">
+        <div class="ai-result-hero">
+          <div class="eyebrow ai-result-eyebrow">Умный подбор</div>
+          <h2 id="aiResultHeadline">Мы подобрали свечи под ваше состояние</h2>
+          <p id="aiResultSubline" class="ai-result-sub">
+            На основе вашего запроса система определила наиболее подходящие направления.
+          </p>
+        </div>
+        <div class="ai-narrative-card" id="aiNarrativeWrap">
+          <p id="aiNarrativeText" class="ai-narrative-text"></p>
+        </div>
+        <div class="ai-focus-section">
+          <h3 class="ai-section-title">Что сейчас важно для вас</h3>
+          <div id="aiFocusPills" class="ai-focus-pills" aria-label="Фокусы запроса"></div>
+        </div>
+        <div class="ai-block">
+          <h3 class="ai-section-title">Основная рекомендация</h3>
+          <div id="aiMainGrid" class="cards-grid" aria-live="polite"></div>
+        </div>
+        <div class="ai-block" id="aiExtraSection">
+          <h3 class="ai-section-title">Дополнительно можно использовать</h3>
+          <div id="aiExtraGrid" class="cards-grid" aria-live="polite"></div>
+        </div>
+        <div class="catalog-results-actions ai-result-actions">
+          <button type="button" class="btn btn-ghost" onclick="closeAiEmotionalResult()">На главную</button>
           <button type="button" class="btn btn-primary" onclick="showScreen('situations')">Выбрать другую ситуацию</button>
         </div>
       </div>
@@ -2715,7 +3071,22 @@
     </div>
   </footer>
 
+  <div id="aiQueryAnalyzeOverlay" class="ai-analyze-overlay" hidden aria-busy="true" aria-label="Анализ запроса">
+    <div class="ai-analyze-glow" aria-hidden="true"></div>
+    <div class="ai-analyze-sparks" aria-hidden="true">
+      <span class="ai-analyze-spark"></span>
+      <span class="ai-analyze-spark"></span>
+      <span class="ai-analyze-spark"></span>
+      <span class="ai-analyze-spark"></span>
+      <span class="ai-analyze-spark"></span>
+      <span class="ai-analyze-spark"></span>
+    </div>
+    <div class="ai-analyze-particles" aria-hidden="true"></div>
+    <p class="ai-analyze-label">Анализируем ваш запрос…</p>
+  </div>
+
   <script src="js/catalog-json.js"></script>
+  <script src="js/ai-emotional-scoring.js"></script>
   <script>
     /* =============================================================================
        КОНФИГ ИНТЕГРАЦИИ С BACKEND И TELEGRAM-БОТОМ.
@@ -3576,6 +3947,78 @@
       }, 2800);
     }
 
+    var LEGAL_ACCEPT_KEY = "legalAccepted";
+
+    function readLegalAcceptedFromStorage() {
+      try {
+        return localStorage.getItem(LEGAL_ACCEPT_KEY) === "true";
+      } catch (e) {
+        return false;
+      }
+    }
+
+    function writeLegalAcceptedToStorage(on) {
+      try {
+        if (on) localStorage.setItem(LEGAL_ACCEPT_KEY, "true");
+        else localStorage.removeItem(LEGAL_ACCEPT_KEY);
+      } catch (e) {}
+    }
+
+    function updateHeroLegalConsentUi() {
+      var cb = document.getElementById("homeLegalConsentCheckbox");
+      var btn = document.getElementById("heroStartDiagnosticBtn");
+      if (!cb || !btn) return;
+      if (readLegalAcceptedFromStorage()) {
+        cb.checked = true;
+      }
+      var ok = !!cb.checked;
+      btn.disabled = !ok;
+      btn.setAttribute("aria-disabled", ok ? "false" : "true");
+    }
+
+    function initLegalConsentHome() {
+      var cb = document.getElementById("homeLegalConsentCheckbox");
+      if (!cb || cb.dataset.legalBound === "1") return;
+      cb.dataset.legalBound = "1";
+      if (readLegalAcceptedFromStorage()) {
+        cb.checked = true;
+      }
+      cb.addEventListener("change", function () {
+        writeLegalAcceptedToStorage(cb.checked);
+        updateHeroLegalConsentUi();
+      });
+      updateHeroLegalConsentUi();
+    }
+
+    function requireLegalConsentOrToast() {
+      var cb = document.getElementById("homeLegalConsentCheckbox");
+      if (readLegalAcceptedFromStorage()) return true;
+      if (cb && cb.checked) return true;
+      showToast("Для продолжения необходимо принять условия.");
+      var block = document.getElementById("homeLegalConsentBlock");
+      if (block) {
+        block.classList.remove("home-legal-consent--pulse");
+        void block.offsetWidth;
+        block.classList.add("home-legal-consent--pulse");
+      }
+      try {
+        if (block && typeof block.scrollIntoView === "function") {
+          block.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      } catch (e) {}
+      return false;
+    }
+
+    function onHeroStartDiagnosticClick() {
+      if (!requireLegalConsentOrToast()) return;
+      scrollToHomeQuickSituations();
+    }
+
+    function goToFullSituationListFromHome() {
+      if (!requireLegalConsentOrToast()) return;
+      showScreen("situations");
+    }
+
     /**
      * Для каждой ситуации из свечи: если такой карточки ещё нет — создаём (иконка ✨),
      * чтобы сценарий «Выберите ситуацию» сразу показывал новый пункт.
@@ -3618,6 +4061,9 @@
         renderAdminList();
         renderSituationAdminList();
         loadAdminDataCatalog(false);
+      }
+      if (id === "home") {
+        updateHeroLegalConsentUi();
       }
 
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -3705,13 +4151,165 @@
         });
     })();
 
+    /** Экран возврата из детальной карточки каталога: `catalogResults` или `aiEmotionalResult`. */
+    let catalogDetailReturnScreen = "catalogResults";
+
+    function showAiAnalyzeOverlay(show) {
+      var el = document.getElementById("aiQueryAnalyzeOverlay");
+      if (!el) return;
+      if (show) {
+        el.removeAttribute("hidden");
+        el.classList.add("ai-analyze-overlay--visible");
+        el.setAttribute("aria-busy", "true");
+      } else {
+        el.classList.remove("ai-analyze-overlay--visible");
+        el.setAttribute("hidden", "hidden");
+        el.setAttribute("aria-busy", "false");
+      }
+    }
+
+    function closeAiEmotionalResult() {
+      showScreen("home");
+    }
+
+    /**
+     * Одна карточка товара каталога (сетка результатов / AI-экран).
+     * @param {HTMLElement} grid
+     * @param {object} p — нормализованный продукт CandleCatalog
+     */
+    function mountCandleProductCard(grid, p) {
+      if (!grid || !p) return;
+      var card = document.createElement("article");
+      card.className = "candle-product-card";
+
+      var photoWrap = document.createElement("div");
+      photoWrap.className = "card-photo-wrap";
+      var first = normalizeCandleImageSrc(
+        (p.image || (p.images && p.images[0]) || "").toString()
+      );
+      if (first) {
+        var img = document.createElement("img");
+        img.alt = p.name || "Свеча";
+        img.loading = "lazy";
+        img.src = first;
+        img.onerror = function () {
+          img.remove();
+          var ph = document.createElement("div");
+          ph.className = "card-photo-placeholder";
+          ph.setAttribute("aria-hidden", "true");
+          ph.textContent = "🕯";
+          photoWrap.appendChild(ph);
+        };
+        photoWrap.appendChild(img);
+      } else {
+        var ph0 = document.createElement("div");
+        ph0.className = "card-photo-placeholder";
+        ph0.textContent = "🕯";
+        photoWrap.appendChild(ph0);
+      }
+
+      var body = document.createElement("div");
+      body.className = "card-body";
+      var cat = document.createElement("div");
+      cat.className = "card-category";
+      cat.textContent = p.category || "Каталог";
+      var h = document.createElement("h3");
+      h.textContent = p.name || "Без названия";
+      var teaser = document.createElement("p");
+      teaser.className = "card-teaser";
+      teaser.textContent = p.shortPlain || "";
+
+      body.appendChild(cat);
+      body.appendChild(h);
+      body.appendChild(teaser);
+
+      if (p.price) {
+        var price = document.createElement("div");
+        price.className = "card-price";
+        price.textContent = p.price + " ₽";
+        body.appendChild(price);
+      }
+
+      var actions = document.createElement("div");
+      actions.className = "card-actions-row";
+
+      var moreBtn = document.createElement("button");
+      moreBtn.type = "button";
+      moreBtn.className = "btn-detail-more";
+      moreBtn.textContent = "Подробнее";
+      moreBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        openCatalogProductDetail(p);
+      });
+
+      var buy = document.createElement("a");
+      buy.className = "btn-buy-card";
+      buy.textContent = "Купить";
+      buy.href = (p.url || p.buyLink || "#").trim() || "#";
+      buy.target = "_blank";
+      buy.rel = "noopener noreferrer";
+      buy.addEventListener("click", function () {
+        lastRecommendedCandle = CandleCatalog.toLegacyCandle(p);
+        trackBuyClick();
+      });
+      actions.appendChild(moreBtn);
+      actions.appendChild(buy);
+      body.appendChild(actions);
+
+      card.appendChild(photoWrap);
+      card.appendChild(body);
+      grid.appendChild(card);
+    }
+
+    function renderAiEmotionalResult(pack, userText) {
+      var narrEl = document.getElementById("aiNarrativeText");
+      var pillsEl = document.getElementById("aiFocusPills");
+      var mainGrid = document.getElementById("aiMainGrid");
+      var extraGrid = document.getElementById("aiExtraGrid");
+      var extraSec = document.getElementById("aiExtraSection");
+      if (!mainGrid || !extraGrid) return;
+
+      var nar = (pack && pack.narrative) || {};
+      if (narrEl) {
+        narrEl.textContent = nar.html || "";
+      }
+      if (pillsEl) {
+        pillsEl.innerHTML = "";
+        var pills = Array.isArray(nar.pills) ? nar.pills : [];
+        pills.forEach(function (label) {
+          var span = document.createElement("span");
+          span.className = "ai-focus-pill";
+          span.textContent = label;
+          pillsEl.appendChild(span);
+        });
+      }
+
+      mainGrid.innerHTML = "";
+      extraGrid.innerHTML = "";
+      (pack.main || []).forEach(function (p) {
+        mountCandleProductCard(mainGrid, p);
+      });
+      (pack.extra || []).forEach(function (p) {
+        mountCandleProductCard(extraGrid, p);
+      });
+
+      if (extraSec) {
+        if ((pack.extra || []).length) extraSec.removeAttribute("hidden");
+        else extraSec.setAttribute("hidden", "hidden");
+      }
+
+      if (typeof userText === "string" && userText.trim()) {
+        userAnswers = [userText.trim()];
+      }
+    }
+
     function closeCatalogResults() {
       showScreen("home");
     }
 
     /** Подробная карточка товара из каталога (CandleCatalog / data/candles.json). */
     function closeCatalogProductDetail() {
-      showScreen("catalogResults");
+      showScreen(catalogDetailReturnScreen || "catalogResults");
     }
 
     function openCatalogProductDetail(productOrId) {
@@ -3885,6 +4483,7 @@
     }
 
     function renderCatalogResults(matches, subtitle) {
+      catalogDetailReturnScreen = "catalogResults";
       var titleEl = document.getElementById("catalogResultsTitle");
       var subEl = document.getElementById("catalogResultsSub");
       var grid = document.getElementById("catalogCardsGrid");
@@ -3893,86 +4492,7 @@
       if (subEl) subEl.textContent = subtitle || "Свечи из каталога по вашему запросу.";
       grid.innerHTML = "";
       (matches || []).forEach(function (p) {
-        var card = document.createElement("article");
-        card.className = "candle-product-card";
-
-        var photoWrap = document.createElement("div");
-        photoWrap.className = "card-photo-wrap";
-        var first = normalizeCandleImageSrc(
-          (p.image || (p.images && p.images[0]) || "").toString()
-        );
-        if (first) {
-          var img = document.createElement("img");
-          img.alt = p.name || "Свеча";
-          img.loading = "lazy";
-          img.src = first;
-          img.onerror = function () {
-            img.remove();
-            var ph = document.createElement("div");
-            ph.className = "card-photo-placeholder";
-            ph.setAttribute("aria-hidden", "true");
-            ph.textContent = "🕯";
-            photoWrap.appendChild(ph);
-          };
-          photoWrap.appendChild(img);
-        } else {
-          var ph0 = document.createElement("div");
-          ph0.className = "card-photo-placeholder";
-          ph0.textContent = "🕯";
-          photoWrap.appendChild(ph0);
-        }
-
-        var body = document.createElement("div");
-        body.className = "card-body";
-        var cat = document.createElement("div");
-        cat.className = "card-category";
-        cat.textContent = p.category || "Каталог";
-        var h = document.createElement("h3");
-        h.textContent = p.name || "Без названия";
-        var teaser = document.createElement("p");
-        teaser.className = "card-teaser";
-        teaser.textContent = p.shortPlain || "";
-
-        body.appendChild(cat);
-        body.appendChild(h);
-        body.appendChild(teaser);
-
-        if (p.price) {
-          var price = document.createElement("div");
-          price.className = "card-price";
-          price.textContent = p.price + " ₽";
-          body.appendChild(price);
-        }
-
-        var actions = document.createElement("div");
-        actions.className = "card-actions-row";
-
-        var moreBtn = document.createElement("button");
-        moreBtn.type = "button";
-        moreBtn.className = "btn-detail-more";
-        moreBtn.textContent = "Подробнее";
-        moreBtn.addEventListener("click", function (e) {
-          e.preventDefault();
-          openCatalogProductDetail(p);
-        });
-
-        var buy = document.createElement("a");
-        buy.className = "btn-buy-card";
-        buy.textContent = "Купить";
-        buy.href = (p.url || p.buyLink || "#").trim() || "#";
-        buy.target = "_blank";
-        buy.rel = "noopener noreferrer";
-        buy.addEventListener("click", function () {
-          lastRecommendedCandle = CandleCatalog.toLegacyCandle(p);
-          trackBuyClick();
-        });
-        actions.appendChild(moreBtn);
-        actions.appendChild(buy);
-        body.appendChild(actions);
-
-        card.appendChild(photoWrap);
-        card.appendChild(body);
-        grid.appendChild(card);
+        mountCandleProductCard(grid, p);
       });
     }
 
@@ -4065,7 +4585,61 @@
         return;
       }
 
+      if (!requireLegalConsentOrToast()) {
+        return;
+      }
+
       if (typeof CandleCatalog !== "undefined" && CandleCatalog.loaded && CandleCatalog.products.length) {
+        if (typeof AIEmotionalMatch !== "undefined" && typeof AIEmotionalMatch.matchProducts === "function") {
+          showAiAnalyzeOverlay(true);
+          window.requestAnimationFrame(function () {
+            window.setTimeout(function () {
+              var pack = { main: [], extra: [], narrative: {} };
+              try {
+                pack = AIEmotionalMatch.matchProducts(text, CandleCatalog.products, {
+                  mainN: 3,
+                  extraN: 3,
+                });
+              } catch (e) {
+                console.warn("[AIEmotionalMatch]", e);
+              }
+              showAiAnalyzeOverlay(false);
+              var hasAi =
+                (pack.main && pack.main.length) || (pack.extra && pack.extra.length);
+              if (hasAi) {
+                selectedSituation = "";
+                catalogDetailReturnScreen = "aiEmotionalResult";
+                renderAiEmotionalResult(pack, text);
+                showScreen("aiEmotionalResult");
+                return;
+              }
+              const cmFallback = CandleCatalog.matchByText(text, SITUATION_KEYWORDS, 6);
+              if (cmFallback.length > 0) {
+                selectedSituation = "";
+                userAnswers = [text];
+                renderCatalogResults(
+                  cmFallback,
+                  "Подбор по вашему тексту — совпадения в категории и описании товаров из data/candles.json."
+                );
+                showScreen("catalogResults");
+                return;
+              }
+              const candleFb = findCandleByText(text);
+              if (!candleFb) {
+                err.textContent =
+                  "Не удалось распознать ситуацию. Попробуйте подробнее или выберите категорию ниже.";
+                err.classList.add("show");
+                return;
+              }
+              const tagsFb = getSituationTags(candleFb);
+              selectedSituation = tagsFb[0] || "";
+              userAnswers = [text];
+              renderCandleResult(candleFb);
+            }, 780);
+          });
+          return;
+        }
+
         const cm = CandleCatalog.matchByText(text, SITUATION_KEYWORDS, 6);
         if (cm.length > 0) {
           selectedSituation = "";
@@ -4158,6 +4732,7 @@
     }
 
     function startDiagnostic(situation) {
+      if (!requireLegalConsentOrToast()) return;
       selectedSituation = situation;
       currentQuestion = 0;
       userAnswers = [];
@@ -4762,6 +5337,7 @@
       showToast("Данные сброшены к демо");
     }
 
+    initLegalConsentHome();
     renderSituations();
   </script>
 </body>
